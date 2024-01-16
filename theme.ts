@@ -142,8 +142,8 @@ export const theme: Theme = {
         light: lightColors.backgroundAlt,
       },
       background2: {
-        dark: darkColors.backgroundAlt2,
-        light: lightColors.backgroundAlt2,
+        dark: darkColors.dropdown,
+        light: lightColors.dropdown,
       },
       background3: {
         dark: darkColors.background,
