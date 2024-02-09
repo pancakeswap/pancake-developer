@@ -21,5 +21,7 @@ PancakesSwap on Aptos! We have landed on Aptos and will continuously deploy more
 https://github.com/pancakeswap/pancake-contracts-move
 
 ## Audit
-<!-- TODO -->
-<!-- [OtterSec's PancakeSwap CAKE OFT audit](/PancakeSwap_OFT_Audit_OtterSec.pdf) -->
+
+<a className="vocs_Anchor vocs_Link vocs_Link_accent_underlined" href="/PancakeSwap_OFT_Audit_OtterSec.pdf" target="_blank">
+OtterSec's PancakeSwap CAKE OFT audit
+</a>
