@@ -69,4 +69,4 @@ const adapterParams = utils.solidityPack(
 
 ## Audits
 
-[OtterSec's PancakeSwap CAKE OFT (Bridging) security audit](/contracts-aptos/README#audit)
+[OtterSec's PancakeSwap CAKE OFT (Bridging) security audit](/contracts-aptos#audit)

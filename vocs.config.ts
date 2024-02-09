@@ -11,7 +11,7 @@ export default defineConfig({
   titleTemplate: '%s | PancakeSwap Developer',
   topNav: [
     { text: 'EVM', link: '/' },
-    { text: 'Aptos', link: '/contracts-aptos/readme' },
+    { text: 'Aptos', link: '/contracts-aptos' },
     { text: 'Bug Bounty', link: '/bug-bounty' },
   ],
   sidebar: {
@@ -79,7 +79,7 @@ export default defineConfig({
         items: [
           {
             text: 'Overview',
-            link: '/contracts/exchange/stableswap/readme',
+            link: '/contracts/exchange/stableswap',
           },
           {
             text: 'Pool addresses',
@@ -93,7 +93,7 @@ export default defineConfig({
         items: [
           {
             text: 'Overview',
-            link: '/contracts/syrup-pools/readme',
+            link: '/contracts/syrup-pools',
           },
           {
             text: 'SmartChefInitializable',
@@ -109,7 +109,7 @@ export default defineConfig({
             items: [
               {
                 text: 'v2',
-                link: '/contracts/main-staking-masterchef-contract/readme',
+                link: '/contracts/main-staking-masterchef-contract',
               },
               {
                 text: 'v3',
@@ -150,7 +150,7 @@ export default defineConfig({
       {
         text: 'Lottery',
         items: [
-          { text: 'Overview', link: '/contracts/lottery-v2/readme' },
+          { text: 'Overview', link: '/contracts/lottery-v2' },
           {
             text: 'Contract',
             link: '/contracts/lottery-v2/lottery-contract',
