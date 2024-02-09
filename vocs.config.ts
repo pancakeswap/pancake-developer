@@ -4,7 +4,6 @@ import { theme } from './theme';
 export default defineConfig({
   title: 'PancakeSwap Developer',
   description: 'PancakeSwap Developer Docs',
-  // logoUrl: 'https://pancakeswap.finance/imageslogo.png',
   logoUrl: {
     light: '/logo.svg',
     dark: '/logo_dark.svg',
