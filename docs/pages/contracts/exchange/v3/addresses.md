@@ -6,7 +6,7 @@ description: Fork of Uniswap v3
 
 [pancakev3factory](/contracts/exchange/v3/pancakev3factory)
 
-[smartrouterv3](/contracts/exchange/v3/smartrouterv3/readme)
+[smartrouterv3](/contracts/exchange/v3/smartrouterv3)
 
 ### Address
 
