@@ -1,0 +1,24 @@
+import { Callout } from 'vocs/components'
+
+# Overview
+
+This is PancakeSwap v4 development documentation. 
+
+<Callout type="info">
+  PancakeSwap v4 is still in active development 
+</Callout>
+
+----- 
+
+PancakeSwap v3, launched in 2023, introduced the Concentrated Liquidity Automated Market Maker (CLAMM) model from Uniswap. This model allows liquidity providers to offer assets within specific price ranges, enhancing capital efficiency and providing deeper liquidity for traders.
+
+PancakeSwap v4, recognizing the need for adaptability and scalability, separates Accounting logic from AMM logic, implements a three-tiered modular architecture (see image below) that consists of the **Vault, Pool Managers, and Hooks**. This allows for easier integration of evolving AMM paradigms without requiring a complete protocol overhaul.
+
+![alt text](/v4/architecture.png)
+
+In contrast to v3's limited flexibility, PancakeSwap v4 takes a more open-ended approach, empowering pool creators with greater customization capabilities. The introduction of hooks enables the integration of custom features like bespoke oracles, dynamic fee components, active liquidity management strategies, diverse order types, and more. The non-upgradeable core ensures stability, while each pool can integrate its own hook smart contract at creation. 
+
+Additionally, each AMM implementation/Pool Type has an independent Singleton implementation, optimizing gas efficiency for new pool deployment and multi-hop transactions.
+
+Flash Accounting complements the Singleton contract design by consolidating transaction settlement, computing net balances for a batch of transactions, and settling them collectively, reducing gas consumption.
+
