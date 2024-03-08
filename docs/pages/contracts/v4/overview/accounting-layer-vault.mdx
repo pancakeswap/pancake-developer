@@ -8,7 +8,7 @@ At the core of this architecture is the
 One of the key mechaism in the vault is the lock mechanism. User need to get a lock from the vault before performing any operation (swap, liquidity or donate) with the pool manager.
 
 
-![alt text](/v4/vault.png)
+![Vault](/v4/vault.png)
 
 The high level steps are as follow: 
 
@@ -20,7 +20,7 @@ The high level steps are as follow:
 
 4. Your contract will then need to reconcile the balance via either of the 4 methods: `take(), settle(), mint() or burn()`.
  
-```tsx
+```solidity
 // Below is an example of the 4 steps process, a lot of boilerplate are removed to keep this simple
 // Ref: https://github.com/pancakeswap/pancake-v4-periphery/blob/main/contracts/pool-bin/BinFungiblePositionManager.sol 
 contract BinFungiblePositionManager {

@@ -1,2 +1,58 @@
+# Concentrated Liquidity Pool
 
-/contracts/v4/overview
+## Overview 
+
+Concentrated Liquidity (from UniswapV3) enhances the traditional automated market maker (AMM) model.
+It allows liquidity providers (LPs) to concentrate their funds in specific price ranges within a pool, rather than evenly distributing them across the entire trading range.
+
+![Concentrated liquidity curve](/v4/amm-layer-poolmanager-cl-1.png)
+
+----
+
+## Concepts
+
+### Tick
+Tick refers to a specific price point within a price range. The entire price range of a pool is divided into discrete intervals, and each interval is defined by `tickLower, tickUpper`. 
+
+```solidity 
+
+// From ICLPoolManager
+struct ModifyLiquidityParams {
+    // the lower and upper tick of the position
+    int24 tickLower;
+    int24 tickUpper;
+    // how to modify the liquidity
+    int256 liquidityDelta;
+}
+
+/// @dev see more at CLPoolManager
+function modifyLiquidity(PoolKey memory key, ICLPoolManager.ModifyLiquidityParams memory params, bytes calldata hookData);
+```
+
+### Tick Spacing
+
+Tick spacing define the minimum price movement between two adjacent ticks within a pool. This is one of the parameter in `PoolKey`. 
+
+Keep in mind that there are trade off. Smaller tick spacing allow for more precise positioning of liquidity, but it might come with gas cost potentially. Larger tick spacing could be cheaper on gas but comes with higher slippage potentially.
+
+| Tick spacing | Price movement between tick |
+| ------ | ------ |
+| 1 |  0.01% |
+| 10 | 0.1% |
+| 50  | 0.5% |
+| 100  | 1% |
+
+
+### sqrtPriceX96
+
+This uint160 value represent square root ratio of one token in another. Its a binary fixed point number `Q64.96` which means 64 bits of integer and 96 bits as decimal. 
+
+// TODO: on example how to compute/read this value 
+
+// TODO: on tick and sqrtPriceX96 can be converted
+
+### Liqudity delta
+
+Liquidity delta, an `int` value refers to the differences in liquidity. Its used in `modifyLiquidity`, when its positive, it means user is adding liquidity, and when its negative, it means user is removing liquidity. Do refer to `LiquidityAmounts.sol` on calculating the liquidity.
+
+// TODO: on how to calculate liquidity delta given lp 

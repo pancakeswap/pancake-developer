@@ -1,2 +1,41 @@
+# Liquidity Book
 
-/contracts/v4/overview
+## Overview 
+
+In liquidity book, user can add liquidity in any shapes they desired. Whereas in concentrated liquidity, liquidity are added in a uniform manner. 
+
+![Liquidity book](/v4/amm-layer-poolmanager-bin-1.png)
+
+Example when user add liqudiity, user have to specify a byte32 array which would indicate which bin and how much to add for each bin.
+```solidity
+
+struct MintParams {
+  /// @dev see more at LiquidityConfigurations.sol
+  ///   [0 - 24[: id
+  ///   [24 - 88[: distributionY - 1e18 represent 100% of token into this bin
+  ///   [88 - 152[: distributionX - 1e18 represent 100% of token into this bin 
+  ///   [152 - 256[: empty
+  bytes32[] liquidityConfigs;
+
+  /// @dev amountIn intended
+  bytes32 amountIn;
+}
+
+/// @dev see more at BinPoolManager.sol 
+function mint(PoolKey memory key, IBinPoolManager.MintParams calldata params, bytes calldata hookData);
+```
+
+## Concepts
+
+### Bin
+Think of Bin like 
+
+### Bin step
+
+### Bin id
+
+### Bin pricing
+
+### Composition fee
+
+

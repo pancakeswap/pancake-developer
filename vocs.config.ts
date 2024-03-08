@@ -30,14 +30,19 @@ export default defineConfig({
               {
                 text: 'AMM Layer | Pool Manager',
                 collapsed: true,
+                link: '/contracts/v4/overview/amm-layer-poolmanager',
                 items: [
                   {
-                    text: 'Concentrated liquidity',
+                    text: 'Concentrated Liquidity',
                     link: '/contracts/v4/overview/amm-layer/concentrated-liquidity',
                   },
                   {
                     text: 'Liquidity Book',
                     link: '/contracts/v4/overview/amm-layer/liquidity-book',
+                  },
+                  {
+                    text: 'FAQ(s)',
+                    link: '/contracts/v4/overview/amm-layer/faqs',
                   },
                 ]
               },
