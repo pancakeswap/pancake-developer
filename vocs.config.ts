@@ -39,11 +39,7 @@ export default defineConfig({
                   {
                     text: 'Liquidity Book',
                     link: '/contracts/v4/overview/amm-layer/liquidity-book',
-                  },
-                  {
-                    text: 'FAQ(s)',
-                    link: '/contracts/v4/overview/amm-layer/faqs',
-                  },
+                  }
                 ]
               },
               {
@@ -61,7 +57,7 @@ export default defineConfig({
               },
               {
                 text: 'Implement a swap',
-                link: '/overview/v4/resources/addresses',
+                link: '/contracts/v4/guides/implement-a-swap',
               },
               {
                 text: 'How to add liqudiity',

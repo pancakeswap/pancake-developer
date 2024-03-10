@@ -2,13 +2,10 @@
 
 ## Overview 
 
-In liquidity book, user can add liquidity in any shapes they desired. Whereas in concentrated liquidity, liquidity are added in a uniform manner. 
+In liquidity book AMM type, liquidity providers (LPs) have the flexibility to add liquidity in any shapes whereas in concentrated liquidity, liquidity are added in a uniform manner. 
+To add liquidity, LPs will specify a byte32 array which would indicate which bin and how much to add for each bin.
 
-![Liquidity book](/v4/amm-layer-poolmanager-bin-1.png)
-
-Example when user add liqudiity, user have to specify a byte32 array which would indicate which bin and how much to add for each bin.
 ```solidity
-
 struct MintParams {
   /// @dev see more at LiquidityConfigurations.sol
   ///   [0 - 24[: id
@@ -28,14 +25,43 @@ function mint(PoolKey memory key, IBinPoolManager.MintParams calldata params, by
 ## Concepts
 
 ### Bin
-Think of Bin like 
 
-### Bin step
+![Liquidity book](/v4/amm-layer-poolmanager-bin-1.png)
 
-### Bin id
-
-### Bin pricing
-
-### Composition fee
+Think of bin as bucket where liquidity reside and there are a finite number of bins for each pool. Each bin has a price an id price associated. If a trade happen within a bin, it will incur 0 slippge. However if the trade consume all the liquidity within the bin and cross over to the next bin, there will be slippage.
 
 
+### Bin Step
+
+Bin step define the minimum price movement between two adjacent bin. This is one of the parameter in `PoolKey`. Keep in mind that there are trade off. Smaller bin steps lower the slippage when , but it might come with gas cost potentially. Larger tick spacing could be cheaper on gas but comes with higher slippage potentially.
+
+| Bin Step | Price movement between bin |
+| ------ | ------ |
+| 1 |  0.01% |
+| 10 | 0.1% |
+| 20  | 0.2% |
+| 100  | 1% |
+
+
+## Bin Pricing 
+
+Given the current `active bin id` and `bin step` to calculate the price of token:
+
+// todo: https://docs.traderjoexyz.com/guides/price-from-id 
+
+### Fungible liquidity
+
+An advantage of Liquidity book is the fungible liquidity. Fungible liquidity provides flexibility in downstream defi application.
+
+When liquidity providers add liquidity to a bin, they get a share of the particular bin. 
+```
+/// @dev from BinPool.sol
+
+/// @notice Add share to user's position and update total share supply of bin
+function _addShare(State storage self, address owner, uint24 binId, uint256 shares) internal {
+  self.positions.get(owner, binId).addShare(shares);
+  self.shareOfBin[binId] += shares;
+}
+```
+
+See [BinFungiblePositionManager](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/contracts/pool-bin/BinFungiblePositionManager.sol) on how a token is minted to the liquidity provider.

@@ -1,2 +1,57 @@
+# Custom Layer | Hook
 
-/contracts/v4/overview
+Hooks allow developers to add customization to a pool by having callbacks in the various stage of the lifecycle. There are 10 possible callbacks before / after 5 key actions which happen in an AMM. The key actions include pool initialization, swap, addLiquidity, removeLiquidity and Donate
+
+// talk about how CL and Bin might have different calbacks
+
+![Type of callbacks](/v4/custom-layer-hook-1.png)
+
+## Initialize a pool with hook
+
+In order to initialize a pool with the hook, there are a few pointers to note:
+
+1. Have the hook contract deployed and the callback required defined in `getHooksRegistrationBitmap` method
+
+```solidity
+/// @dev This would mean the pool will need a beforeSwap callback
+function getHooksRegistrationBitmap() external pure override returns (uint16) {
+  return _hooksRegistrationBitmapFrom(
+    Permissions({
+      beforeInitialize: false,
+      afterInitialize: false,
+      beforeAddLiquidity: false,
+      afterAddLiquidity: false,
+      beforeRemoveLiquidity: false,
+      afterRemoveLiquidity: false,
+      beforeSwap: true, // beforeSwap enabled
+      afterSwap: false,
+      beforeDonate: false,
+      afterDonate: false,
+      noOp: false
+    })
+  );
+}
+```
+
+2. When initializing the pool, specify the hook contract in the pool key and remember to call `hook.getHooksRegistrationBitmap()` in parameters so the callback are saved in `PoolKey`.
+
+Note: 
+
+```solidity 
+key = PoolKey({
+    currency0: currency0,
+    currency1: currency1,
+    hooks: hook, // hook contract address 
+    poolManager: poolManager,
+    fee: uint24(3000),
+    // tickSpacing: 10
+    parameters: bytes32(uint256(hook.getHooksRegistrationBitmap())).setTickSpacing(10) // ensure hook.getHooksRegistrationBitmap here too
+});
+
+/// Initialize the pool 
+poolManager.initialize(key, Constants.SQRT_RATIO_1_1, new bytes(0));
+```
+
+## List of hooks 
+
+Visit https://github.com/pancakeswap/pancake-v4-hooks for more hooks example
