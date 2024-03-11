@@ -56,12 +56,12 @@ export default defineConfig({
                 link: '/contracts/v4/guides/develop-a-hook',
               },
               {
-                text: 'Implement a swap',
-                link: '/contracts/v4/guides/implement-a-swap',
+                text: 'CL Pool - Swap and Liqudiity',
+                link: '/contracts/v4/guides/concentrated-liquidity-swap-and-liquidity',
               },
               {
-                text: 'How to add liqudiity',
-                link: '/overview/v4/resources/addresses',
+                text: 'Bin Pool - Swap and Liquidity',
+                link: '/contracts/v4/guides/liquidity-book-swap-and-liquidity',
               }
             ]
           },
@@ -73,8 +73,8 @@ export default defineConfig({
                 link: '/contracts/v4/resources/github',
               },
               {
-                text: 'Addresses',
-                link: '/overview/v4/resources/addresses',
+                text: '<WIP> Addresses',
+                link: '/contracts/v4/resources/addresses',
               },
             ]
           }

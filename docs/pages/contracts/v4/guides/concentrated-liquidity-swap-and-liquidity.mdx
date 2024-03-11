@@ -1,0 +1,295 @@
+import { Callout } from 'vocs/components'
+
+# Liquidity and swap for concentrated liquidity pool
+
+In this guide, We'll make use of periphery contracts from [v4-periphery](https://github.com/pancakeswap/pancake-v4-periphery)
+
+1. Liquidity operations with `NonFungiblePositionManager` 
+2. Swaps via `CLSwapRouter`
+
+<Callout type="info">
+  Before calling any of the functions below, do approve either NonFungiblePositionManager or SwapRouter to allow the periphery contract to transfer tokens.
+</Callout>
+
+
+
+## Liquidity operations
+
+[NonFungiblePositionManager](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-cl/NonfungiblePositionManager.sol) 
+
+### Mint
+
+Create a new position wrapped in a NFT. If you have minted previously, consider `increaseLiquidity()` to add liquidity to the same NFT tokenId.
+
+```solidity
+INonfungiblePositionManager.MintParams memory params = INonfungiblePositionManager.MintParams({
+  poolKey: key,
+  tickLower: tickLower,
+  tickUpper: tickUpper,
+  amount0Desired: amount0,
+  amount1Desired: amount1,
+  amount0Min: 0,
+  amount1Min: 0,
+  recipient: address(this),
+  deadline: block.timestamp
+});
+
+(uint256 tokenId, uint128 liquidity, uint256 amount0, uint256 amount1) 
+    = nfp.mint(params);
+```
+
+Input:
+
+- `poolKey`: struct which identify the pool 
+- `tickLower | tickUpper`: add liquidity from tickLower to tickUpper
+- `amount0Desired | amount1Desired`: intended amt0 and amt1 
+- `amount0Min | amount1Min`: minimum amt0 and amt1. transaction will revert if the amount is less than that. In the real-world, set a realistic amount instead of `0`.
+- `recipient`: who to receive the NFT which represent ownership of this position 
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+Output:
+
+- `tokenId`: NFT tokenId minted 
+- `liquidity`: total liquidity minted
+- `amount0`: amount for token0 taken for minting
+- `amount1`: amount for token1 taken for minting
+
+### Decrease liquidity
+Decreases the amount of liquidity in a position and accounts it to the position
+
+```solidity
+INonfungiblePositionManager.DecreaseLiquidityParams memory params = INonfungiblePositionManager
+  .DecreaseLiquidityParams({
+    tokenId: tokenId,
+    liquidity: liquidity,
+    amount0Min: 0,
+    amount1Min: 0,
+    deadline: type(uint256).max
+});
+        
+(uint256 amount0, uint256 amount1) = nfp.decreaseLiquidity(params);
+```
+
+Input:
+
+- `tokenId`: the NFT tokenId, recieved when called .mint() earlier 
+- `liquidity`: amount of liquidity to remove 
+- `amount0Min | amount1Min`: minimum amt0 and amt1, transaction will revert if the amount is less than that 
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+
+Output:
+
+- `amount0`: amount for token0 recieved for decreasing liquidity
+- `amount1`: amount for token1 recieved for decreasing liquidity
+
+### Increase liquidity
+Increases the amount of liquidity in a position, with tokens paid by the `msg.sender`
+
+```solidity 
+INonfungiblePositionManager.IncreaseLiquidityParams memory params = INonfungiblePositionManager
+  .IncreaseLiquidityParams({
+    tokenId: tokenId,
+    amount0Desired: amount0,
+    amount1Desired: amount1,
+    amount0Min: 0,
+    amount1Min: 0,
+    deadline: block.timestamp
+});
+
+(uint128 liquidity, uint256 amount0, uint256 amount1) = nfp.increaseLiquidity(params);
+```
+
+Input:
+
+- `tokenId`: the NFT tokenId, recieved when called .mint() earlier 
+- `amount0Desired | amount1Desired`: intended amt0 and amt1 
+- `amount0Min | amount1Min`: minimum amt0 and amt1, transaction will revert if the amount is less than that 
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+Output:
+- `liquidity`: amount of liquidity added
+- `amount0`: amount for token0 taken for increasing liquidity
+- `amount1`: amount for token1 taken for increasing liquidity
+
+
+### Burn 
+
+Burns a token ID, which deletes it from the NFT contract. The token must have 0 liquidity and all tokens
+
+```solidity
+nfp.burn(uint256 tokenId);
+```
+
+
+## Swaps
+
+[CLSwapRouter](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-cl/CLSwapRouter.sol) 
+
+
+### Exact Input Single 
+`Swaps `amountIn` of one token for as much as possible of another token
+
+```solidity
+ICLSwapRouterBase.V4CLExactInputSingleParams memory params = ICLSwapRouterBase
+  .V4CLExactInputSingleParams({
+    poolKey: key1,
+    zeroForOne: true,
+    recipient: address(this),
+    amountIn: 1 ether,
+    amountOutMinimum: 0,
+    sqrtPriceLimitX96: 0,
+    hookData: new bytes(0)
+});
+
+uint256 amtOut = router.exactInputSingle(params, block.timestamp);
+```
+
+
+Input:
+
+- `poolKey`: struct which identify the pool 
+- `zeroForOne`: if true swap token0 for token1, else swap token1 for token0
+- `recipient`: address to receive the output token 
+- `amountIn`: desired amount in
+- `amountOutMinimum`: min amount out. transaction revert if amount out is lesser 
+- `sqrtPriceLimitX96`: limit for the price the swap will push the pool to. this help to reduce slippage. 
+- `hookData`: if set, will be passed to hooks in both beforeSwap and afterSwap 
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+Output: 
+
+- `amountOut`: amount of token out from the swap
+
+### Exact Input 
+
+Swaps `amountIn` of one token for as much as possible of another along the specified path
+
+```solidity
+bytes32 params;
+
+ISwapRouterBase.PathKey[] memory path = new ISwapRouterBase.PathKey[](2);
+path[0] = ISwapRouterBase.PathKey({
+  intermediateCurrency: currency1,
+  fee: uint24(3000),
+  hooks: IHooks(address(0)),
+  hookData: new bytes(0),
+  poolManager: poolManager,
+  parameters: params.setTickSpacing(10)
+});
+
+path[1] = ISwapRouterBase.PathKey({
+  intermediateCurrency: currency2,
+  fee: uint24(3000),
+  hooks: IHooks(address(0)),
+  hookData: new bytes(0),
+  poolManager: poolManager,
+  parameters: params.setTickSpacing(10)
+});
+
+ICLSwapRouterBase.V4CLExactInputParams memory input = ICLSwapRouterBase
+  .V4CLExactInputParams({
+    currencyIn: currency0,
+    path: path,
+    recipient: address(this),
+    amountIn: 1 ether,
+    amountOutMinimum: 0
+});
+
+uint256 amountOut = router.exactInput(input, block.timestamp);
+```
+
+Input:
+
+- `currencyIn`: input token 
+- `path`: Array of `PathKey[]` which describe the pool to hop 
+- `recipient`: address to receive the output token 
+- `amountIn`: desired amount in
+- `amountOutMinimum`: min amount out. transaction revert if amount out is lesser 
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+Output:
+- `amountOut`: amount of token out from the swap 
+
+### Exact Output Single 
+Swaps as little as possible of one token for `amountOut` of another token
+
+```solidity
+ICLSwapRouterBase.V4CLExactOutputSingleParams memory input = ICLSwapRouterBase
+  .V4CLExactOutputSingleParams({
+    poolKey: key1,
+    zeroForOne: false,
+    recipient: address(this),
+    amountOut: 1 ether,
+    amountInMaximum: 1.1 ether,
+    sqrtPriceLimitX96: 0,
+    hookData: new bytes(0)
+});
+
+uint256 amountIn = router.exactOutputSingle
+```
+
+Input:
+
+- `poolKey`: struct which identify the pool 
+- `zeroForOne`: if true swap token0 for token1, else swap token1 for token0
+- `recipient`: address to receive the output token 
+- `amountOut`: desired amount out
+- `amountInMaximum`: max amount in. transaction revert if amount out is lesser 
+- `sqrtPriceLimitX96`: limit for the price the swap will push the pool to. this help to reduce slippage. 
+- `hookData`: if set, will be passed to hooks in both beforeSwap and afterSwap 
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+Output: 
+- `amountIn`: amount of token in from the swap 
+
+### Exact Output
+Swaps as little as possible of one token for `amountOut` of another along the specified path (reversed)
+
+```solidity
+
+bytes32 params;
+
+ISwapRouterBase.PathKey[] memory path = new ISwapRouterBase.PathKey[](2);
+path[0] = ISwapRouterBase.PathKey({
+  intermediateCurrency: currency0,
+  fee: uint24(3000),
+  hooks: IHooks(address(0)),
+  hookData: new bytes(0),
+  poolManager: poolManager,
+  parameters: params.setTickSpacing(10)
+});
+
+path[1] = ISwapRouterBase.PathKey({
+  intermediateCurrency: currency1,
+  fee: uint24(3000),
+  hooks: IHooks(address(0)),
+  hookData: new bytes(0),
+  poolManager: poolManager,
+  parameters: params.setTickSpacing(10)
+});
+
+ICLSwapRouterBase.V4CLExactOutputParams memory input = ICLSwapRouterBase
+  .V4CLExactOutputParams({
+    currencyOut: currency2,
+    path: path,
+    recipient: address(this),
+    amountOut: 1 ether,
+    amountInMaximum: 1.1 ether
+});
+
+uint256 amountIn = router.exactOutput(input, block.timestamp);
+```
+
+
+Input:
+
+- `currencyOut`: output token 
+- `path`: Array of `PathKey[]` which describe the pool to hop 
+- `recipient`: address to receive the output token 
+- `amountOut`: desired amount out
+- `amountInMaximum`: max amount out. transaction revert if amountIn required is more.  
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+Output: 
+- `amountIn`: amount of token in from the swap 
