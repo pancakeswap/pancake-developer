@@ -7,7 +7,7 @@ Pool Managers are singleton contract that encapsulates the logic for different t
 
 ### Singleton
 
-In PancakeSwap v3, each pool is a seperate contract. In PancakeSwap v4, all pools will be encapsulated in a single PoolManager contract. For example, all concentrated liquidity pools in [CLPoolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/contracts/pool-cl/CLPoolManager.sol) and all liquidity book pool in [BinPoolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/contracts/pool-bin/BinPoolManager.sol)
+In PancakeSwap v3, each pool is a seperate contract. In PancakeSwap v4, all pools will be encapsulated in a single PoolManager contract. For example, all concentrated liquidity pools in [CLPoolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/contracts/pool-cl/CLPoolManager.sol) and all liquidity book pools in [BinPoolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/contracts/pool-bin/BinPoolManager.sol)
 
 
 ### PoolKey | PoolId
@@ -31,6 +31,10 @@ struct PoolKey {
     bytes32 parameters;
 }
 ```
+
+
+[PoolId](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/types/PoolId.sol) is a bytes32 of `keccak256(abi.encode(poolKey))` You will notice some input from PoolManager requiring PoolId.
+
 
 ### Initializing a Pool
 

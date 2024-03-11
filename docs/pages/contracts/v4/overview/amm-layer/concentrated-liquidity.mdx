@@ -3,11 +3,9 @@
 ## Overview 
 
 Concentrated Liquidity (from UniswapV3) enhances the traditional automated market maker (AMM) model.
-It allows liquidity providers (LPs) to concentrate their funds in specific price ranges within a pool, rather than evenly distributing them across the entire trading range.
+It allows liquidity providers (LPs) to concentrate their funds in specific price ranges within a pool, rather than evenly distributing liquidity across the entire trading range in v2.
 
 ![Concentrated liquidity curve](/v4/amm-layer-poolmanager-cl-1.png)
-
-----
 
 ## Concepts
 
@@ -15,8 +13,7 @@ It allows liquidity providers (LPs) to concentrate their funds in specific price
 Tick refers to a specific price point within a price range. The entire price range of a pool is divided into discrete intervals, and each interval is defined by `tickLower, tickUpper`. 
 
 ```solidity 
-
-// From ICLPoolManager
+// From ICLPoolManager.sol
 struct ModifyLiquidityParams {
     // the lower and upper tick of the position
     int24 tickLower;
@@ -32,8 +29,7 @@ function modifyLiquidity(PoolKey memory key, ICLPoolManager.ModifyLiquidityParam
 ### Tick Spacing
 
 Tick spacing define the minimum price movement between two adjacent ticks within a pool. This is one of the parameter in `PoolKey`. 
-
-Keep in mind that there are trade off. Smaller tick spacing allow for more precise positioning of liquidity, but it might come with gas cost potentially. Larger tick spacing could be cheaper on gas but comes with higher slippage potentially.
+Keep in mind that there are trade off. While smaller tick spacing allow for more precise positioning of liquidity, it might come with higher gas cost potentially. Larger tick spacing could be cheaper on gas but comes with higher slippage in trade execution potentially.
 
 | Tick spacing | Price movement between tick |
 | ------ | ------ |
@@ -42,6 +38,7 @@ Keep in mind that there are trade off. Smaller tick spacing allow for more preci
 | 50  | 0.5% |
 | 100  | 1% |
 
+//todo: put down recommendation for what tickSpacing is recommended for what pool type
 
 ### sqrtPriceX96
 
@@ -53,6 +50,6 @@ This uint160 value represent square root ratio of one token in another. Its a bi
 
 ### Liqudity delta
 
-Liquidity delta, an `int` value refers to the differences in liquidity. Its used in `modifyLiquidity`, when its positive, it means user is adding liquidity, and when its negative, it means user is removing liquidity. Do refer to `LiquidityAmounts.sol` on calculating the liquidity.
+Liquidity delta, an `int` value refers to the differences in liquidity at `modifyLiquidity`. When its positive, it means user is adding liquidity, conversely when its negative, it means user is removing liquidity. Do refer to `LiquidityAmounts.sol` on calculating the liquidity.
 
 // TODO: on how to calculate liquidity delta given lp 
