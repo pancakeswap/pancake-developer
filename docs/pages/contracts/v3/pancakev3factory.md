@@ -6,21 +6,16 @@ description: >-
 
 # PancakeV3Factory
 
-## Contract info
-
 **Contract name:** PancakeFactory
 
-[Contract address](#address)
-
-
+[Contract address](/contracts/v3/addresses#core)
 
 ## Solidity API
 
-### PancakeV3Factory
 
 Deploys PancakeSwap V3 pools and manages ownership and control over pool protocol fees
 
-#### owner
+### owner
 
 ```solidity
 address owner
@@ -30,9 +25,7 @@ Returns the current owner of the factory
 
 _Can be changed by the current owner via setOwner_
 
-**Return Values**
-
-#### poolDeployer
+### poolDeployer
 
 ```solidity
 address poolDeployer
@@ -40,7 +33,7 @@ address poolDeployer
 
 Returns the current pool deployer
 
-#### feeAmountTickSpacing
+### feeAmountTickSpacing
 
 ```solidity
 mapping(uint24 => int24) feeAmountTickSpacing
@@ -50,11 +43,7 @@ Returns the tick spacing for a given fee amount, if enabled, or 0 if not enabled
 
 _A fee amount can never be removed, so this value should be hard coded or cached in the calling context_
 
-**Parameters**
-
-**Return Values**
-
-#### getPool
+### getPool
 
 ```solidity
 mapping(address => mapping(address => mapping(uint24 => address))) getPool
@@ -64,11 +53,7 @@ Returns the pool address for a given pair of tokens and a fee, or address 0 if i
 
 _tokenA and tokenB may be passed in either token0/token1 or token1/token0 order_
 
-**Parameters**
-
-**Return Values**
-
-#### feeAmountTickSpacingExtraInfo
+### feeAmountTickSpacingExtraInfo
 
 ```solidity
 mapping(uint24 => struct IPancakeV3Factory.TickSpacingExtraInfo) feeAmountTickSpacingExtraInfo
@@ -78,17 +63,13 @@ Returns the tick spacing extra info
 
 _A fee amount can never be removed, so this value should be hard coded or cached in the calling context_
 
-**Parameters**
-
-**Return Values**
-
-#### constructor
+### constructor
 
 ```solidity
 constructor(address _poolDeployer) public
 ```
 
-#### createPool
+### createPool
 
 ```solidity
 function createPool(address tokenA, address tokenB, uint24 fee) external returns (address pool)
@@ -112,7 +93,7 @@ _tokenA and tokenB may be passed in either order: token0/token1 or token1/token0
 | ---- | ------- | ------------------------------------- |
 | pool | address | The address of the newly created pool |
 
-#### setOwner
+### setOwner
 
 ```solidity
 function setOwner(address _owner) external
@@ -128,7 +109,7 @@ _Must be called by the current owner_
 | ------- | ------- | ---------------------------- |
 | \_owner | address | The new owner of the factory |
 
-#### enableFeeAmount
+### enableFeeAmount
 
 ```solidity
 function enableFeeAmount(uint24 fee, int24 tickSpacing) public
@@ -145,7 +126,7 @@ _Fee amounts may never be removed once enabled_
 | fee         | uint24 | The fee amount to enable, denominated in hundredths of a bip (i.e. 1e-6)                 |
 | tickSpacing | int24  | The spacing between ticks to be enforced for all pools created with the given fee amount |
 
-#### setWhiteListAddress
+### setWhiteListAddress
 
 ```solidity
 function setWhiteListAddress(address user, bool verified) public
@@ -162,7 +143,7 @@ _Address can be updated by owner with boolean value false_
 | user     | address | The user address that add into white list |
 | verified | bool    |                                           |
 
-#### setFeeAmountExtraInfo
+### setFeeAmountExtraInfo
 
 ```solidity
 function setFeeAmountExtraInfo(uint24 fee, bool whitelistRequested, bool enabled) public

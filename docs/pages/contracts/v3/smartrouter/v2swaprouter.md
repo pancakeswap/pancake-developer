@@ -6,7 +6,7 @@ description: Router for stateless execution of swaps against PancakeSwap V2
 
 ## Solidity API
 
-#### swapExactTokensForTokens
+### swapExactTokensForTokens
 
 ```solidity
 function swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to) external payable returns (uint256 amountOut)
@@ -31,7 +31,7 @@ _Setting `amountIn` to 0 will cause the contract to look up its own balance, and
 | --------- | ------- | -------------------------------- |
 | amountOut | uint256 | The amount of the received token |
 
-#### swapTokensForExactTokens
+### swapTokensForExactTokens
 
 ```solidity
 function swapTokensForExactTokens(uint256 amountOut, uint256 amountInMax, address[] path, address to) external payable returns (uint256 amountIn)

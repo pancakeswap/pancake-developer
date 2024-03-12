@@ -106,18 +106,19 @@ export default defineConfig({
               {
                 collapsed: true,
                 text: 'SmartRouter',
+                link: '/contracts/v3/smartrouter',
                 items: [
                   {
                     text: 'v3SwapRouter',
-                    link: '/contracts/v3/smartrouterv3/v3swaprouter',
+                    link: '/contracts/v3/smartrouter/v3swaprouter',
                   },
                   {
                     text: 'v2SwapRouter',
-                    link: '/contracts/v3/smartrouterv3/v2swaprouter',
+                    link: '/contracts/v3/smartrouter/v2swaprouter',
                   },
                   {
                     text: 'StableSwapRouter',
-                    link: '/contracts/v3/smartrouterv3/stableswaprouter',
+                    link: '/contracts/v3/smartrouter/stableswaprouter',
                   },
                 ],
               },

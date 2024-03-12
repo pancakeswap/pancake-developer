@@ -6,11 +6,13 @@ description: Wraps Pancake V3 positions in the ERC721 non-fungible token interfa
 
 ### Contract Info
 
-[Contract address](/contracts/v3/addresses)
+**Contract name:** NonfungiblePositionManager
+
+[Contract address](/contracts/v3/addresses#periphery)
 
 ## Solidity API
 
-#### Position
+### Position
 
 ```solidity
 struct Position {
@@ -27,13 +29,13 @@ struct Position {
 }
 ```
 
-#### constructor
+### constructor
 
 ```solidity
 constructor(address _deployer, address _factory, address _WETH9, address _tokenDescriptor_) public
 ```
 
-#### positions
+### positions
 
 ```solidity
 function positions(uint256 tokenId) external view returns (uint96 nonce, address operator, address token0, address token1, uint24 fee, int24 tickLower, int24 tickUpper, uint128 liquidity, uint256 feeGrowthInside0LastX128, uint256 feeGrowthInside1LastX128, uint128 tokensOwed0, uint128 tokensOwed1)
@@ -66,7 +68,7 @@ _Throws if the token ID is not valid._
 | tokensOwed0              | uint128 | The uncollected amount of token0 owed to the position as of the last computation |
 | tokensOwed1              | uint128 | The uncollected amount of token1 owed to the position as of the last computation |
 
-#### mint
+### mint
 
 ```solidity
 function mint(struct INonfungiblePositionManager.MintParams params) external payable returns (uint256 tokenId, uint128 liquidity, uint256 amount0, uint256 amount1)
@@ -91,19 +93,19 @@ _Call this when the pool does exist and is initialized. Note that if the pool is
 | amount0   | uint256 | The amount of token0                                    |
 | amount1   | uint256 | The amount of token1                                    |
 
-#### isAuthorizedForToken
+### isAuthorizedForToken
 
 ```solidity
 modifier isAuthorizedForToken(uint256 tokenId)
 ```
 
-#### tokenURI
+### tokenURI
 
 ```solidity
 function tokenURI(uint256 tokenId) public view returns (string)
 ```
 
-#### baseURI
+### baseURI
 
 ```solidity
 function baseURI() public pure returns (string)
@@ -111,7 +113,7 @@ function baseURI() public pure returns (string)
 
 \_Returns the base URI set via {_setBaseURI}. This will be automatically added as a prefix in {tokenURI} to each token's URI, or to the token ID if no specific URI is set for that token ID._
 
-#### increaseLiquidity
+### increaseLiquidity
 
 ```solidity
 function increaseLiquidity(struct INonfungiblePositionManager.IncreaseLiquidityParams params) external payable returns (uint128 liquidity, uint256 amount0, uint256 amount1)
@@ -133,7 +135,7 @@ Increases the amount of liquidity in a position, with tokens paid by the `msg.se
 | amount0   | uint256 | The amount of token0 to acheive resulting liquidity  |
 | amount1   | uint256 | The amount of token1 to acheive resulting liquidity  |
 
-#### decreaseLiquidity
+### decreaseLiquidity
 
 ```solidity
 function decreaseLiquidity(struct INonfungiblePositionManager.DecreaseLiquidityParams params) external payable returns (uint256 amount0, uint256 amount1)
@@ -154,7 +156,7 @@ Decreases the amount of liquidity in a position and accounts it to the position
 | amount0 | uint256 | The amount of token0 accounted to the position's tokens owed |
 | amount1 | uint256 | The amount of token1 accounted to the position's tokens owed |
 
-#### collect
+### collect
 
 ```solidity
 function collect(struct INonfungiblePositionManager.CollectParams params) external payable returns (uint256 amount0, uint256 amount1)
@@ -175,7 +177,7 @@ Collects up to a maximum amount of fees owed to a specific position to the recip
 | amount0 | uint256 | The amount of fees collected in token0 |
 | amount1 | uint256 | The amount of fees collected in token1 |
 
-#### burn
+### burn
 
 ```solidity
 function burn(uint256 tokenId) external payable
@@ -189,7 +191,7 @@ Burns a token ID, which deletes it from the NFT contract. The token must have 0 
 | ------- | ------- | ---------------------------------------- |
 | tokenId | uint256 | The ID of the token that is being burned |
 
-#### \_getAndIncrementNonce
+### \_getAndIncrementNonce
 
 ```solidity
 function _getAndIncrementNonce(uint256 tokenId) internal returns (uint256)
@@ -197,7 +199,7 @@ function _getAndIncrementNonce(uint256 tokenId) internal returns (uint256)
 
 _Gets the current nonce for a token ID and then increments it, returning the original value_
 
-#### getApproved
+### getApproved
 
 ```solidity
 function getApproved(uint256 tokenId) public view returns (address)
@@ -209,7 +211,7 @@ Requirements:
 
 * `tokenId` must exist.\_
 
-#### \_approve
+### \_approve
 
 ```solidity
 function _approve(address to, uint256 tokenId) internal

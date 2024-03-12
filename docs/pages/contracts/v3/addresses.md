@@ -2,22 +2,21 @@
 description: Fork of Uniswap v3
 ---
 
-# v3 contracts
+# PancakeSwap v3 Addresses
 
-[pancakev3factory](/contracts/v3/pancakev3factory)
+[Pancakev3Factory](/contracts/v3/pancakev3factory)
 
-[smartrouterv3](/contracts/v3/smartrouterv3)
+[SmartRouterv3](/contracts/v3/smartrouterv3)
 
-### Address
 
-**Core**
+## Core
 
 | Contract              | BSC, ETH, zkEVM, ARB, Linea, GOR, Base, opBNB, BSC TESTNET / MAINNET | zkSync                                     |
 | --------------------- | -------------------------------------------------------------------- | ------------------------------------------ |
 | PancakeV3Factory      | 0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865                           | 0x1BB72E0CbbEA93c08f535fc7856E0338D7F7a8aB |
 | PancakeV3PoolDeployer | 0x41ff9AA7e16B8B1a8a8dc4f0eFacd93D02d071c9                           | 0x7f71382044A6a62595D5D357fE75CA8199123aD6 |
 
-**Periphery**
+## Periphery
 
 | Contract                   | BSC, ETH, zkEVM, Arbitrum, Linea, Base, opBNB | zkSync                                     | GOR, BSC TESTNET                           |
 | -------------------------- | --------------------------------------------- | ------------------------------------------ | ------------------------------------------ |
@@ -33,16 +32,44 @@ description: Fork of Uniswap v3
 | MixedRouteQuoterV1 | 0x678Aa4bF4E210cf2166753e054d5b7c31cc7fa86 | 0x4c650FB471fe4e0f476fD3437C3411B1122c4e3B | 0x3652Fc6EDcbD76161b8554388867d3dAb65eCA93 | 0x9B1edFB3848660402E4f1DC25733764e80aA627A | 0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997 |
 | TokenValidator     | 0x864ED564875BdDD6F421e226494a0E7c071C06f8 | 0x556B9306565093C855AEA9AE92A594704c2Cd59e | 0x8be9EA9C6015985AB2F5A216093305A9AaEb8164 | 0x08529A4be615746ef31CdbeD46Ce556406787E2F | 0x678Aa4bF4E210cf2166753e054d5b7c31cc7fa86 |
 
-**Smart Router (v3, v2, stable)**
+## Smart Router 
+Able to route to v3, v2 and stable pool
 
-| BSC, ETH                                   | zkEVM, Linea, Base, opBNB                  | Arbitrum                                   | zkSync                                     | GOR, BSC TESTNET                           |
-| ------------------------------------------ | ------------------------------------------ | ------------------------------------------ | ------------------------------------------ | ------------------------------------------ |
-| 0x13f4EA83D0bd40E75C8222255bc855a974568Dd4 | 0x678Aa4bF4E210cf2166753e054d5b7c31cc7fa86 | 0x32226588378236Fd0c7c4053999F88aC0e5cAc77 | 0xf8b59f3c3Ab33200ec80a8A58b2aA5F5D2a8944C | 0x9a489505a00cE272eAa5e07Dba6491314CaE3796 |
+| Chain | Address
+| ------------------------------------------ | ------------------------------------------ |
+| BSC, ETH | 0x13f4EA83D0bd40E75C8222255bc855a974568Dd4 | 
+| zkEVM, Linea, Base, opBNB | 0x678Aa4bF4E210cf2166753e054d5b7c31cc7fa86 | 
+| Arbitrum | 0x32226588378236Fd0c7c4053999F88aC0e5cAc77 | 
+| zkSync | 0xf8b59f3c3Ab33200ec80a8A58b2aA5F5D2a8944C | 
 
-**MasterchefV3**
+**Testnet**
 
-<table><thead><tr><th width="170">Chain</th><th>Address</th></tr></thead><tbody><tr><td>BSC, ETH</td><td>0x556B9306565093C855AEA9AE92A594704c2Cd59e</td></tr><tr><td>zkEVM</td><td>0xe9c7f3196ab8c09f6616365e8873daeb207c0391</td></tr><tr><td>Arbitrum</td><td>0x5e09ACf80C0296740eC5d6F643005a4ef8DaA694</td></tr><tr><td>zkSync</td><td>0x4c615E78c5fCA1Ad31e4d66eb0D8688d84307463</td></tr><tr><td>Linea</td><td>0x22E2f236065B780FA33EC8C4E58b99ebc8B55c57</td></tr><tr><td>Base</td><td>0xC6A2Db661D5a5690172d8eB0a7DEA2d3008665A3</td></tr></tbody></table>
+| Chain | Address
+| ------------------------------------------ | ------------------------------------------ |
+| GOR, BSC testnet | 0x9a489505a00cE272eAa5e07Dba6491314CaE3796 | 
 
-testnet
 
-<table><thead><tr><th width="194">Chain</th><th>Address</th></tr></thead><tbody><tr><td>GOR, BSC testnet</td><td>0x4c650FB471fe4e0f476fD3437C3411B1122c4e3B</td></tr><tr><td>zkEVM</td><td>0xb66b07590B30d4E6E22e45Ddc83B06Bb018A7B44</td></tr><tr><td>Arbitrum</td><td>0x66A9870FF7707936B0B0278cF999C5f2Ac2e42F5</td></tr><tr><td>zkSync</td><td>0x3c6Aa61f72932aD5D7C917737367be32D5509e6f</td></tr><tr><td>Linea</td><td>0xb66b07590B30d4E6E22e45Ddc83B06Bb018A7B44</td></tr><tr><td>Base</td><td>0xAd3fe5Aeabf79B8291F877B367139466c221216e</td></tr></tbody></table>
+## MasterchefV3
+
+**Mainnet**
+
+| Chain | Address
+| ------------------------------------------ | ------------------------------------------ |
+| BSC, ETH | 0x556B9306565093C855AEA9AE92A594704c2Cd59e | 
+| zkEVM | 0xe9c7f3196ab8c09f6616365e8873daeb207c0391 | 
+| Arbitrum | 0x5e09ACf80C0296740eC5d6F643005a4ef8DaA694 | 
+| zkSync | 0x4c615E78c5fCA1Ad31e4d66eb0D8688d84307463 | 
+| Linea | 0x22E2f236065B780FA33EC8C4E58b99ebc8B55c57 | 
+| Base | 0xC6A2Db661D5a5690172d8eB0a7DEA2d3008665A3 |
+
+**Testnet**
+
+| Chain | Address
+| ------------------------------------------ | ------------------------------------------ |
+| GOR, BSC testnet | 0x4c650FB471fe4e0f476fD3437C3411B1122c4e3B | 
+| zkEVM | 0xb66b07590B30d4E6E22e45Ddc83B06Bb018A7B44 | 
+| Arbitrum | 0x66A9870FF7707936B0B0278cF999C5f2Ac2e42F5 | 
+| zkSync | 0x3c6Aa61f72932aD5D7C917737367be32D5509e6f | 
+| Linea | 0xb66b07590B30d4E6E22e45Ddc83B06Bb018A7B44 | 
+| Base | 0xAd3fe5Aeabf79B8291F877B367139466c221216e |
+
