@@ -4,9 +4,9 @@ description: Fork of Uniswap v3
 
 # v3 contracts
 
-[pancakev3factory](/contracts/exchange/v3/pancakev3factory)
+[pancakev3factory](/contracts/v3/pancakev3factory)
 
-[smartrouterv3](/contracts/exchange/v3/smartrouterv3)
+[smartrouterv3](/contracts/v3/smartrouterv3)
 
 ### Address
 

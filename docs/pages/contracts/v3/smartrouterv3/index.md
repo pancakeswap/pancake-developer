@@ -2,7 +2,7 @@
 
 ### Contract Info
 
-[Contract address](/contracts/exchange/v3/addresses)
+[Contract address](/contracts/v3/addresses)
 
 :::info
 ### Notice

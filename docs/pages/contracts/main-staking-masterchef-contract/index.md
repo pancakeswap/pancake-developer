@@ -22,7 +22,7 @@ View the [PancakeSwap: Main Staking Contract on BscScan](https://bscscan.com/add
 
 **Contract name:** MasterChef v3
 
-[Contract address](/contracts/exchange/v3/addresses)
+[Contract address](/contracts/v3/addresses)
 
 ## Audits
 

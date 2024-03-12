@@ -85,7 +85,7 @@ export default defineConfig({
         items: [
           {
             text: 'Addresses',
-            link: '/contracts/exchange/v3/addresses',
+            link: '/contracts/v3/addresses',
           },
           {
             text: 'Technical Overview',
@@ -93,15 +93,15 @@ export default defineConfig({
             items: [
               {
                 text: 'PancakeV3Factory',
-                link: '/contracts/exchange/v3/pancakev3factory',
+                link: '/contracts/v3/pancakev3factory',
               },
               {
                 text: 'PancakeV3Pool',
-                link: '/contracts/exchange/v3/pancakev3pool',
+                link: '/contracts/v3/pancakev3pool',
               },
               {
                 text: 'NonfungiblePositionManager',
-                link: '/contracts/exchange/v3/nonfungiblepositionmanager',
+                link: '/contracts/v3/nonfungiblepositionmanager',
               },
               {
                 collapsed: true,
@@ -109,15 +109,15 @@ export default defineConfig({
                 items: [
                   {
                     text: 'v3SwapRouter',
-                    link: '/contracts/exchange/v3/smartrouterv3/v3swaprouter',
+                    link: '/contracts/v3/smartrouterv3/v3swaprouter',
                   },
                   {
                     text: 'v2SwapRouter',
-                    link: '/contracts/exchange/v3/smartrouterv3/v2swaprouter',
+                    link: '/contracts/v3/smartrouterv3/v2swaprouter',
                   },
                   {
                     text: 'StableSwapRouter',
-                    link: '/contracts/exchange/v3/smartrouterv3/stableswaprouter',
+                    link: '/contracts/v3/smartrouterv3/stableswaprouter',
                   },
                 ],
               },
@@ -127,33 +127,35 @@ export default defineConfig({
       },
       {
         text: 'PancakeSwap v2',
+        collapsed: true,
         items: [
           {
             text: 'FactoryV2',
-            link: '/contracts/exchange/v2/factory-v2',
+            link: '/contracts/v2/factory-v2',
           },
           {
             text: 'RouterV2',
-            link: '/contracts/exchange/v2/router-v2',
+            link: '/contracts/v2/router-v2',
           },
         ],
       },
       {
         text: 'StableSwap',
+        collapsed: true,
         items: [
           {
             text: 'Overview',
-            link: '/contracts/exchange/stableswap',
+            link: '/contracts/stableswap/overview',
           },
           {
             text: 'Pool addresses',
-            link: '/contracts/exchange/stableswap/stableswap-pools',
+            link: '/contracts/stableswap/stableswap-pools',
           },
         ],
       },
       {
         text: 'Syrup Pools',
-        link: '/contracts/syrup-pools',
+        collapsed: true,
         items: [
           {
             text: 'Overview',
