@@ -140,52 +140,53 @@ export default defineConfig({
         ],
       },
       {
-        text: 'StableSwap',
-        collapsed: true,
+        text: '',
         items: [
           {
-            text: 'Overview',
-            link: '/contracts/stableswap/overview',
+            text: 'StableSwap',
+            collapsed: true,
+            items: [
+              {
+                text: 'Overview',
+                link: '/contracts/stableswap/overview',
+              },
+              {
+                text: 'Pool addresses',
+                link: '/contracts/stableswap/stableswap-pools',
+              },
+            ],
           },
-          {
-            text: 'Pool addresses',
-            link: '/contracts/stableswap/stableswap-pools',
-          },
-        ],
-      },
-      {
-        text: 'Syrup Pools',
-        collapsed: true,
-        items: [
-          {
-            text: 'Overview',
-            link: '/contracts/syrup-pools',
-          },
-          {
-            text: 'SmartChefInitializable',
-            link: '/contracts/syrup-pools/smartchefinitializable',
-          },
-        ],
-      },
-      {
-        text: 'CAKE',
-        items: [
           {
             text: 'MasterChef',
+            collapsed: true,
             items: [
               {
                 text: 'v2',
-                link: '/contracts/main-staking-masterchef-contract',
+                link: '/contracts/masterchef/masterchef-v2',
               },
               {
                 text: 'v3',
-                link: '/contracts/main-staking-masterchef-contract/masterchef-v3',
+                link: '/contracts/masterchef/masterchef-v3',
               },
             ],
           },
           {
             text: 'veCake and Gauge voting',
             link: '/contracts/vecake-and-gauge-voting',
+          },
+          {
+            text: 'Syrup Pools',
+            collapsed: true,
+            items: [
+              {
+                text: 'Overview',
+                link: '/contracts/syrup-pools',
+              },
+              {
+                text: 'SmartChefInitializable',
+                link: '/contracts/syrup-pools/smartchefinitializable',
+              },
+            ],
           },
           {
             text: 'Farm Booster (bCAKE)',
@@ -203,30 +204,31 @@ export default defineConfig({
             text: 'CAKE Syrup Pool (deprecated)',
             link: '/contracts/fixed-term-staking-cake-pool',
           },
-        ],
-      },
-      {
-        text: 'IFO',
-        link: '/contracts/ifo',
-      },
-      {
-        text: 'Prediction',
-        link: '/contracts/prediction-v2',
-      },
-      {
-        text: 'Lottery',
-        items: [
-          { text: 'Overview', link: '/contracts/lottery-v2' },
           {
-            text: 'Contract',
-            link: '/contracts/lottery-v2/lottery-contract',
+            text: 'IFO',
+            link: '/contracts/ifo',
           },
-        ],
-      },
-      {
-        text: 'Market Maker Pool',
-        link: '/contracts/market-maker-pool',
-      },
+          {
+            text: 'Prediction',
+            link: '/contracts/prediction-v2',
+          },
+          {
+            text: 'Lottery',
+            collapsed: true,
+            items: [
+              { text: 'Overview', link: '/contracts/lottery-v2' },
+              {
+                text: 'Contract',
+                link: '/contracts/lottery-v2/lottery-contract',
+              },
+            ],
+          },
+          {
+            text: 'Market Maker Pool',
+            link: '/contracts/market-maker-pool',
+          },
+        ]
+      }
     ],
     '/contracts-aptos': [
       {
