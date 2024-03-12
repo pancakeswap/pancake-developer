@@ -20,7 +20,7 @@ The high level steps are as follow:
 4. Caller will then need to reconcile the balance with the vault through either of the 4 methods: `take(), settle(), mint() or burn()`.
  
 ```solidity
-// Below is an example of the 4 steps process, a lot of boilerplate are removed to keep this simple
+// An example of the 4 steps process, some codes are removed to keep this simple
 // Ref: https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-bin/BinFungiblePositionManager.sol 
 contract BinFungiblePositionManager {
     function addLiquidity(AddLiquidity calldata params) external {

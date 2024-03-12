@@ -100,11 +100,11 @@ Create a file called at `src/pool-cl/VeCakeDiscountHook.sol` and implement the f
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
 
-import {PoolKey} from "@pancakeswap/v4-core/contracts/types/PoolKey.sol";
-import {PoolId, PoolIdLibrary} from "@pancakeswap/v4-core/contracts/types/PoolId.sol";
-import {FeeLibrary} from "@pancakeswap/v4-core/contracts/libraries/FeeLibrary.sol";
-import {ICLPoolManager} from "@pancakeswap/v4-core/contracts/pool-cl/interfaces/ICLPoolManager.sol";
-import {ICLDynamicFeeManager} from "@pancakeswap/v4-core/contracts/pool-cl/interfaces/ICLDynamicFeeManager.sol";
+import {PoolKey} from "@pancakeswap/v4-core/src/types/PoolKey.sol";
+import {PoolId, PoolIdLibrary} from "@pancakeswap/v4-core/src/types/PoolId.sol";
+import {FeeLibrary} from "@pancakeswap/v4-core/src/libraries/FeeLibrary.sol";
+import {ICLPoolManager} from "@pancakeswap/v4-core/src/pool-cl/interfaces/ICLPoolManager.sol";
+import {ICLDynamicFeeManager} from "@pancakeswap/v4-core/src/pool-cl/interfaces/ICLDynamicFeeManager.sol";
 import {CLBaseHook} from "./CLBaseHook.sol";
 
 interface IVeCake {
@@ -187,15 +187,15 @@ pragma solidity ^0.8.24;
 import {MockERC20} from "solmate/test/utils/mocks/MockERC20.sol";
 import {Test} from "forge-std/Test.sol";
 import {Constants} from "@pancakeswap/v4-core/test/pool-cl/helpers/Constants.sol";
-import {Currency} from "@pancakeswap/v4-core/contracts/types/Currency.sol";
-import {PoolKey} from "@pancakeswap/v4-core/contracts/types/PoolKey.sol";
-import {CLPoolParametersHelper} from "@pancakeswap/v4-core/contracts/pool-cl/libraries/CLPoolParametersHelper.sol";
-import {FeeLibrary} from "@pancakeswap/v4-core/contracts/libraries/FeeLibrary.sol";
+import {Currency} from "@pancakeswap/v4-core/src/types/Currency.sol";
+import {PoolKey} from "@pancakeswap/v4-core/src/types/PoolKey.sol";
+import {CLPoolParametersHelper} from "@pancakeswap/v4-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
+import {FeeLibrary} from "@pancakeswap/v4-core/src/libraries/FeeLibrary.sol";
 import {VeCakeDiscountHook} from "../../src/pool-cl/VeCakeDiscountHook.sol";
 import {CLTestUtils} from "./utils/CLTestUtils.sol";
-import {CLPoolParametersHelper} from "@pancakeswap/v4-core/contracts/pool-cl/libraries/CLPoolParametersHelper.sol";
-import {PoolIdLibrary} from "@pancakeswap/v4-core/contracts/types/PoolId.sol";
-import {ICLSwapRouterBase} from "pancake-v4-periphery/contracts/pool-cl/interfaces/ICLSwapRouterBase.sol";
+import {CLPoolParametersHelper} from "@pancakeswap/v4-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
+import {PoolIdLibrary} from "@pancakeswap/v4-core/src/types/PoolId.sol";
+import {ICLSwapRouterBase} from "pancake-v4-periphery/src/pool-cl/interfaces/ICLSwapRouterBase.sol";
 
 contract VeCakeDiscountHookTest is Test, CLTestUtils {
     using PoolIdLibrary for PoolKey;
