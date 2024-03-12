@@ -81,7 +81,7 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Exchange v3',
+        text: 'PancakeSwap v3',
         items: [
           {
             text: 'Addresses',
@@ -126,7 +126,7 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Exchange v2',
+        text: 'PancakeSwap v2',
         items: [
           {
             text: 'FactoryV2',
