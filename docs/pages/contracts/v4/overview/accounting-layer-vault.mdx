@@ -5,7 +5,7 @@ At the core of this architecture is the
 
 ## Lock Mechanism 
 
-One of the key mechaism in the vault is the **lock mechanism**. User need to get a lock from the vault before performing any operation (swap, liquidity or donate) with the pool manager.
+One of the key mechaism in the vault is the **lock mechanism**. Caller need to get a lock from the vault before performing any operation (swap, liquidity or donate) with the pool manager.
 
 ![Vault](/v4/vault.png)
 
@@ -44,20 +44,23 @@ contract BinFungiblePositionManager {
 }
 ```
 
-
-## Reconciling net balance
+## Reconciling balance
 
 BalanceDelta is returned whenever you perform some actions with [poolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/pool-cl/CLPoolManager.sol), eg. `swap | modifyLiquidity | donate`. It contains `int128 amount0` and `int128 amount1` that we need to take or settle with the vault.
 
 ### Negative balance delta
-In this case, vault owe the caller the amount of token. Caller have 2 choices:
+In this case, vault owes the caller the amount of token. 
 
-1. `vault.take(Currency currency, address to, uint256 amount)` - this will transfer the owed token to the address. 
+Caller have 2 choices:
 
-2. `vault.mint(Currency currency, address to, uint256 amount)` - this will store the surplus token on the vault.
+1. `vault.take(Currency currency, address to, uint256 amount)` - this will transfer the owed token from vault to the address (specified in `address to`). 
+
+2. `vault.mint(Currency currency, address to, uint256 amount)` - this will store the surplus token on the vault and credit it to `address to`.
 
 ### Positive balance delta
-In this case, caller owe the vault the amount of token. You have 2 choices:
+In this case, caller owes the vault the amount of token. 
+
+Caller have 2 choices:
 
 1. Transfer token to the vault and call `vault.settle(Currency token)`
 
@@ -65,4 +68,6 @@ In this case, caller owe the vault the amount of token. You have 2 choices:
 
 ### When to use `take/mint/settle/burn`?
 
-It really depends on your use case, for most use case, `take/settle` works. However if you are someone who trades a lot with your own contract (eg. arbitrage trader), you can consider `mint/burn` to save on the gas cost by reducing the number of ERC-20 token transfer.
+It really depends on your use case, for most use case, `take/settle` is sufficient. 
+
+However if your developing a contract which does a lot of trades eg. arbitrage bot, you can consider `mint/burn` to save on the gas cost by reducing the number of ERC-20 token transfer.

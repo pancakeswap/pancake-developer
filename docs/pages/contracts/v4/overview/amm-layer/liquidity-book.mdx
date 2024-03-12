@@ -4,9 +4,9 @@ import { Callout } from 'vocs/components'
 
 ## Overview 
 
-In liquidity book AMM type, liquidity providers (LPs) have the flexibility to add liquidity in any shapes whereas in concentrated liquidity, liquidity are added in a uniform manner across the chosen price range. 
+In liquidity book AMM type, liquidity providers (LPs) have the flexibility to add liquidity in any shapes in a single call. Whereas liquidity are added in a uniform manner across the chosen price range for concentrated liquidity type.
 
-To add liquidity, LPs will specify a byte32 array. Each item in the array would indicate which bin and the percentage of amountIn would be added to this bin. For more details, see guides on how to mint for liqudiity book.
+To add liquidity, LPs will specify a byte32 liquidityConfigs array. Each item in the array would indicate which bin and the percentage of amountIn would be added to this bin. For more details, see guides section on liquidity book.
 
 ```solidity
 struct MintParams {
