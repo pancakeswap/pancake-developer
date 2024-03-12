@@ -26,6 +26,36 @@ struct ModifyLiquidityParams {
 function modifyLiquidity(PoolKey memory key, ICLPoolManager.ModifyLiquidityParams memory params, bytes calldata hookData);
 ```
 
+See below on examples on computing price from tick:
+
+```
+price = 1.0001 ** tick 
+```
+
+####  Example 1: [CAKE/WETH](https://etherscan.io/address/0x517f451b0a9e1b87dc0ae98a05ee033c3310f046) pool:
+
+```solidity
+// token0: CAKE (18 decimals)
+// token1: WETH (18 decimals)
+// tick: -68554 (as of 12 March 2024)
+
+price: 1.0001 ** -68554 = 0.00105411128
+// this also imply 1 CAKE = 0.00105411128 WETH 
+```
+
+#### Example 2: [WETH/USDT](https://etherscan.io/address/0x6ca298d2983ab03aa1da7679389d955a4efee15c) pool with different token decimals pool:
+
+```solidity
+// token0: WETH (18 decimals)
+// token1: USDT (6 decimals)
+// tick:  -193256 (as of 12 March 2024)
+
+price: 1.0001 ** -193256 = 4.04965646e-9
+// this also imply 1 WETH = 4.04965646e-9 USDT 
+// However WETH is 18 decimals and USDT is 6 decimal, we have to multiply by 12 decimals
+ratio of WETH/USDT with decimals: = 4.04965646e-9 * (10**18/10**6): 1 WETH = 4049.65646 USDT
+```
+
 ### Tick Spacing
 
 Tick spacing define the minimum price movement between two adjacent ticks within a pool. This is one of the parameter in `PoolKey`. 
@@ -38,18 +68,54 @@ Keep in mind that there are trade off. While smaller tick spacing allow for more
 | 50  | 0.5% |
 | 100  | 1% |
 
-//todo: put down recommendation for what tickSpacing is recommended for what pool type
+
 
 ### sqrtPriceX96
 
-This uint160 value represent square root ratio of one token in another. Its a binary fixed point number `Q64.96` which means 64 bits of integer and 96 bits as decimal. 
+This uint160 value represent square root price ratio of token0 to token1. Its a binary fixed point number `Q64.96` which means 64 bits of integer and 96 bits as decimal. 
 
-// TODO: on example how to compute/read this value 
+Hence
+```solidity
+sqrtPriceX96 = sqrt(price) * 2**96
 
-// TODO: on tick and sqrtPriceX96 can be converted
+// shifting price to the LHS result in the below:
+price = (sqrtPriceX96 / 2**96) ** 2
+```
+
+See below on examples on computing price ratio from sqrtPriceX96:
+
+####  Example 1: [CAKE/WETH](https://etherscan.io/address/0x517f451b0a9e1b87dc0ae98a05ee033c3310f046) pool:
+
+```solidity 
+// token0: CAKE (18 decimals)
+// token1: WETH (18 decimals)
+// sqrtPriceX96: 2574020484831874748518739167 (as of 12 March 2024)
+
+// Price ratio of token0 (CAKE) and token1 (WETH):
+price = (2574020484831874748518739167 / 2**96) **2 = 0.00105551602
+
+CAKE to WETH: 1 CAKE = 0.00105551602 WETH 
+WETH to CAKE: 1 / 0.00105551602: 1 WETH = 947.40 CAKE 
+
+// CAKE is around $4.3 and ETH is $4100. so 947.40 CAKE = 4073 USDC
+```
+
+
+#### Example 2: [WETH/USDT](https://etherscan.io/address/0x6ca298d2983ab03aa1da7679389d955a4efee15c) pool with different token decimals pool:
+
+```solidity
+// token0: WETH (18 decimals)
+// token1: USDT (6 decimals)
+// sqrtPriceX96: 5046499860369450237927407 (as of 12 March 2024)
+
+// Price ratio of token0 (WETH) in term of token1 (USDT): 4.0571e-9 ETH for 1 USDC
+price = (5046499860369450237927407 / 2**96) **2 = 4.0571e-9
+
+WETH to USDC: 4.0571e-9 / (10**6/10**18): 1 WETH = 4057 USDT
+USDT to WETH: 4.0571e-9 / (10**18/10**6): 1 USDT = 4.0571e-21 WETH 
+```
+
 
 ### Liqudity delta
 
 Liquidity delta, an `int` value refers to the differences in liquidity at `modifyLiquidity`. When its positive, it means user is adding liquidity, conversely when its negative, it means user is removing liquidity. Do refer to `LiquidityAmounts.sol` on calculating the liquidity.
-
-// TODO: on how to calculate liquidity delta given lp 

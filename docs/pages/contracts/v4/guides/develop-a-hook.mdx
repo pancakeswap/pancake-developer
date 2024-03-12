@@ -6,25 +6,24 @@ In this guide, we'll develop a hook for concentrated liquidity pool. The same st
 
 ## Hooks template 
 
-Refer to https://github.com/pancakeswap/pancake-v4-hooks-template for the hook template. Simply click `Use this template` to create a new repository based on the template.
+Proceed to https://github.com/pancakeswap/pancake-v4-hooks-template for the hook template. Click `Use this template` to create a new repository based on the template.
 
 Once the new repository is cloned to local setup, run the following commands: 
 ```
 > forge install // install dependencies
-> forge test // run the existing CounterTest in the repository
+> forge test // run the existing tests in the repository
 ```
 
-Within both `src` and `test` there are 2 folders: `pool-cl` and `pool-bin`. If you are developing for concentrated liquidity pool, focus on pool-cl folder, otherwise bin pool for pool bin.
+Within both `src` and `test` there are 2 folders: `pool-cl` and `pool-bin`. If you are developing for concentrated liquidity pool, focus on pool-cl folder, otherwise pool-bin folder for the liquidity book pool type.
 
 ### BaseHook
 BaseHook is a base contract where you will inherit for your hooks. It provides 
 
-1. helper `_hooksRegistrationBitmapFrom` to set up the callback required
-2. callback method for you to overwrite
+1. helper method: `_hooksRegistrationBitmapFrom` to set up the callback required
+2. callback method: for you to overwrite
 
 ```solidity 
 // Snippet from CLCounterHook.sol
-
 import {CLBaseHook} from "./CLBaseHook.sol";
 
 contract CLCounterHook is CLBaseHook {
@@ -62,7 +61,7 @@ contract CLCounterHook is CLBaseHook {
 
 ## Step by step guide
 
-Idea: [veCake](https://docs.pancakeswap.finance/products/vecake/what-is-vecake) holder will get a 50% swap fee discount when swapping through pool with this hook.
+We will develop a hook that allows [veCake](https://docs.pancakeswap.finance/products/vecake/what-is-vecake) holder to get a 50% swap fee discount when swapping through pool with this hook.
 
 <Callout type="info">
   You may also watch the step by step tutorial at youtube embedded link
@@ -73,13 +72,13 @@ Idea: [veCake](https://docs.pancakeswap.finance/products/vecake/what-is-vecake) 
 1. Create a new repository from the template: https://github.com/pancakeswap/pancake-v4-hooks-template 
 2. Clone the repository locally and run `forge install` and `forge test` to verify setup.
 
-### Step 2: Introduce the implementation idea
+### Step 2: Implementation idea
 
 The flow will be as follows:
 
-1. Before a swap, pool manager call `hook.beforeSwap()` 
-2. At `beforeSwap()`, hook call `CLPoolManager.updateDynamicSwapFee()`.
-3. At `CLPoolManager.updateDynamicSwapFee()`, pool manager will call `hook.getFee()` to fetch the swap fee. This is where our hook will check and return either default swap fee or 50% discount. Pool manager will save the returned value and set that as swap fee for the pool.
+1. Before swap, CLPoolManager will call `hook.beforeSwap()` 
+2. At `beforeSwap()`, hook call `CLPoolManager.updateDynamicSwapFee()`
+3. At `CLPoolManager.updateDynamicSwapFee()`, pool manager will call `hook.getFee()` to fetch the swap fee. This is where our hook will check and return either default swap fee or 50% discount. Pool manager will save the returned value from the value and set that as swap fee for the pool.
 
 ![High level](/v4/guides-develop-hook-1.png)
 
@@ -89,13 +88,13 @@ The flow will be as follows:
 We'll perform the following:
 
 1. add `beforeSwap` permission 
-2. call `poolManager.updateDynamicSwapFee(key)`
-3. implement both `beforeSwap` and `getFee` method
+2. call `poolManager.updateDynamicSwapFee(key)` in `beforeSwap()` 
+3. implement `getFee` method 
 
 Create a file called at `src/pool-cl/VeCakeDiscountHook.sol` and implement the following:
 
 <details>
-  <summary>View Complete Source</summary>
+  <summary>View `VeCakeDiscountHook` complete source code</summary>
   
   ```solidity
 // SPDX-License-Identifier: UNLICENSED

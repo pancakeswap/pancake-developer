@@ -50,8 +50,6 @@ Bin step define the minimum price movement between two adjacent bin. This is one
 
 Upon initial deployment, the largest `BIN_STEP` for a pool can be 100. The limit can be raised in the future through governance process.
 
-//todo on type of pool for what bin steps
-
 ### Bin Active id
 
 Think of `activeId` as the current bin id. To retrieve the activeId of the bin
@@ -64,9 +62,19 @@ binPoolManager.getSlot0(PoolId) external
 
 ### Bin Pricing 
 
-Given the current `activeId` and `bin step`, we can calculate the current price of the pool.
+Given the current `activeId` and `binStep`, we can calculate the current price of the pool.
 
-// todo: https://docs.traderjoexyz.com/guides/price-from-id 
+```
+price: (1 + binStep / 10_000) ** (activeId - 8388608)
+```
+
+Example: USDT/USDC pool with bin step = 1 and activeId = 8388608
+
+```
+price: (1 + 1 / 10_000) ** (8388608 - 8388608) = 1
+// this means 1 USDT = 1 USDC 
+```
+
 
 ### Fungible liquidity
 
