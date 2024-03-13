@@ -6,7 +6,7 @@ description: Fork of Uniswap v3
 
 [Pancakev3Factory](/contracts/v3/pancakev3factory)
 
-[SmartRouterv3](/contracts/v3/smartrouterv3)
+[SmartRouterv3](/contracts/v3/smartrouter)
 
 
 ## Core
