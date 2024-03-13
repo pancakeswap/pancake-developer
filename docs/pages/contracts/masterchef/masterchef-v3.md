@@ -2,7 +2,7 @@
 
 ## Solidity API
 
-MasterChefV3 is used to provide CAKE emission to PancakeSwapV3 pools. 
+MasterChefV3 is used to provide CAKE emission to PancakeSwapV3 pools.
 
 ### PoolInfo
 
@@ -208,7 +208,7 @@ Basic boost factor, none boosted user's boost factor
 uint256 MAX_BOOST_PRECISION
 ```
 
-Hard limit for maxmium boost factor, it must greater than BOOST\_PRECISION
+Hard limit for maximum boost factor, it must greater than BOOST\_PRECISION
 
 ### Q128
 
@@ -657,8 +657,8 @@ Increases the amount of liquidity in a position, with tokens paid by the `msg.se
 | Name      | Type    | Description                                          |
 | --------- | ------- | ---------------------------------------------------- |
 | liquidity | uint128 | The new liquidity amount as a result of the increase |
-| amount0   | uint256 | The amount of token0 to acheive resulting liquidity  |
-| amount1   | uint256 | The amount of token1 to acheive resulting liquidity  |
+| amount0   | uint256 | The amount of token0 to achieve resulting liquidity  |
+| amount1   | uint256 | The amount of token1 to achieve resulting liquidity  |
 
 ### pay
 

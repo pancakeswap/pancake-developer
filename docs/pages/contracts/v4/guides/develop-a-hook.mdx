@@ -4,11 +4,11 @@ import { Callout } from 'vocs/components'
 
 In this guide, we'll develop a hook for concentrated liquidity pool. The same step will apply for liquidity book. We'll start with introducing hook template before the step by step guide section.
 
-## Hooks template 
+## Hooks template
 
 Proceed to https://github.com/pancakeswap/pancake-v4-hooks-template for the hook template. Click `Use this template` to create a new repository based on the template.
 
-Once the new repository is cloned to local setup, run the following commands: 
+Once the new repository is cloned to local setup, run the following commands:
 ```
 > forge install // install dependencies
 > forge test // run the existing tests in the repository
@@ -17,12 +17,12 @@ Once the new repository is cloned to local setup, run the following commands:
 Within both `src` and `test` there are 2 folders: `pool-cl` and `pool-bin`. If you are developing for concentrated liquidity pool, focus on pool-cl folder, otherwise pool-bin folder for the liquidity book pool type.
 
 ### BaseHook
-BaseHook is a base contract where you will inherit for your hooks. It provides 
+BaseHook is a base contract where you will inherit for your hooks. It provides
 
 1. helper method: `_hooksRegistrationBitmapFrom` to set up the callback required
 2. callback method: for you to overwrite
 
-```solidity 
+```solidity
 // Snippet from CLCounterHook.sol
 import {CLBaseHook} from "./CLBaseHook.sol";
 
@@ -30,7 +30,7 @@ contract CLCounterHook is CLBaseHook {
 
   constructor(ICLPoolManager _poolManager) CLBaseHook(_poolManager) {}
 
-  // 1. Set up callback required. in this case, 4 callback are required 
+  // 1. Set up callback required. in this case, 4 callback are required
   function getHooksRegistrationBitmap() external pure override returns (uint16) {
     return _hooksRegistrationBitmapFrom(
         Permissions({
@@ -49,10 +49,10 @@ contract CLCounterHook is CLBaseHook {
     );
   }
 
-  // 2. For each callback required, overwrite the method 
-  function beforeAddLiquidity(address,PoolKey calldata key, ICLPoolManager.ModifyLiquidityParams calldata, bytes calldata) 
+  // 2. For each callback required, overwrite the method
+  function beforeAddLiquidity(address,PoolKey calldata key, ICLPoolManager.ModifyLiquidityParams calldata, bytes calldata)
     external override poolManagerOnly returns (bytes4) {
-      // implement hook logic and then return selector 
+      // implement hook logic and then return selector
       return this.beforeAddLiquidity.selector;
   }
 }
@@ -67,16 +67,16 @@ We will develop a hook that allows [veCake](https://docs.pancakeswap.finance/pro
   You may also watch the step by step tutorial at youtube embedded link
 </Callout>
 
-### Step 1: Downlaod hook template
+### Step 1: Download hook template
 
-1. Create a new repository from the template: https://github.com/pancakeswap/pancake-v4-hooks-template 
+1. Create a new repository from the template: https://github.com/pancakeswap/pancake-v4-hooks-template
 2. Clone the repository locally and run `forge install` and `forge test` to verify setup.
 
 ### Step 2: Implementation idea
 
 The flow will be as follows:
 
-1. Before swap, CLPoolManager will call `hook.beforeSwap()` 
+1. Before swap, CLPoolManager will call `hook.beforeSwap()`
 2. At `beforeSwap()`, hook call `CLPoolManager.updateDynamicSwapFee()`
 3. At `CLPoolManager.updateDynamicSwapFee()`, pool manager will call `hook.getFee()` to fetch the swap fee. This is where our hook will check and return either default swap fee or 50% discount. Pool manager will save the returned value from the value and set that as swap fee for the pool.
 
@@ -87,15 +87,15 @@ The flow will be as follows:
 
 We'll perform the following:
 
-1. add `beforeSwap` permission 
-2. call `poolManager.updateDynamicSwapFee(key)` in `beforeSwap()` 
-3. implement `getFee` method 
+1. add `beforeSwap` permission
+2. call `poolManager.updateDynamicSwapFee(key)` in `beforeSwap()`
+3. implement `getFee` method
 
 Create a file called at `src/pool-cl/VeCakeDiscountHook.sol` and implement the following:
 
 <details>
   <summary>View `VeCakeDiscountHook` complete source code</summary>
-  
+
   ```solidity
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
@@ -172,14 +172,14 @@ In the test, we'll test 2 scenarios:
 1. when swapping as a veCkae holder
 
 <Callout type="warning">
-    The assertion has been simplified, in the real world, you should calculate the `amtOut` and verify it. 
+    The assertion has been simplified, in the real world, you should calculate the `amtOut` and verify it.
 </Callout>
 
 Create a file called at `test/pool-cl/VeCakeDiscountHook.t.sol` and implement the following:
 
 <details>
     <summary> View complete source code here </summary>
-    
+
 ```solidity
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
@@ -282,6 +282,6 @@ contract VeCakeDiscountHookTest is Test, CLTestUtils {
 </details>
 
 
-### Step 5: Verify 
+### Step 5: Verify
 
 Run `forge test` to verify test passing.

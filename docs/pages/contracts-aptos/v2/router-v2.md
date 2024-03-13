@@ -30,7 +30,7 @@ public entry fun create_pair<X, Y>(sender: &signer)
 
 #### Params
 
-| Name   | Type     | Descripton                                     |
+| Name   | Type     | Description                                     |
 | ------ | -------- | ---------------------------------------------- |
 | sender | `signer` | The sender's signer when calling the function. |
 
