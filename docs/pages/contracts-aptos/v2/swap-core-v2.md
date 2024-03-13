@@ -22,7 +22,7 @@
 
 The liquidity token corresponds to each pool XY.
 
-```
+```rust
 struct LPToken<phantom X, phantom Y> has key {}
 ```
 
@@ -30,7 +30,7 @@ struct LPToken<phantom X, phantom Y> has key {}
 
 The metadata of pool XY.
 
-```
+```rust
 struct TokenPairMetadata<phantom X, phantom Y> has key {
     creator: address,
     fee_amount: coin::Coin<LPToken<X, Y>>,
@@ -43,13 +43,23 @@ struct TokenPairMetadata<phantom X, phantom Y> has key {
 }
 ```
 
-<table><thead><tr><th>Name</th><th width="249.33333333333331">Type</th><th>Description</th></tr></thead><tbody><tr><td>creator</td><td><code>address</code></td><td>The creator address of pool.</td></tr><tr><td>fee_amount</td><td><code>coin::Coin</code></td><td>The total LP token collected from all the swaps in the pool.</td></tr><tr><td>k_last</td><td><code>u128</code></td><td>The multiply of reserve_x and reserve_y in the pool from the last swap.</td></tr><tr><td>balance_x</td><td><code>coin::Coin</code></td><td>The total amount of token X in the pool.</td></tr><tr><td>balance_y</td><td><code>coin::Coin</code></td><td>The total amount of token Y in the pool.</td></tr><tr><td>mint_cap</td><td><code>coin::MintCapability</code></td><td>The mint capability created when the LP is created.</td></tr><tr><td>burn_cap</td><td><code>coin::BurnCapability</code></td><td>The burn capability created when the LP is created.</td></tr><tr><td>freeze_cap</td><td>coin::FreezeCapability</td><td>The freeze capability created when the LP is created.</td></tr></tbody></table>
+| Name          | Type              | Description                                                   |
+| ---------     | ----------------- | ------------------------------------------------------------- |
+| creator       | `address`         | The creator address of pool.                                  |
+| fee_amount    | `coin::Coin`      | The total LP token collected from all the swaps in the pool.  |
+| k_last        | `u128`            | The multiply of reserve_x and reserve_y in the pool from the last swap. |
+| balance_x     | `coin::Coin`      | The total amount of token X in the pool.                      |
+| balance_y     | `coin::Coin`      | The total amount of token Y in the pool.                      |
+| mint_cap      | `coin::MintCapability` | The mint capability created when the LP is created.      |
+| burn_cap      | `coin::BurnCapability` | The burn capability created when the LP is created.      |
+| freeze_cap    | `coin::FreezeCapability` | The freeze capability created when the LP is created.  |
+
 
 ### TokenPairReserve
 
 The tokens reserves of pool XY.
 
-```
+```rust
 struct TokenPairReserve<phantom X, phantom Y> has key {
     reserve_x: u64,
     reserve_y: u64,
@@ -67,7 +77,7 @@ struct TokenPairReserve<phantom X, phantom Y> has key {
 
 The metadata of the module
 
-```
+```rust
 struct SwapInfo has key {
     signer_cap: account::SignerCapability,
     fee_to: address,
@@ -76,7 +86,13 @@ struct SwapInfo has key {
 }
 ```
 
-<table><thead><tr><th width="187.33333333333331">Name</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>signer_cap</td><td><code>account::SignerCapabilty</code></td><td>The signer capability created when the module is deployed.</td></tr><tr><td>fee_to</td><td><code>address</code></td><td>The address that the fee will be sent to.</td></tr><tr><td>admin</td><td><code>address</code></td><td>The admin address of the module</td></tr><tr><td>pair_created</td><td><code>event::EventHandle</code></td><td>The event emit when the pool is created.</td></tr></tbody></table>
+| Name          | Type                      | Description                               |
+| --------------| ------------------------- | ----------------------------------------- |
+| signer_cap    | `account::SignerCapabilty`| The signer capability created when the module is deployed. |
+| fee_to        | `address`                 | The address that the fee will be sent to. |
+| admin         | `address`                 | The admin address of the module.          |
+| pair_created  | `event::EventHandle`      | The event emit when the pool is created.  |
+
 
 ## Public Functions
 
@@ -84,7 +100,7 @@ struct SwapInfo has key {
 
 Register the LP token to the account.
 
-```
+```rust
 public fun register_lp<X, Y>(sender: &signer)
 ```
 
@@ -98,7 +114,7 @@ public fun register_lp<X, Y>(sender: &signer)
 
 Check if the pool XY is created or not.
 
-```
+```rust
 public fun is_pair_created<X, Y>(): bool
 ```
 
@@ -112,7 +128,7 @@ public fun is_pair_created<X, Y>(): bool
 
 Check LP balance of user.
 
-```
+```rust
 public fun lp_balance<X, Y>(addr: address): u64
 ```
 
@@ -132,7 +148,7 @@ public fun lp_balance<X, Y>(addr: address): u64
 
 The total amount of LP exist created from pool XY.
 
-```
+```rust
 public fun total_lp_supply<X, Y>(): u128
 ```
 
@@ -146,7 +162,7 @@ public fun total_lp_supply<X, Y>(): u128
 
 The token reserves of the pool XY.
 
-```
+```rust
 public fun token_reserves<X, Y>(): (u64, u64, u64)
 ```
 
@@ -162,7 +178,7 @@ public fun token_reserves<X, Y>(): (u64, u64, u64)
 
 The token balance of the pool XY.
 
-```
+```rust
 public fun token_balances<X, Y>(): (u64, u64)
 ```
 

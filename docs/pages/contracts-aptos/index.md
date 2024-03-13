@@ -10,7 +10,7 @@ description: >-
 
 PancakesSwap on Aptos! We have landed on Aptos and will continuously deploy more features.&#x20;
 
-[pancakeswap-exchange](pancakeswap-exchange/)
+[pancakeswap-v2](v2/overview.mdx)
 
 [masterchef.md](masterchef)
 

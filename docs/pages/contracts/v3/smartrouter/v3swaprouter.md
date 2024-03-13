@@ -6,7 +6,7 @@ description: Router for stateless execution of swaps against PancakeSwap V3
 
 ## Solidity API
 
-#### SwapCallbackData
+### SwapCallbackData
 
 ```solidity
 struct SwapCallbackData {
@@ -15,7 +15,7 @@ struct SwapCallbackData {
 }
 ```
 
-#### pancakeV3SwapCallback
+### pancakeV3SwapCallback
 
 ```solidity
 function pancakeV3SwapCallback(int256 amount0Delta, int256 amount1Delta, bytes _data) external
@@ -33,7 +33,7 @@ _In the implementation you must pay the pool tokens owed for the swap. The calle
 | amount1Delta | int256 | The amount of token1 that was sent (negative) or must be received (positive) by the pool by the end of the swap. If positive, the callback must send that amount of token1 to the pool. |
 | \_data       | bytes  |                                                                                                                                                                                         |
 
-#### exactInputSingle
+### exactInputSingle
 
 ```solidity
 function exactInputSingle(struct IV3SwapRouter.ExactInputSingleParams params) external payable returns (uint256 amountOut)
@@ -55,7 +55,7 @@ _Setting `amountIn` to 0 will cause the contract to look up its own balance, and
 | --------- | ------- | -------------------------------- |
 | amountOut | uint256 | The amount of the received token |
 
-#### exactInput
+### exactInput
 
 ```solidity
 function exactInput(struct IV3SwapRouter.ExactInputParams params) external payable returns (uint256 amountOut)
@@ -77,7 +77,7 @@ _Setting `amountIn` to 0 will cause the contract to look up its own balance, and
 | --------- | ------- | -------------------------------- |
 | amountOut | uint256 | The amount of the received token |
 
-#### exactOutputSingle
+### exactOutputSingle
 
 ```solidity
 function exactOutputSingle(struct IV3SwapRouter.ExactOutputSingleParams params) external payable returns (uint256 amountIn)
@@ -97,7 +97,7 @@ Swaps as little as possible of one token for `amountOut` of another token that m
 | -------- | ------- | ----------------------------- |
 | amountIn | uint256 | The amount of the input token |
 
-#### exactOutput
+### exactOutput
 
 ```solidity
 function exactOutput(struct IV3SwapRouter.ExactOutputParams params) external payable returns (uint256 amountIn)

@@ -64,9 +64,15 @@ const quoteValue = {
 const signature = await mm._signTypedData(domain, quoteType, quoteValue);
 ```
 
-
-
-<table><thead><tr><th width="214">Name</th><th width="123.33333333333331">Type</th><th>Description</th></tr></thead><tbody><tr><td>nonce</td><td>uint256</td><td>The user nonce can be called from <code>getUserNonce</code> in the contract</td></tr><tr><td>user</td><td>address</td><td>user address</td></tr><tr><td>baseToken</td><td>address</td><td>The token address that the user is sending to the market maker</td></tr><tr><td>quoteToken</td><td>address</td><td>The token address that the user is receiving from the market maker</td></tr><tr><td>baseTokenAmount</td><td>uint256</td><td>The amount of base token in the swap</td></tr><tr><td>quoteTokenAmount</td><td>uint256</td><td>The amount of quote token in the swap</td></tr><tr><td>expiryTimestamp</td><td>uin256</td><td>The expiry time of the signature in unix</td></tr></tbody></table>
+| Name | Type | Description | 
+| ----------- | ------- | ---------------------------------- |
+| nonce | uint256 | The user nonce can be called from `getUserNonce` in the contract |
+| user | address | user address |
+| baseToken | address | The token address that the user is sending to the market maker |
+| quoteToken | address | The token address that the user is receiving from the market maker |
+| baseTokenAmount | uint256 | The amount of base token in the swap |
+| quoteTokenAmount | uint256 | The amount of quote token in the swap |
+| expiryTimestamp | uint256 | The expiry time of the signature in unix |
 
 #### swap
 

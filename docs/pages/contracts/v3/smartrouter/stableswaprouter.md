@@ -6,33 +6,31 @@ description: Router for stateless execution of swaps against PancakeSwap StableS
 
 ## Solidity API
 
-### StableSwapRouter
-
-#### stableSwapFactory
+### stableSwapFactory
 
 ```solidity
 address stableSwapFactory
 ```
 
-#### stableSwapInfo
+### stableSwapInfo
 
 ```solidity
 address stableSwapInfo
 ```
 
-#### SetStableSwap
+### SetStableSwap
 
 ```solidity
 event SetStableSwap(address factory, address info)
 ```
 
-#### constructor
+### constructor
 
 ```solidity
 constructor(address _stableSwapFactory, address _stableSwapInfo) internal
 ```
 
-#### setStableSwap
+### setStableSwap
 
 ```solidity
 function setStableSwap(address _factory, address _info) external
@@ -42,7 +40,7 @@ Set Pancake Stable Swap Factory and Info
 
 _Only callable by contract owner_
 
-#### exactInputStableSwap
+### exactInputStableSwap
 
 ```solidity
 function exactInputStableSwap(address[] path, uint256[] flag, uint256 amountIn, uint256 amountOutMin, address to) external payable returns (uint256 amountOut)
@@ -58,7 +56,7 @@ function exactInputStableSwap(address[] path, uint256[] flag, uint256 amountIn, 
 | amountOutMin | uint256    |                                                              |
 | to           | address    |                                                              |
 
-#### exactOutputStableSwap
+### exactOutputStableSwap
 
 ```solidity
 function exactOutputStableSwap(address[] path, uint256[] flag, uint256 amountOut, uint256 amountInMax, address to) external payable returns (uint256 amountIn)

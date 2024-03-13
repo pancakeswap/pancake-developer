@@ -2,9 +2,7 @@
 
 ## Solidity API
 
-### PancakeV3Pool
-
-#### factory
+### factory
 
 ```solidity
 address factory
@@ -14,7 +12,7 @@ The contract that deployed the pool, which must adhere to the IPancakeV3Factory 
 
 **Return Values**
 
-#### token0
+### token0
 
 ```solidity
 address token0
@@ -24,7 +22,7 @@ The first of the two tokens of the pool, sorted by address
 
 **Return Values**
 
-#### token1
+### token1
 
 ```solidity
 address token1
@@ -34,7 +32,7 @@ The second of the two tokens of the pool, sorted by address
 
 **Return Values**
 
-#### fee
+### fee
 
 ```solidity
 uint24 fee
@@ -44,7 +42,7 @@ The pool's fee in hundredths of a bip, i.e. 1e-6
 
 **Return Values**
 
-#### tickSpacing
+### tickSpacing
 
 ```solidity
 int24 tickSpacing
@@ -56,7 +54,7 @@ _Ticks can only be used at multiples of this value, minimum of 1 and always posi
 
 **Return Values**
 
-#### maxLiquidityPerTick
+### maxLiquidityPerTick
 
 ```solidity
 uint128 maxLiquidityPerTick
@@ -68,19 +66,19 @@ _This parameter is enforced per tick to prevent liquidity from overflowing a uin
 
 **Return Values**
 
-#### PROTOCOL\_FEE\_SP
+### PROTOCOL\_FEE\_SP
 
 ```solidity
 uint32 PROTOCOL_FEE_SP
 ```
 
-#### PROTOCOL\_FEE\_DENOMINATOR
+### PROTOCOL\_FEE\_DENOMINATOR
 
 ```solidity
 uint256 PROTOCOL_FEE_DENOMINATOR
 ```
 
-#### Slot0
+### Slot0
 
 ```solidity
 struct Slot0 {
@@ -94,7 +92,7 @@ struct Slot0 {
 }
 ```
 
-#### slot0
+### slot0
 
 ```solidity
 struct PancakeV3Pool.Slot0 slot0
@@ -104,7 +102,7 @@ The 0th storage slot in the pool stores many values, and is exposed as a single 
 
 **Return Values**
 
-#### feeGrowthGlobal0X128
+### feeGrowthGlobal0X128
 
 ```solidity
 uint256 feeGrowthGlobal0X128
@@ -114,7 +112,7 @@ The fee growth as a Q128.128 fees of token0 collected per unit of liquidity for 
 
 _This value can overflow the uint256_
 
-#### feeGrowthGlobal1X128
+### feeGrowthGlobal1X128
 
 ```solidity
 uint256 feeGrowthGlobal1X128
@@ -124,7 +122,7 @@ The fee growth as a Q128.128 fees of token1 collected per unit of liquidity for 
 
 _This value can overflow the uint256_
 
-#### ProtocolFees
+### ProtocolFees
 
 ```solidity
 struct ProtocolFees {
@@ -133,7 +131,7 @@ struct ProtocolFees {
 }
 ```
 
-#### protocolFees
+### protocolFees
 
 ```solidity
 struct PancakeV3Pool.ProtocolFees protocolFees
@@ -143,7 +141,7 @@ The amounts of token0 and token1 that are owed to the protocol
 
 _Protocol fees will never exceed uint128 max in either token_
 
-#### liquidity
+### liquidity
 
 ```solidity
 uint128 liquidity
@@ -153,7 +151,7 @@ The currently in range liquidity available to the pool
 
 _This value has no relationship to the total liquidity across all ticks_
 
-#### ticks
+### ticks
 
 ```solidity
 mapping(int24 => struct Tick.Info) ticks
@@ -173,7 +171,7 @@ mapping(int16 => uint256) tickBitmap
 
 Returns 256 packed tick initialized boolean values. See TickBitmap for more information
 
-#### positions
+### positions
 
 ```solidity
 mapping(bytes32 => struct Position.Info) positions
@@ -199,19 +197,19 @@ _You most likely want to use #observe() instead of this method to get an observa
 
 **Return Values**
 
-#### lmPool
+### lmPool
 
 ```solidity
 contract IPancakeV3LmPool lmPool
 ```
 
-#### SetLmPoolEvent
+### SetLmPoolEvent
 
 ```solidity
 event SetLmPoolEvent(address addr)
 ```
 
-#### lock
+### lock
 
 ```solidity
 modifier lock()
@@ -219,7 +217,7 @@ modifier lock()
 
 _Mutually exclusive reentrancy protection into the pool to/from a method. This method also prevents entrance to a function before the pool is initialized. The reentrancy guard is required throughout the contract because we use balance checks to determine the payment status of interactions such as mint, swap and flash._
 
-#### onlyFactoryOwner
+### onlyFactoryOwner
 
 ```solidity
 modifier onlyFactoryOwner()
@@ -227,13 +225,13 @@ modifier onlyFactoryOwner()
 
 _Prevents calling a function from anyone except the address returned by IPancakeV3Factory#owner()_
 
-#### constructor
+### constructor
 
 ```solidity
 constructor() public
 ```
 
-#### \_blockTimestamp
+### \_blockTimestamp
 
 ```solidity
 function _blockTimestamp() internal view virtual returns (uint32)
@@ -241,7 +239,7 @@ function _blockTimestamp() internal view virtual returns (uint32)
 
 _Returns the block timestamp truncated to 32 bits, i.e. mod 2\*\*32. This method is overridden in tests._
 
-#### snapshotCumulativesInside
+### snapshotCumulativesInside
 
 ```solidity
 function snapshotCumulativesInside(int24 tickLower, int24 tickUpper) external view returns (int56 tickCumulativeInside, uint160 secondsPerLiquidityInsideX128, uint32 secondsInside)
@@ -266,7 +264,7 @@ _Snapshots must only be compared to other snapshots, taken over a period for whi
 | secondsPerLiquidityInsideX128 | uint160 | The snapshot of seconds per liquidity for the range |
 | secondsInside                 | uint32  | The snapshot of seconds per liquidity for the range |
 
-#### observe
+### observe
 
 ```solidity
 function observe(uint32[] secondsAgos) external view returns (int56[] tickCumulatives, uint160[] secondsPerLiquidityCumulativeX128s)
@@ -289,7 +287,7 @@ _To get a time weighted average tick or liquidity-in-range, you must call this w
 | tickCumulatives                    | int56\[]   | Cumulative tick values as of each `secondsAgos` from the current block timestamp                          |
 | secondsPerLiquidityCumulativeX128s | uint160\[] | Cumulative seconds per liquidity-in-range value as of each `secondsAgos` from the current block timestamp |
 
-#### increaseObservationCardinalityNext
+### increaseObservationCardinalityNext
 
 ```solidity
 function increaseObservationCardinalityNext(uint16 observationCardinalityNext) external
@@ -305,7 +303,7 @@ _This method is no-op if the pool already has an observationCardinalityNext grea
 | -------------------------- | ------ | ---------------------------------------------------------------- |
 | observationCardinalityNext | uint16 | The desired minimum number of observations for the pool to store |
 
-#### initialize
+### initialize
 
 ```solidity
 function initialize(uint160 sqrtPriceX96) external
@@ -321,7 +319,7 @@ _not locked because it initializes unlocked_
 | ------------ | ------- | ---------------------------------------------- |
 | sqrtPriceX96 | uint160 | the initial sqrt price of the pool as a Q64.96 |
 
-#### ModifyPositionParams
+### ModifyPositionParams
 
 ```solidity
 struct ModifyPositionParams {
@@ -332,7 +330,7 @@ struct ModifyPositionParams {
 }
 ```
 
-#### mint
+### mint
 
 ```solidity
 function mint(address recipient, int24 tickLower, int24 tickUpper, uint128 amount, bytes data) external returns (uint256 amount0, uint256 amount1)
@@ -359,7 +357,7 @@ Adds liquidity for the given recipient/tickLower/tickUpper position
 | amount0 | uint256 | The amount of token0 that was paid to mint the given amount of liquidity. Matches the value in the callback |
 | amount1 | uint256 | The amount of token1 that was paid to mint the given amount of liquidity. Matches the value in the callback |
 
-#### collect
+### collect
 
 ```solidity
 function collect(address recipient, int24 tickLower, int24 tickUpper, uint128 amount0Requested, uint128 amount1Requested) external returns (uint128 amount0, uint128 amount1)
@@ -386,7 +384,7 @@ _Does not recompute fees earned, which must be done either via mint or burn of a
 | amount0 | uint128 | The amount of fees collected in token0 |
 | amount1 | uint128 | The amount of fees collected in token1 |
 
-#### burn
+### burn
 
 ```solidity
 function burn(int24 tickLower, int24 tickUpper, uint128 amount) external returns (uint256 amount0, uint256 amount1)
@@ -411,7 +409,7 @@ Burn liquidity from the sender and account tokens owed for the liquidity to the 
 | amount0 | uint256 | The amount of token0 sent to the recipient |
 | amount1 | uint256 | The amount of token1 sent to the recipient |
 
-#### SwapCache
+### SwapCache
 
 ```solidity
 struct SwapCache {
@@ -424,7 +422,7 @@ struct SwapCache {
 }
 ```
 
-#### SwapState
+### SwapState
 
 ```solidity
 struct SwapState {
@@ -438,7 +436,7 @@ struct SwapState {
 }
 ```
 
-#### StepComputations
+### StepComputations
 
 ```solidity
 struct StepComputations {
@@ -452,7 +450,7 @@ struct StepComputations {
 }
 ```
 
-#### swap
+### swap
 
 ```solidity
 function swap(address recipient, bool zeroForOne, int256 amountSpecified, uint160 sqrtPriceLimitX96, bytes data) external returns (int256 amount0, int256 amount1)
@@ -479,7 +477,7 @@ _The caller of this method receives a callback in the form of IPancakeV3SwapCall
 | amount0 | int256 | The delta of the balance of token0 of the pool, exact when negative, minimum when positive |
 | amount1 | int256 | The delta of the balance of token1 of the pool, exact when negative, minimum when positive |
 
-#### flash
+### flash
 
 ```solidity
 function flash(address recipient, uint256 amount0, uint256 amount1, bytes data) external
@@ -498,7 +496,7 @@ _The caller of this method receives a callback in the form of IPancakeV3FlashCal
 | amount1   | uint256 | The amount of token1 to send                                 |
 | data      | bytes   | Any data to be passed through to the callback                |
 
-#### setFeeProtocol
+### setFeeProtocol
 
 ```solidity
 function setFeeProtocol(uint32 feeProtocol0, uint32 feeProtocol1) external
@@ -513,7 +511,7 @@ Set the denominator of the protocol's % share of the fees
 | feeProtocol0 | uint32 | new protocol fee for token0 of the pool |
 | feeProtocol1 | uint32 | new protocol fee for token1 of the pool |
 
-#### collectProtocol
+### collectProtocol
 
 ```solidity
 function collectProtocol(address recipient, uint128 amount0Requested, uint128 amount1Requested) external returns (uint128 amount0, uint128 amount1)
@@ -536,7 +534,7 @@ Collect the protocol fee accrued to the pool
 | amount0 | uint128 | The protocol fee collected in token0 |
 | amount1 | uint128 | The protocol fee collected in token1 |
 
-#### setLmPool
+### setLmPool
 
 ```solidity
 function setLmPool(contract IPancakeV3LmPool _lmPool) external

@@ -39,14 +39,14 @@ export default defineConfig({
                   {
                     text: 'Liquidity Book',
                     link: '/contracts/v4/overview/amm-layer/liquidity-book',
-                  }
-                ]
+                  },
+                ],
               },
               {
                 text: 'Custom Layer | Hook',
                 link: '/contracts/v4/overview/custom-layer-hook',
               },
-            ]
+            ],
           },
           {
             text: 'Guides',
@@ -62,11 +62,12 @@ export default defineConfig({
               {
                 text: 'Bin Pool - Swap and Liquidity',
                 link: '/contracts/v4/guides/liquidity-book-swap-and-liquidity',
-              }
-            ]
+              },
+            ],
           },
           {
             text: 'Resources',
+            collapsed: true,
             items: [
               {
                 text: 'Github',
@@ -76,16 +77,16 @@ export default defineConfig({
                 text: '<WIP> Addresses',
                 link: '/contracts/v4/resources/addresses',
               },
-            ]
-          }
-        ]
+            ],
+          },
+        ],
       },
       {
-        text: 'Exchange v3',
+        text: 'PancakeSwap v3',
         items: [
           {
             text: 'Addresses',
-            link: '/contracts/exchange/v3/addresses',
+            link: '/contracts/v3/addresses',
           },
           {
             text: 'Technical Overview',
@@ -93,31 +94,32 @@ export default defineConfig({
             items: [
               {
                 text: 'PancakeV3Factory',
-                link: '/contracts/exchange/v3/pancakev3factory',
+                link: '/contracts/v3/pancakev3factory',
               },
               {
                 text: 'PancakeV3Pool',
-                link: '/contracts/exchange/v3/pancakev3pool',
+                link: '/contracts/v3/pancakev3pool',
               },
               {
                 text: 'NonfungiblePositionManager',
-                link: '/contracts/exchange/v3/nonfungiblepositionmanager',
+                link: '/contracts/v3/nonfungiblepositionmanager',
               },
               {
                 collapsed: true,
                 text: 'SmartRouter',
+                link: '/contracts/v3/smartrouter',
                 items: [
                   {
                     text: 'v3SwapRouter',
-                    link: '/contracts/exchange/v3/smartrouterv3/v3swaprouter',
+                    link: '/contracts/v3/smartrouter/v3swaprouter',
                   },
                   {
                     text: 'v2SwapRouter',
-                    link: '/contracts/exchange/v3/smartrouterv3/v2swaprouter',
+                    link: '/contracts/v3/smartrouter/v2swaprouter',
                   },
                   {
                     text: 'StableSwapRouter',
-                    link: '/contracts/exchange/v3/smartrouterv3/stableswaprouter',
+                    link: '/contracts/v3/smartrouter/stableswaprouter',
                   },
                 ],
               },
@@ -126,64 +128,67 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Exchange v2',
+        text: 'PancakeSwap v2',
+        collapsed: true,
         items: [
           {
             text: 'FactoryV2',
-            link: '/contracts/exchange/v2/factory-v2',
+            link: '/contracts/v2/factory-v2',
           },
           {
             text: 'RouterV2',
-            link: '/contracts/exchange/v2/router-v2',
+            link: '/contracts/v2/router-v2',
           },
         ],
       },
       {
-        text: 'StableSwap',
+        text: '',
         items: [
           {
-            text: 'Overview',
-            link: '/contracts/exchange/stableswap',
-          },
-          {
-            text: 'Pool addresses',
-            link: '/contracts/exchange/stableswap/stableswap-pools',
-          },
-        ],
-      },
-      {
-        text: 'Syrup Pools',
-        link: '/contracts/syrup-pools',
-        items: [
-          {
-            text: 'Overview',
-            link: '/contracts/syrup-pools',
-          },
-          {
-            text: 'SmartChefInitializable',
-            link: '/contracts/syrup-pools/smartchefinitializable',
-          },
-        ],
-      },
-      {
-        text: 'CAKE',
-        items: [
-          {
-            text: 'MasterChef',
+            text: 'StableSwap',
+            collapsed: true,
             items: [
               {
-                text: 'v2',
-                link: '/contracts/main-staking-masterchef-contract',
+                text: 'Overview',
+                link: '/contracts/stableswap/overview',
+              },
+              {
+                text: 'Pool addresses',
+                link: '/contracts/stableswap/stableswap-pools',
+              },
+            ],
+          },
+          {
+            text: 'MasterChef',
+            collapsed: true,
+            items: [
+              {
+                text: 'Addresses',
+                link: '/contracts/masterchef/addresses',
               },
               {
                 text: 'v3',
-                link: '/contracts/main-staking-masterchef-contract/masterchef-v3',
+                link: '/contracts/masterchef/masterchef-v3',
               },
             ],
           },
           {
             text: 'veCake and Gauge voting',
             link: '/contracts/vecake-and-gauge-voting',
+          },
+          {
+            text: 'Syrup Pools',
+            collapsed: true,
+            items: [
+              {
+                text: 'Overview',
+                link: '/contracts/syrup-pools',
+              },
+              {
+                text: 'SmartChefInitializable',
+                link: '/contracts/syrup-pools/smartchefinitializable',
+              },
+            ],
           },
           {
             text: 'Farm Booster (bCAKE)',
@@ -201,41 +206,42 @@ export default defineConfig({
             text: 'CAKE Syrup Pool (deprecated)',
             link: '/contracts/fixed-term-staking-cake-pool',
           },
-        ],
-      },
-      {
-        text: 'IFO',
-        link: '/contracts/ifo',
-      },
-      {
-        text: 'Prediction',
-        link: '/contracts/prediction-v2',
-      },
-      {
-        text: 'Lottery',
-        items: [
-          { text: 'Overview', link: '/contracts/lottery-v2' },
           {
-            text: 'Contract',
-            link: '/contracts/lottery-v2/lottery-contract',
+            text: 'IFO',
+            link: '/contracts/ifo',
+          },
+          {
+            text: 'Prediction',
+            link: '/contracts/prediction-v2',
+          },
+          {
+            text: 'Lottery',
+            collapsed: true,
+            items: [
+              { text: 'Overview', link: '/contracts/lottery-v2' },
+              {
+                text: 'Contract',
+                link: '/contracts/lottery-v2/lottery-contract',
+              },
+            ],
+          },
+          {
+            text: 'Market Maker Pool',
+            link: '/contracts/market-maker-pool',
           },
         ],
-      },
-      {
-        text: 'Market Maker Pool',
-        link: '/contracts/market-maker-pool',
       },
     ],
     '/contracts-aptos': [
       {
-        text: 'Exchange',
+        text: 'PancakeSwap v2',
         items: [
           {
             text: 'v2',
             items: [
               {
                 text: 'Overview',
-                link: '/contracts-aptos/exchange/v2/overview',
+                link: '/contracts-aptos/v2/overview',
               },
               {
                 text: 'Technical Overview',
@@ -243,11 +249,11 @@ export default defineConfig({
                 items: [
                   {
                     text: 'Core',
-                    link: '/contracts-aptos/exchange/v2/swap-core-v1',
+                    link: '/contracts-aptos/v2/swap-core-v2',
                   },
                   {
                     text: 'Router',
-                    link: '/contracts-aptos/exchange/v2/router-v2',
+                    link: '/contracts-aptos/v2/router-v2',
                   },
                 ],
               },

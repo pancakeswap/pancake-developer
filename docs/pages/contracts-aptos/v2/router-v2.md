@@ -24,7 +24,7 @@
 
 Create the pool pair for swap.
 
-```
+```rust
 public entry fun create_pair<X, Y>(sender: &signer)
 ```
 
@@ -38,7 +38,7 @@ public entry fun create_pair<X, Y>(sender: &signer)
 
 Add liquidity to the pool.
 
-```
+```rust
 public entry fun add_liquidity<X, Y>(
     sender: &signer,
     amount_x_desired: u64,
@@ -62,7 +62,7 @@ public entry fun add_liquidity<X, Y>(
 
 Remove liquidity from the pool.
 
-```
+```rust
 public entry fun remove_liquidity<X, Y>(
     sender: &signer,
     liquidity: u64,
@@ -84,7 +84,7 @@ public entry fun remove_liquidity<X, Y>(
 
 Swap exact amount of tokenX to tokenY.
 
-```
+```rust
 public entry fun swap_exact_input<X, Y>(
     sender: &signer,
     x_in: u64,
@@ -104,7 +104,7 @@ public entry fun swap_exact_input<X, Y>(
 
 Swap tokenX to exact amount of tokenY.
 
-```
+```rust
 public entry fun swap_exact_output<X, Y>(
     sender: &signer,
     y_out: u64,
@@ -124,7 +124,7 @@ public entry fun swap_exact_output<X, Y>(
 
 Swap exact amount of tokenX to tokenZ using 2 pools (Pool XY and Pool YZ).
 
-```
+```rust
 public entry fun swap_exact_input_doublehop<X, Y, Z>(
     sender: &signer,
     x_in: u64,
@@ -144,7 +144,7 @@ public entry fun swap_exact_input_doublehop<X, Y, Z>(
 
 Swap tokenX to exact amount of tokenZ using 2 pools (Pool XY and Pool YZ).
 
-```
+```rust
 public entry fun swap_exact_output_doublehop<X, Y, Z>(
     sender: &signer,
     z_out: u64,
@@ -164,12 +164,12 @@ public entry fun swap_exact_output_doublehop<X, Y, Z>(
 
 Swap exact amount of tokenX to tokenA using 3 pools (Pool XY, Pool YZ and Pool ZA).
 
-```
+```rust
 public entry fun swap_exact_input_triplehop<X, Y, Z, A>(
     sender: &signer,
     x_in: u64,
     a_min_out: u64,
-) 
+)
 ```
 
 #### Params
@@ -184,12 +184,12 @@ public entry fun swap_exact_input_triplehop<X, Y, Z, A>(
 
 Swap tokenX to exact amount of tokenA using 3 pools (Pool XY, Pool YZ and Pool ZA).
 
-```
+```rust
 public entry fun swap_exact_output_triplehop<X, Y, Z, A>(
     sender: &signer,
     a_out: u64,
     x_max_in: u64,
-) 
+)
 ```
 
 | Name       | Type     | Description                                    |
@@ -202,7 +202,7 @@ public entry fun swap_exact_output_triplehop<X, Y, Z, A>(
 
 Swap exact amount of tokenX to tokenB using 3 pools (Pool XY, Pool YZ, Pool ZA and Pool AB).
 
-```
+```rust
 public entry fun swap_exact_input_quadruplehop<X, Y, Z, A, B>(
     sender: &signer,
     x_in: u64,
@@ -220,7 +220,7 @@ public entry fun swap_exact_input_quadruplehop<X, Y, Z, A, B>(
 
 Swap tokenX to exact amount of tokenB using 3 pools (Pool XY, Pool YZ, Pool ZA and Pool AB).
 
-```
+```rust
 public entry fun swap_exact_output_quadruplehop<X, Y, Z, A, B>(
     sender: &signer,
     b_out: u64,
@@ -240,8 +240,8 @@ public entry fun swap_exact_output_quadruplehop<X, Y, Z, A, B>(
 
 Swap exact amount of tokenX to tokenY.
 
-```
-public fun swap_exact_x_to_y_direct_external<X, Y>(x_in: coin::Coin<X>): coin::Coin<Y> 
+```rust
+public fun swap_exact_x_to_y_direct_external<X, Y>(x_in: coin::Coin<X>): coin::Coin<Y>
 ```
 
 #### Input Values
@@ -260,7 +260,7 @@ public fun swap_exact_x_to_y_direct_external<X, Y>(x_in: coin::Coin<X>): coin::C
 
 Swap tokenX to the exact amount of tokenY.
 
-```
+```rust
 public fun swap_x_to_exact_y_direct_external<X, Y>(x_in: coin::Coin<X>, y_out_amount:u64): (coin::Coin<X>, coin::Coin<Y>)
 ```
 
@@ -282,7 +282,7 @@ public fun swap_x_to_exact_y_direct_external<X, Y>(x_in: coin::Coin<X>, y_out_am
 
 The amount required in order to the the output amount.
 
-```
+```rust
 public fun get_amount_in<X, Y>(y_out_amount: u64): u64
 ```
 
