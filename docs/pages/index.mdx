@@ -1,0 +1,59 @@
+---
+layout: landing
+---
+
+import { Button } from 'vocs/components'
+import { Card, CardContent } from '../../components/card'
+
+      <main className="w-full">
+        <section className="w-full py-12 md:py-24 lg:py-32 border-b">
+          <div className="container px-4 md:px-6 text-center">
+            <div className="space-y-3">
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                Welcome to PancakeSwap Developer Docs
+              </h1>
+              <p>
+                Your DEX Your Innovation
+              </p>
+            </div>
+
+              <Button href="/contracts/v4/overview" className="m-auto mt-4" variant="accent">Get started</Button>
+          </div>
+        </section>
+        <section className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container grid gap-6 px-4 md:px-6 lg:grid-cols-[1fr_400px] lg:gap-12">
+            <div className="space-y-2">
+              <h2 className="text-xl font-bold tracking-tighter sm:text-3xl">Latest Updates</h2>
+              <div className="max-w-[600px] text-gray-500 md:text-l/relaxed lg:text-base/relaxed l:text-l/relaxed dark:text-gray-400">
+                Stay informed about the latest features, improvements, and changes to our platform.
+              </div>
+            </div>
+            <div className="grid gap-4 sm:gap-6">
+            <a href="/contracts/v4/overview">
+              <Card>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-bold">Introducing PancakeSwap v4</h3>
+                    <div className="text-gray-500 dark:text-gray-400">
+                      We've announced the next version of our exchange with improved gas efficiency and new features.
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              </a>
+              <a href="/apis/subgraph">
+                <Card>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold">API Update: all endpoints available</h3>
+                      <div className="text-gray-500 dark:text-gray-400">
+                        A full list of subgraph endpoints is now available for developers to use.
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>

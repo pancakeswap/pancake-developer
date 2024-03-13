@@ -3,19 +3,22 @@ import { theme } from './theme';
 
 export default defineConfig({
   title: 'PancakeSwap Developer',
-  description: 'PancakeSwap Developer Docs',
+  description: 'Your DEX Your Innovation',
   logoUrl: {
     light: '/logo.svg',
     dark: '/logo_dark.svg',
   },
+  ogImageUrl:
+    'https://vocs.dev/api/og?logo=%logo&title=%title&description=%description',
+
   titleTemplate: '%s | PancakeSwap Developer',
   topNav: [
-    { text: 'EVM', link: '/' },
+    { text: 'EVM', link: '/contracts/v4/overview' },
     { text: 'Aptos', link: '/contracts-aptos' },
     { text: 'Bug Bounty', link: '/bug-bounty' },
   ],
   sidebar: {
-    '/': [
+    '/contracts': [
       {
         text: 'PancakeSwap V4',
         items: [
@@ -228,6 +231,10 @@ export default defineConfig({
           {
             text: 'Market Maker Pool',
             link: '/contracts/market-maker-pool',
+          },
+          {
+            text: 'NFT Market',
+            link: '/contracts/nft-market',
           },
         ],
       },

@@ -1,0 +1,13 @@
+@layer vocs_preflight {
+  @tailwind base;
+}
+
+@tailwind components;
+@tailwind utilities;
+
+.card {
+  background-color: var(--vocs-color_background5);
+  @apply shadow-md;
+  @apply rounded-lg;
+  @apply p-4;
+}
