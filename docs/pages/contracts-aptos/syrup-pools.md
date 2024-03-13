@@ -25,7 +25,7 @@ fd1d8a523f1be89277ac0787ae3469312667e3d0b3f75a5f01bfc95530a2dc91::smart\_chef
 
 The metadata of the module.
 
-```
+```rust
 struct SmartChefMetadata has key {
     signer_cap: account::SignerCapability,
     admin: address,
@@ -45,7 +45,7 @@ struct SmartChefMetadata has key {
 
 The information of each pool.
 
-```
+```rust
 struct PoolInfo<phantom StakeToken, phantom RewardToken, phantom UID> has key {
     total_staked_token: coin::Coin<StakeToken>,
     total_reward_token: coin::Coin<RewardToken>,
@@ -89,7 +89,7 @@ struct PoolInfo<phantom StakeToken, phantom RewardToken, phantom UID> has key {
 
 Deposit the stake token into the pool. It will also transfer reward token to the user if there's any.
 
-```
+```rust
 public entry fun deposit<StakeToken, RewardToken, UID>(
     account: &signer,
     amount: u64
@@ -121,7 +121,7 @@ public entry fun withdraw<StakeToken, RewardToken, UID>(
 
 Withdraw the stake token from the pool regardless of any rewards.&#x20;
 
-```
+```rust
 public entry fun emergency_withdraw<StakeToken, RewardToken, UID>(account: &signer)
 ```
 
@@ -135,7 +135,7 @@ public entry fun emergency_withdraw<StakeToken, RewardToken, UID>(account: &sign
 
 Get the pool informations.
 
-```
+```rust
 public fun get_pool_info<StakeToken, RewardToken, UID>(): (u64, u64, u64, u64, u64, u64, u64)
 ```
 
@@ -155,7 +155,7 @@ public fun get_pool_info<StakeToken, RewardToken, UID>(): (u64, u64, u64, u64, u
 
 Get the user stake amount in the pool.
 
-```
+```rust
 public fun get_user_stake_amount<StakeToken, RewardToken, UID>(account: address)
 ```
 
@@ -175,7 +175,7 @@ public fun get_user_stake_amount<StakeToken, RewardToken, UID>(account: address)
 
 Get the pending reward of the depositor in the pool.
 
-```
+```rust
 public fun get_pending_reward<StakeToken, RewardToken, UID>(account: address): u64
 ```
 

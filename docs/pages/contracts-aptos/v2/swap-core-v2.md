@@ -22,7 +22,7 @@
 
 The liquidity token corresponds to each pool XY.
 
-```
+```rust
 struct LPToken<phantom X, phantom Y> has key {}
 ```
 
@@ -30,7 +30,7 @@ struct LPToken<phantom X, phantom Y> has key {}
 
 The metadata of pool XY.
 
-```
+```rust
 struct TokenPairMetadata<phantom X, phantom Y> has key {
     creator: address,
     fee_amount: coin::Coin<LPToken<X, Y>>,
@@ -59,7 +59,7 @@ struct TokenPairMetadata<phantom X, phantom Y> has key {
 
 The tokens reserves of pool XY.
 
-```
+```rust
 struct TokenPairReserve<phantom X, phantom Y> has key {
     reserve_x: u64,
     reserve_y: u64,
@@ -77,7 +77,7 @@ struct TokenPairReserve<phantom X, phantom Y> has key {
 
 The metadata of the module
 
-```
+```rust
 struct SwapInfo has key {
     signer_cap: account::SignerCapability,
     fee_to: address,
@@ -100,7 +100,7 @@ struct SwapInfo has key {
 
 Register the LP token to the account.
 
-```
+```rust
 public fun register_lp<X, Y>(sender: &signer)
 ```
 
@@ -114,7 +114,7 @@ public fun register_lp<X, Y>(sender: &signer)
 
 Check if the pool XY is created or not.
 
-```
+```rust
 public fun is_pair_created<X, Y>(): bool
 ```
 
@@ -128,7 +128,7 @@ public fun is_pair_created<X, Y>(): bool
 
 Check LP balance of user.
 
-```
+```rust
 public fun lp_balance<X, Y>(addr: address): u64
 ```
 
@@ -148,7 +148,7 @@ public fun lp_balance<X, Y>(addr: address): u64
 
 The total amount of LP exist created from pool XY.
 
-```
+```rust
 public fun total_lp_supply<X, Y>(): u128
 ```
 
@@ -162,7 +162,7 @@ public fun total_lp_supply<X, Y>(): u128
 
 The token reserves of the pool XY.
 
-```
+```rust
 public fun token_reserves<X, Y>(): (u64, u64, u64)
 ```
 
@@ -178,7 +178,7 @@ public fun token_reserves<X, Y>(): (u64, u64, u64)
 
 The token balance of the pool XY.
 
-```
+```rust
 public fun token_balances<X, Y>(): (u64, u64)
 ```
 

@@ -12,7 +12,7 @@ pancake\_phantom\_types::uints\
 
 ### Types
 
-```
+```rust
 struct U0 {}
 
 struct U1 {}

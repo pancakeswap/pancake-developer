@@ -39,14 +39,14 @@ export default defineConfig({
                   {
                     text: 'Liquidity Book',
                     link: '/contracts/v4/overview/amm-layer/liquidity-book',
-                  }
-                ]
+                  },
+                ],
               },
               {
                 text: 'Custom Layer | Hook',
                 link: '/contracts/v4/overview/custom-layer-hook',
               },
-            ]
+            ],
           },
           {
             text: 'Guides',
@@ -62,8 +62,8 @@ export default defineConfig({
               {
                 text: 'Bin Pool - Swap and Liquidity',
                 link: '/contracts/v4/guides/liquidity-book-swap-and-liquidity',
-              }
-            ]
+              },
+            ],
           },
           {
             text: 'Resources',
@@ -77,9 +77,9 @@ export default defineConfig({
                 text: '<WIP> Addresses',
                 link: '/contracts/v4/resources/addresses',
               },
-            ]
-          }
-        ]
+            ],
+          },
+        ],
       },
       {
         text: 'PancakeSwap v3',
@@ -229,19 +229,19 @@ export default defineConfig({
             text: 'Market Maker Pool',
             link: '/contracts/market-maker-pool',
           },
-        ]
-      }
+        ],
+      },
     ],
     '/contracts-aptos': [
       {
-        text: 'Exchange',
+        text: 'PancakeSwap v2',
         items: [
           {
             text: 'v2',
             items: [
               {
                 text: 'Overview',
-                link: '/contracts-aptos/exchange/v2/overview',
+                link: '/contracts-aptos/v2/overview',
               },
               {
                 text: 'Technical Overview',
@@ -249,11 +249,11 @@ export default defineConfig({
                 items: [
                   {
                     text: 'Core',
-                    link: '/contracts-aptos/exchange/v2/swap-core-v2',
+                    link: '/contracts-aptos/v2/swap-core-v2',
                   },
                   {
                     text: 'Router',
-                    link: '/contracts-aptos/exchange/v2/router-v2',
+                    link: '/contracts-aptos/v2/router-v2',
                   },
                 ],
               },

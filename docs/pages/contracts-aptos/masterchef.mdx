@@ -17,7 +17,7 @@
 
 Th metadata of the masterchef.
 
-```
+```rust
 struct MasterChef has key {
     signer_cap: account::SignerCapability,
     admin: address,
@@ -56,7 +56,7 @@ struct MasterChef has key {
 
 All pool informations.
 
-```
+```rust
 struct PoolUserInfo has key {
     pid_to_user_info: TableWithLength<u64, UserInfo>,
     pids: vector<u64>,
@@ -72,7 +72,7 @@ struct PoolUserInfo has key {
 
 The user information in each pool.
 
-```
+```rust
 struct UserInfo has store {
     amount: u128,
     reward_debt: u128
@@ -88,7 +88,7 @@ struct UserInfo has store {
 
 The information of each pool
 
-```
+```rust
 struct PoolInfo has store {
     total_amount: u128,
     acc_cake_per_share: u128,
@@ -112,7 +112,7 @@ struct PoolInfo has store {
 
 Deposit the stake token into the pool. It will also transfer reward token to the user if there's any.
 
-```
+```rust
 public entry fun deposit<CoinType>(
     sender: &signer,
     amount: u64
@@ -128,7 +128,7 @@ public entry fun deposit<CoinType>(
 
 Withdraw the stake token from the pool. It will also transfer reward token to the user if there's any.
 
-```
+```rust
 public entry fun withdraw<CoinType>(
     sender: &signer,
     amount: u64
@@ -144,7 +144,7 @@ public entry fun withdraw<CoinType>(
 
 Withdraw the stake token from the pool regardless of any rewards.&#x20;
 
-```
+```rust
 public entry fun emergency_withdraw<CoinType>(sender: &signer)
 ```
 
@@ -156,7 +156,7 @@ public entry fun emergency_withdraw<CoinType>(sender: &signer)
 
 Update all the pool information.
 
-```
+```rust
 public entry fun mass_update_pools()
 ```
 
@@ -164,7 +164,7 @@ public entry fun mass_update_pools()
 
 Update a specific pool information.
 
-```
+```rust
 public entry fun update_pool(pid: u64)
 ```
 
@@ -178,7 +178,7 @@ public entry fun update_pool(pid: u64)
 
 The pending cake reward of the user.
 
-```
+```rust
 public fun pending_cake(
     pid: u64,
     user: address
@@ -202,7 +202,7 @@ public fun pending_cake(
 
 The total number of pools.
 
-```
+```rust
 public fun pool_length():u64
 ```
 
