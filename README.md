@@ -1,8 +1,14 @@
-This is a [Vocs](https://vocs.dev) project bootstrapped with the Vocs CLI.
-
 ## Getting Started
 
-First, install bun.js and the dependencies:
+To get started with this project locally, follow the instructions below.
+
+First, install bun.js if you haven't already:
+
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+and the dependencies:
 
 ```bash
 bun install
