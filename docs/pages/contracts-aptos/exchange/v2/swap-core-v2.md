@@ -43,7 +43,17 @@ struct TokenPairMetadata<phantom X, phantom Y> has key {
 }
 ```
 
-<table><thead><tr><th>Name</th><th width="249.33333333333331">Type</th><th>Description</th></tr></thead><tbody><tr><td>creator</td><td><code>address</code></td><td>The creator address of pool.</td></tr><tr><td>fee_amount</td><td><code>coin::Coin</code></td><td>The total LP token collected from all the swaps in the pool.</td></tr><tr><td>k_last</td><td><code>u128</code></td><td>The multiply of reserve_x and reserve_y in the pool from the last swap.</td></tr><tr><td>balance_x</td><td><code>coin::Coin</code></td><td>The total amount of token X in the pool.</td></tr><tr><td>balance_y</td><td><code>coin::Coin</code></td><td>The total amount of token Y in the pool.</td></tr><tr><td>mint_cap</td><td><code>coin::MintCapability</code></td><td>The mint capability created when the LP is created.</td></tr><tr><td>burn_cap</td><td><code>coin::BurnCapability</code></td><td>The burn capability created when the LP is created.</td></tr><tr><td>freeze_cap</td><td>coin::FreezeCapability</td><td>The freeze capability created when the LP is created.</td></tr></tbody></table>
+| Name          | Type              | Description                                                   |
+| ---------     | ----------------- | ------------------------------------------------------------- |
+| creator       | `address`         | The creator address of pool.                                  |
+| fee_amount    | `coin::Coin`      | The total LP token collected from all the swaps in the pool.  |
+| k_last        | `u128`            | The multiply of reserve_x and reserve_y in the pool from the last swap. |
+| balance_x     | `coin::Coin`      | The total amount of token X in the pool.                      |
+| balance_y     | `coin::Coin`      | The total amount of token Y in the pool.                      |
+| mint_cap      | `coin::MintCapability` | The mint capability created when the LP is created.      |
+| burn_cap      | `coin::BurnCapability` | The burn capability created when the LP is created.      |
+| freeze_cap    | `coin::FreezeCapability` | The freeze capability created when the LP is created.  |
+
 
 ### TokenPairReserve
 
@@ -76,7 +86,13 @@ struct SwapInfo has key {
 }
 ```
 
-<table><thead><tr><th width="187.33333333333331">Name</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>signer_cap</td><td><code>account::SignerCapabilty</code></td><td>The signer capability created when the module is deployed.</td></tr><tr><td>fee_to</td><td><code>address</code></td><td>The address that the fee will be sent to.</td></tr><tr><td>admin</td><td><code>address</code></td><td>The admin address of the module</td></tr><tr><td>pair_created</td><td><code>event::EventHandle</code></td><td>The event emit when the pool is created.</td></tr></tbody></table>
+| Name          | Type                      | Description                               |
+| --------------| ------------------------- | ----------------------------------------- |
+| signer_cap    | `account::SignerCapabilty`| The signer capability created when the module is deployed. |
+| fee_to        | `address`                 | The address that the fee will be sent to. |
+| admin         | `address`                 | The admin address of the module.          |
+| pair_created  | `event::EventHandle`      | The event emit when the pool is created.  |
+
 
 ## Public Functions
 

@@ -248,7 +248,7 @@ export default defineConfig({
                 items: [
                   {
                     text: 'Core',
-                    link: '/contracts-aptos/exchange/v2/swap-core-v1',
+                    link: '/contracts-aptos/exchange/v2/swap-core-v2',
                   },
                   {
                     text: 'Router',

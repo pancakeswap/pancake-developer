@@ -2,9 +2,7 @@
 
 ## Solidity API
 
-### MasterChefV3
-
-#### PoolInfo
+### PoolInfo
 
 ```solidity
 struct PoolInfo {
@@ -18,7 +16,7 @@ struct PoolInfo {
 }
 ```
 
-#### UserPositionInfo
+### UserPositionInfo
 
 ```solidity
 struct UserPositionInfo {
@@ -34,13 +32,13 @@ struct UserPositionInfo {
 }
 ```
 
-#### poolLength
+### poolLength
 
 ```solidity
 uint256 poolLength
 ```
 
-#### poolInfo
+### poolInfo
 
 ```solidity
 mapping(uint256 => struct MasterChefV3.PoolInfo) poolInfo
@@ -48,7 +46,7 @@ mapping(uint256 => struct MasterChefV3.PoolInfo) poolInfo
 
 Info of each MCV3 pool.
 
-#### userPositionInfos
+### userPositionInfos
 
 ```solidity
 mapping(uint256 => struct MasterChefV3.UserPositionInfo) userPositionInfos
@@ -58,7 +56,7 @@ userPositionInfos\[tokenId] => UserPositionInfo
 
 _TokenId is unique, and we can query the pid by tokenId._
 
-#### v3PoolPid
+### v3PoolPid
 
 ```solidity
 mapping(address => mapping(address => mapping(uint24 => uint256))) v3PoolPid
@@ -66,7 +64,7 @@ mapping(address => mapping(address => mapping(uint24 => uint256))) v3PoolPid
 
 v3PoolPid\[token0]\[token1]\[fee] => pid
 
-#### v3PoolAddressPid
+### v3PoolAddressPid
 
 ```solidity
 mapping(address => uint256) v3PoolAddressPid
@@ -74,7 +72,7 @@ mapping(address => uint256) v3PoolAddressPid
 
 v3PoolAddressPid\[v3PoolAddress] => pid
 
-#### CAKE
+### CAKE
 
 ```solidity
 contract IERC20 CAKE
@@ -82,7 +80,7 @@ contract IERC20 CAKE
 
 Address of CAKE contract.
 
-#### WETH
+### WETH
 
 ```solidity
 address WETH
@@ -90,7 +88,7 @@ address WETH
 
 Address of WETH contract.
 
-#### receiver
+### receiver
 
 ```solidity
 address receiver
@@ -98,13 +96,13 @@ address receiver
 
 Address of Receiver contract.
 
-#### nonfungiblePositionManager
+### nonfungiblePositionManager
 
 ```solidity
 contract INonfungiblePositionManager nonfungiblePositionManager
 ```
 
-#### LMPoolDeployer
+### LMPoolDeployer
 
 ```solidity
 contract ILMPoolDeployer LMPoolDeployer
@@ -112,7 +110,7 @@ contract ILMPoolDeployer LMPoolDeployer
 
 Address of liquidity mining pool deployer contract.
 
-#### FARM\_BOOSTER
+### FARM\_BOOSTER
 
 ```solidity
 contract IFarmBooster FARM_BOOSTER
@@ -120,7 +118,7 @@ contract IFarmBooster FARM_BOOSTER
 
 Address of farm booster contract.
 
-#### emergency
+### emergency
 
 ```solidity
 bool emergency
@@ -128,7 +126,7 @@ bool emergency
 
 Only use for emergency situations.
 
-#### totalAllocPoint
+### totalAllocPoint
 
 ```solidity
 uint256 totalAllocPoint
@@ -136,31 +134,31 @@ uint256 totalAllocPoint
 
 Total allocation points. Must be the sum of all pools' allocation points.
 
-#### latestPeriodNumber
+### latestPeriodNumber
 
 ```solidity
 uint256 latestPeriodNumber
 ```
 
-#### latestPeriodStartTime
+### latestPeriodStartTime
 
 ```solidity
 uint256 latestPeriodStartTime
 ```
 
-#### latestPeriodEndTime
+### latestPeriodEndTime
 
 ```solidity
 uint256 latestPeriodEndTime
 ```
 
-#### latestPeriodCakePerSecond
+### latestPeriodCakePerSecond
 
 ```solidity
 uint256 latestPeriodCakePerSecond
 ```
 
-#### operatorAddress
+### operatorAddress
 
 ```solidity
 address operatorAddress
@@ -168,7 +166,7 @@ address operatorAddress
 
 Address of the operator.
 
-#### PERIOD\_DURATION
+### PERIOD\_DURATION
 
 ```solidity
 uint256 PERIOD_DURATION
@@ -176,25 +174,25 @@ uint256 PERIOD_DURATION
 
 Default period duration.
 
-#### MAX\_DURATION
+### MAX\_DURATION
 
 ```solidity
 uint256 MAX_DURATION
 ```
 
-#### MIN\_DURATION
+### MIN\_DURATION
 
 ```solidity
 uint256 MIN_DURATION
 ```
 
-#### PRECISION
+### PRECISION
 
 ```solidity
 uint256 PRECISION
 ```
 
-#### BOOST\_PRECISION
+### BOOST\_PRECISION
 
 ```solidity
 uint256 BOOST_PRECISION
@@ -202,7 +200,7 @@ uint256 BOOST_PRECISION
 
 Basic boost factor, none boosted user's boost factor
 
-#### MAX\_BOOST\_PRECISION
+### MAX\_BOOST\_PRECISION
 
 ```solidity
 uint256 MAX_BOOST_PRECISION
@@ -210,19 +208,19 @@ uint256 MAX_BOOST_PRECISION
 
 Hard limit for maxmium boost factor, it must greater than BOOST\_PRECISION
 
-#### Q128
+### Q128
 
 ```solidity
 uint256 Q128
 ```
 
-#### MAX\_U256
+### MAX\_U256
 
 ```solidity
 uint256 MAX_U256
 ```
 
-#### cakeAmountBelongToMC
+### cakeAmountBelongToMC
 
 ```solidity
 uint256 cakeAmountBelongToMC
@@ -230,205 +228,205 @@ uint256 cakeAmountBelongToMC
 
 Record the cake amount belong to MasterChefV3.
 
-#### ZeroAddress
+### ZeroAddress
 
 ```solidity
 error ZeroAddress()
 ```
 
-#### NotOwnerOrOperator
+### NotOwnerOrOperator
 
 ```solidity
 error NotOwnerOrOperator()
 ```
 
-#### NoBalance
+### NoBalance
 
 ```solidity
 error NoBalance()
 ```
 
-#### NotPancakeNFT
+### NotPancakeNFT
 
 ```solidity
 error NotPancakeNFT()
 ```
 
-#### InvalidNFT
+### InvalidNFT
 
 ```solidity
 error InvalidNFT()
 ```
 
-#### NotOwner
+### NotOwner
 
 ```solidity
 error NotOwner()
 ```
 
-#### NoLiquidity
+### NoLiquidity
 
 ```solidity
 error NoLiquidity()
 ```
 
-#### InvalidPeriodDuration
+### InvalidPeriodDuration
 
 ```solidity
 error InvalidPeriodDuration()
 ```
 
-#### NoLMPool
+### NoLMPool
 
 ```solidity
 error NoLMPool()
 ```
 
-#### InvalidPid
+### InvalidPid
 
 ```solidity
 error InvalidPid()
 ```
 
-#### DuplicatedPool
+### DuplicatedPool
 
 ```solidity
 error DuplicatedPool(uint256 pid)
 ```
 
-#### NotEmpty
+### NotEmpty
 
 ```solidity
 error NotEmpty()
 ```
 
-#### WrongReceiver
+### WrongReceiver
 
 ```solidity
 error WrongReceiver()
 ```
 
-#### InconsistentAmount
+### InconsistentAmount
 
 ```solidity
 error InconsistentAmount()
 ```
 
-#### InsufficientAmount
+### InsufficientAmount
 
 ```solidity
 error InsufficientAmount()
 ```
 
-#### Init
+### Init
 
 ```solidity
 event Init()
 ```
 
-#### AddPool
+### AddPool
 
 ```solidity
 event AddPool(uint256 pid, uint256 allocPoint, contract IPancakeV3Pool v3Pool, contract ILMPool lmPool)
 ```
 
-#### SetPool
+### SetPool
 
 ```solidity
 event SetPool(uint256 pid, uint256 allocPoint)
 ```
 
-#### Deposit
+### Deposit
 
 ```solidity
 event Deposit(address from, uint256 pid, uint256 tokenId, uint256 liquidity, int24 tickLower, int24 tickUpper)
 ```
 
-#### Withdraw
+### Withdraw
 
 ```solidity
 event Withdraw(address from, address to, uint256 pid, uint256 tokenId)
 ```
 
-#### UpdateLiquidity
+### UpdateLiquidity
 
 ```solidity
 event UpdateLiquidity(address from, uint256 pid, uint256 tokenId, int128 liquidity, int24 tickLower, int24 tickUpper)
 ```
 
-#### NewOperatorAddress
+### NewOperatorAddress
 
 ```solidity
 event NewOperatorAddress(address operator)
 ```
 
-#### NewLMPoolDeployerAddress
+### NewLMPoolDeployerAddress
 
 ```solidity
 event NewLMPoolDeployerAddress(address deployer)
 ```
 
-#### NewReceiver
+### NewReceiver
 
 ```solidity
 event NewReceiver(address receiver)
 ```
 
-#### NewPeriodDuration
+### NewPeriodDuration
 
 ```solidity
 event NewPeriodDuration(uint256 periodDuration)
 ```
 
-#### Harvest
+### Harvest
 
 ```solidity
 event Harvest(address sender, address to, uint256 pid, uint256 tokenId, uint256 reward)
 ```
 
-#### NewUpkeepPeriod
+### NewUpkeepPeriod
 
 ```solidity
 event NewUpkeepPeriod(uint256 periodNumber, uint256 startTime, uint256 endTime, uint256 cakePerSecond, uint256 cakeAmount)
 ```
 
-#### UpdateUpkeepPeriod
+### UpdateUpkeepPeriod
 
 ```solidity
 event UpdateUpkeepPeriod(uint256 periodNumber, uint256 oldEndTime, uint256 newEndTime, uint256 remainingCake)
 ```
 
-#### UpdateFarmBoostContract
+### UpdateFarmBoostContract
 
 ```solidity
 event UpdateFarmBoostContract(address farmBoostContract)
 ```
 
-#### SetEmergency
+### SetEmergency
 
 ```solidity
 event SetEmergency(bool emergency)
 ```
 
-#### onlyOwnerOrOperator
+### onlyOwnerOrOperator
 
 ```solidity
 modifier onlyOwnerOrOperator()
 ```
 
-#### onlyValidPid
+### onlyValidPid
 
 ```solidity
 modifier onlyValidPid(uint256 _pid)
 ```
 
-#### onlyReceiver
+### onlyReceiver
 
 ```solidity
 modifier onlyReceiver()
 ```
 
-#### onlyBoostContract
+### onlyBoostContract
 
 ```solidity
 modifier onlyBoostContract()
@@ -436,7 +434,7 @@ modifier onlyBoostContract()
 
 _Throws if caller is not the boost contract._
 
-#### constructor
+### constructor
 
 ```solidity
 constructor(contract IERC20 _CAKE, contract INonfungiblePositionManager _nonfungiblePositionManager, address _WETH) public
@@ -450,7 +448,7 @@ constructor(contract IERC20 _CAKE, contract INonfungiblePositionManager _nonfung
 | \_nonfungiblePositionManager | contract INonfungiblePositionManager | the NFT position manager contract address. |
 | \_WETH                       | address                              |                                            |
 
-#### getLatestPeriodInfoByPid
+### getLatestPeriodInfoByPid
 
 ```solidity
 function getLatestPeriodInfoByPid(uint256 _pid) public view returns (uint256 cakePerSecond, uint256 endTime)
@@ -464,7 +462,7 @@ Returns the cake per second , period end time.
 | ----- | ------- | ------------- |
 | \_pid | uint256 | The pool pid. |
 
-#### getLatestPeriodInfo
+### getLatestPeriodInfo
 
 ```solidity
 function getLatestPeriodInfo(address _v3Pool) public view returns (uint256 cakePerSecond, uint256 endTime)
@@ -478,7 +476,7 @@ Returns the cake per second , period end time. This is for liquidity mining pool
 | -------- | ------- | ----------------------- |
 | \_v3Pool | address | Address of the V3 pool. |
 
-#### pendingCake
+### pendingCake
 
 ```solidity
 function pendingCake(uint256 _tokenId) external view returns (uint256 reward)
@@ -494,7 +492,7 @@ _The pending cake amount is based on the last state in LMPool. The actual amount
 | --------- | ------- | ---------------- |
 | \_tokenId | uint256 | Token Id of NFT. |
 
-#### setEmergency
+### setEmergency
 
 ```solidity
 function setEmergency(bool _emergency) external
@@ -502,19 +500,19 @@ function setEmergency(bool _emergency) external
 
 For emergency use only.
 
-#### setReceiver
+### setReceiver
 
 ```solidity
 function setReceiver(address _receiver) external
 ```
 
-#### setLMPoolDeployer
+### setLMPoolDeployer
 
 ```solidity
 function setLMPoolDeployer(contract ILMPoolDeployer _LMPoolDeployer) external
 ```
 
-#### add
+### add
 
 ```solidity
 function add(uint256 _allocPoint, contract IPancakeV3Pool _v3Pool, bool _withUpdate) external
@@ -530,7 +528,7 @@ Add a new pool. Can only be called by the owner. One v3 pool can only create one
 | \_v3Pool     | contract IPancakeV3Pool | Address of the V3 pool.                       |
 | \_withUpdate | bool                    | Whether call "massUpdatePools" operation.     |
 
-#### set
+### set
 
 ```solidity
 function set(uint256 _pid, uint256 _allocPoint, bool _withUpdate) external
@@ -546,7 +544,7 @@ Update the given pool's CAKE allocation point. Can only be called by the owner.
 | \_allocPoint | uint256 | New number of allocation points for the pool. |
 | \_withUpdate | bool    | Whether call "massUpdatePools" operation.     |
 
-#### DepositCache
+### DepositCache
 
 ```solidity
 struct DepositCache {
@@ -559,7 +557,7 @@ struct DepositCache {
 }
 ```
 
-#### onERC721Received
+### onERC721Received
 
 ```solidity
 function onERC721Received(address, address _from, uint256 _tokenId, bytes) external returns (bytes4)
@@ -567,7 +565,7 @@ function onERC721Received(address, address _from, uint256 _tokenId, bytes) exter
 
 Upon receiving a ERC721
 
-#### harvest
+### harvest
 
 ```solidity
 function harvest(uint256 _tokenId, address _to) external returns (uint256 reward)
@@ -582,13 +580,13 @@ harvest cake from pool.
 | \_tokenId | uint256 | Token Id of NFT. |
 | \_to      | address | Address to.      |
 
-#### harvestOperation
+### harvestOperation
 
 ```solidity
 function harvestOperation(struct MasterChefV3.UserPositionInfo positionInfo, uint256 _tokenId, address _to) internal returns (uint256 reward)
 ```
 
-#### withdraw
+### withdraw
 
 ```solidity
 function withdraw(uint256 _tokenId, address _to) external returns (uint256 reward)
@@ -603,7 +601,7 @@ Withdraw LP tokens from pool.
 | \_tokenId | uint256 | Token Id of NFT to deposit.             |
 | \_to      | address | Address to which NFT token to withdraw. |
 
-#### updateLiquidity
+### updateLiquidity
 
 ```solidity
 function updateLiquidity(uint256 _tokenId) external
@@ -617,7 +615,7 @@ Update liquidity for the NFT position.
 | --------- | ------- | -------------------------- |
 | \_tokenId | uint256 | Token Id of NFT to update. |
 
-#### updateBoostMultiplier
+### updateBoostMultiplier
 
 ```solidity
 function updateBoostMultiplier(uint256 _tokenId, uint256 _newMultiplier) external
@@ -632,13 +630,13 @@ Update farm boost multiplier for the NFT position.
 | \_tokenId       | uint256 | Token Id of NFT to update. |
 | \_newMultiplier | uint256 | New boost multiplier.      |
 
-#### updateLiquidityOperation
+### updateLiquidityOperation
 
 ```solidity
 function updateLiquidityOperation(struct MasterChefV3.UserPositionInfo positionInfo, uint256 _tokenId, uint256 _newMultiplier) internal
 ```
 
-#### increaseLiquidity
+### increaseLiquidity
 
 ```solidity
 function increaseLiquidity(struct INonfungiblePositionManagerStruct.IncreaseLiquidityParams params) external payable returns (uint128 liquidity, uint256 amount0, uint256 amount1)
@@ -660,7 +658,7 @@ Increases the amount of liquidity in a position, with tokens paid by the `msg.se
 | amount0   | uint256 | The amount of token0 to acheive resulting liquidity  |
 | amount1   | uint256 | The amount of token1 to acheive resulting liquidity  |
 
-#### pay
+### pay
 
 ```solidity
 function pay(address _token, uint256 _amount) internal
@@ -675,7 +673,7 @@ Pay.
 | \_token  | address | The token to pay  |
 | \_amount | uint256 | The amount to pay |
 
-#### refund
+### refund
 
 ```solidity
 function refund(address _token, uint256 _amount) internal
@@ -690,7 +688,7 @@ Refund.
 | \_token  | address | The token to refund  |
 | \_amount | uint256 | The amount to refund |
 
-#### decreaseLiquidity
+### decreaseLiquidity
 
 ```solidity
 function decreaseLiquidity(struct INonfungiblePositionManagerStruct.DecreaseLiquidityParams params) external returns (uint256 amount0, uint256 amount1)
@@ -711,7 +709,7 @@ Decreases the amount of liquidity in a position and accounts it to the position
 | amount0 | uint256 | The amount of token0 accounted to the position's tokens owed |
 | amount1 | uint256 | The amount of token1 accounted to the position's tokens owed |
 
-#### collect
+### collect
 
 ```solidity
 function collect(struct INonfungiblePositionManagerStruct.CollectParams params) external returns (uint256 amount0, uint256 amount1)
@@ -734,7 +732,7 @@ _Warning!!! Please make sure to use multicall to call unwrapWETH9 or sweepToken 
 | amount0 | uint256 | The amount of fees collected in token0 |
 | amount1 | uint256 | The amount of fees collected in token1 |
 
-#### collectTo
+### collectTo
 
 ```solidity
 function collectTo(struct INonfungiblePositionManagerStruct.CollectParams params, address to) external returns (uint256 amount0, uint256 amount1)
@@ -742,7 +740,7 @@ function collectTo(struct INonfungiblePositionManagerStruct.CollectParams params
 
 Collect fees and refund.
 
-#### transferToken
+### transferToken
 
 ```solidity
 function transferToken(address _token, address _to) internal
@@ -757,7 +755,7 @@ Transfer token from MasterChef V3.
 | \_token | address | The token to transfer. |
 | \_to    | address | The to address.        |
 
-#### unwrapWETH9
+### unwrapWETH9
 
 ```solidity
 function unwrapWETH9(uint256 amountMinimum, address recipient) external
@@ -774,7 +772,7 @@ _The amountMinimum parameter prevents malicious contracts from stealing WETH9 fr
 | amountMinimum | uint256 | The minimum amount of WETH9 to unwrap |
 | recipient     | address | The address receiving ETH             |
 
-#### sweepToken
+### sweepToken
 
 ```solidity
 function sweepToken(address token, uint256 amountMinimum, address recipient) external
@@ -792,7 +790,7 @@ _The amountMinimum parameter prevents malicious contracts from stealing the toke
 | amountMinimum | uint256 | The minimum amount of token required for a transfer                        |
 | recipient     | address | The destination address of the token                                       |
 
-#### burn
+### burn
 
 ```solidity
 function burn(uint256 _tokenId) external
@@ -806,7 +804,7 @@ Burns a token ID, which deletes it from the NFT contract. The token must have 0 
 | --------- | ------- | ---------------------------------------- |
 | \_tokenId | uint256 | The ID of the token that is being burned |
 
-#### upkeep
+### upkeep
 
 ```solidity
 function upkeep(uint256 _amount, uint256 _duration, bool _withUpdate) external
@@ -822,7 +820,7 @@ Upkeep period.
 | \_duration   | uint256 | The period duration.                      |
 | \_withUpdate | bool    | Whether call "massUpdatePools" operation. |
 
-#### massUpdatePools
+### massUpdatePools
 
 ```solidity
 function massUpdatePools() internal
@@ -830,7 +828,7 @@ function massUpdatePools() internal
 
 Update cake reward for all the liquidity mining pool.
 
-#### updatePools
+### updatePools
 
 ```solidity
 function updatePools(uint256[] pids) external
@@ -840,7 +838,7 @@ Update cake reward for the liquidity mining pool.
 
 _Avoid too many pools, and a single transaction cannot be fully executed for all pools._
 
-#### setOperator
+### setOperator
 
 ```solidity
 function setOperator(address _operatorAddress) external
@@ -856,7 +854,7 @@ _Callable by owner_
 | ----------------- | ------- | --------------------- |
 | \_operatorAddress | address | New operator address. |
 
-#### setPeriodDuration
+### setPeriodDuration
 
 ```solidity
 function setPeriodDuration(uint256 _periodDuration) external
@@ -872,7 +870,7 @@ _Callable by owner_
 | ---------------- | ------- | -------------------- |
 | \_periodDuration | uint256 | New period duration. |
 
-#### updateFarmBoostContract
+### updateFarmBoostContract
 
 ```solidity
 function updateFarmBoostContract(address _newFarmBoostContract) external
@@ -886,7 +884,7 @@ Update farm boost contract address.
 | ---------------------- | ------- | ----------------------------- |
 | \_newFarmBoostContract | address | The new farm booster address. |
 
-#### safeTransferETH
+### safeTransferETH
 
 ```solidity
 function safeTransferETH(address to, uint256 value) internal
@@ -901,7 +899,7 @@ Transfer ETH in a safe way
 | to    | address |             |
 | value | uint256 |             |
 
-#### \_safeTransfer
+### \_safeTransfer
 
 ```solidity
 function _safeTransfer(address _to, uint256 _amount) internal
@@ -916,7 +914,7 @@ Safe Transfer CAKE.
 | \_to     | address | The CAKE receiver address. |
 | \_amount | uint256 | Transfer CAKE amounts.     |
 
-#### receive
+### receive
 
 ```solidity
 receive() external payable
