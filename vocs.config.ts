@@ -24,7 +24,7 @@ export default defineConfig({
             link: '/contracts/v4/overview',
             items: [
               {
-                text: 'Accouting Layer | Vault',
+                text: 'Accounting Layer | Vault',
                 link: '/contracts/v4/overview/accounting-layer-vault',
               },
               {

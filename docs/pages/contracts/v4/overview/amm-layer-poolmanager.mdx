@@ -1,13 +1,13 @@
 # AMM Layer | PoolManager
 
-Pool Managers are singleton contract that encapsulates the logic for different types of AMMs. In the initial deployment, there will be 2 AMM types, visit their respective page to learn more about them. 
+Pool Managers are singleton contract that encapsulates the logic for different types of AMMs. In the initial deployment, there will be 2 AMM types, visit their respective page to learn more about them.
 
 1. [CLPoolManager](/contracts/v4/overview/amm-layer/concentrated-liquidity)
 2. [BinPoolManager](/contracts/v4/overview/amm-layer/liquidity-book)
 
 ### Singleton
 
-In PancakeSwap v3, each pool is a seperate contract. In PancakeSwap v4, all pools will be encapsulated in a single PoolManager contract. For example, all concentrated liquidity pools in [CLPoolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/pool-cl/CLPoolManager.sol) and all liquidity book pools in [BinPoolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/pool-bin/BinPoolManager.sol)
+In PancakeSwap v3, each pool is a separate contract. In PancakeSwap v4, all pools will be encapsulated in a single PoolManager contract. For example, all concentrated liquidity pools in [CLPoolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/pool-cl/CLPoolManager.sol) and all liquidity book pools in [BinPoolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/pool-bin/BinPoolManager.sol)
 
 
 ### PoolKey | PoolId
@@ -38,7 +38,7 @@ struct PoolKey {
 
 ### Initializing a Pool
 
-Before swap or liquidity operations can be performed on a pool, the first step would be to initialize the pool. To initialize, call either `CLPoolManager` or `BinPoolManager` initialize method. 
+Before swap or liquidity operations can be performed on a pool, the first step would be to initialize the pool. To initialize, call either `CLPoolManager` or `BinPoolManager` initialize method.
 
 ```solidity
 // CLPoolManager

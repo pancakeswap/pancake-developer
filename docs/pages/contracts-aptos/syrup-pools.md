@@ -133,7 +133,7 @@ public entry fun emergency_withdraw<StakeToken, RewardToken, UID>(account: &sign
 
 ### Get Pool Info
 
-Get the pool informations.
+Get the pool information.
 
 ```rust
 public fun get_pool_info<StakeToken, RewardToken, UID>(): (u64, u64, u64, u64, u64, u64, u64)
