@@ -67,7 +67,6 @@ export default defineConfig({
           },
           {
             text: 'Resources',
-            collapsed: true,
             items: [
               {
                 text: 'Github',
