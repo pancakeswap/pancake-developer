@@ -4,11 +4,6 @@ description: Fork of Uniswap v3
 
 # PancakeSwap v3 Addresses
 
-[Pancakev3Factory](/contracts/v3/pancakev3factory)
-
-[SmartRouterv3](/contracts/v3/smartrouter)
-
-
 ## Core
 
 | Contract              | BSC, ETH, zkEVM, ARB, Linea, GOR, Base, opBNB, BSC TESTNET / MAINNET | zkSync                                     |

@@ -2,6 +2,8 @@
 
 ## Solidity API
 
+MasterChefV3 is used to provide CAKE emission to PancakeSwapV3 pools. 
+
 ### PoolInfo
 
 ```solidity

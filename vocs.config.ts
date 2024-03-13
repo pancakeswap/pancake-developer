@@ -67,6 +67,7 @@ export default defineConfig({
           },
           {
             text: 'Resources',
+            collapsed: true,
             items: [
               {
                 text: 'Github',
@@ -162,8 +163,8 @@ export default defineConfig({
             collapsed: true,
             items: [
               {
-                text: 'v2',
-                link: '/contracts/masterchef/masterchef-v2',
+                text: 'Addresses',
+                link: '/contracts/masterchef/addresses',
               },
               {
                 text: 'v3',
