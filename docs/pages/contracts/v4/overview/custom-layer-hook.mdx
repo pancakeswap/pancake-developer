@@ -14,7 +14,7 @@ Hooks allow developers to add customization to a pool by having callbacks in the
 
 In order to initialize a pool with the hook, there are a few pointers to note:
 
-1. Have the hook contract deployed and the callback required defined in `getHooksRegistrationBitmap` method
+1. Have the hook contract deployed (no address mining is required) and the callback required defined in `getHooksRegistrationBitmap` method
 
 ```solidity
 /// @dev Below indicate `beforeSwap` callback required
@@ -53,6 +53,39 @@ key = PoolKey({
 /// Initialize the pool 
 poolManager.initialize(key, Constants.SQRT_RATIO_1_1, new bytes(0));
 ```
+
+## FAQ(s)
+
+-----
+
+**Q1: Can the hook contract be at any address?**
+
+Hook can be deployed on any address. The callback permission required are defined in `poolkey.parameters` and are immutable. Any changes to callback permission will require a new pool.
+
+-----
+
+**Q2: Can you explain more about `poolKey.parameters`?**
+
+`poolKey.parameters` is a bytes32 parameters which includes hook callback required and the format is as follows:
+
+```solidity 
+// first 16 bits for hooks callback 
+[0 - 15]: reserve for hooks callback
+
+// other bits can be used by each pool type. eg.
+[16 - 39] concentrated liquidity pool tick spacing 
+[16 - 31] bin pool bin step  
+[16 - xx] other new pool type config
+```
+
+For example in `ICLHooks.sol`, if the bit 0 is has the value of 1, beforeInitialise callback is required.
+
+```solidity 
+uint8 constant HOOKS_BEFORE_INITIALIZE_OFFSET = 0;
+```
+
+However, all of this are made easier for you! eg. To define callback required in parameters simply overwrite `getHooksRegistrationBitmap` in your hooks and call `hooks.getHooksRegistrationBitmap` shown above
+
 
 ## List of hooks 
 
