@@ -1,0 +1,73 @@
+# Accounting Layer | Vault
+
+At the core of this architecture is the 
+[Vault](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/Vault.sol), which functions as an immutable accounting layer. It maintains a ledger of tokens that are either deposited or owed, facilitating a secure and efficient settlement process at the end of each transaction.
+
+## Lock Mechanism 
+
+One of the key mechaism in the vault is the **lock mechanism**. Caller need to get a lock from the vault before performing any operation (swap, liquidity or donate) with the pool manager.
+
+![Vault](/v4/vault.png)
+
+The high level steps are as follow: 
+
+1. Acquire a lock from the vault via `vault.lock()` and the vault will perform a callback to the caller `lockAcquired(data)` 
+
+2. Within `lockAcquired(data)`, caller perform action such as swap `clPoolManager.swap(...)` or liquidity `clPoolManager.modifyLiquidity(..)`
+
+3. The poolManager will inform vault of the balance changes through `vault.accountPoolBalanceDelta(...)`w
+
+4. Caller will then need to reconcile the balance with the vault through either of the 4 methods: `take(), settle(), mint() or burn()`.
+ 
+```solidity
+// An example of the 4 steps process, some codes are removed to keep this simple
+// Ref: https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-bin/BinFungiblePositionManager.sol 
+contract BinFungiblePositionManager {
+    function addLiquidity(AddLiquidity calldata params) external {
+        // Step 1: Get a lock
+        vault.lock(..)
+    }
+
+    function lockAcquired(bytes calldata rawData) external {
+        // Step 2: Perform action with pool manager
+        CallbackData memory data = abi.decode(rawData, (CallbackData));
+        (BalanceDelta delta, ) = poolManager.mint(...)
+
+        // Step 4: Reconcile balance, an example of token0 below
+        if (delta.amount0() > 0) {
+            // transfer token0 to the vault first then call vault.settle
+            vault.settle(poolKey.currency0, user, uint128(delta.amount0()))
+        } else {
+            vault.take(poolKey.currency0, user, uint128(-delta.amount0()))
+        }
+    }
+}
+```
+
+## Reconciling balance
+
+BalanceDelta is returned whenever you perform some actions with [poolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/pool-cl/CLPoolManager.sol), eg. `swap | modifyLiquidity | donate`. It contains `int128 amount0` and `int128 amount1` that we need to take or settle with the vault.
+
+### Negative balance delta
+In this case, vault owes the caller the amount of token. 
+
+Caller have 2 choices:
+
+1. `vault.take(Currency currency, address to, uint256 amount)` - this will transfer the owed token from vault to the address (specified in `address to`). 
+
+2. `vault.mint(Currency currency, address to, uint256 amount)` - this will store the surplus token on the vault and credit it to `address to`.
+
+### Positive balance delta
+In this case, caller owes the vault the amount of token. 
+
+Caller have 2 choices:
+
+1. Transfer token to the vault and call `vault.settle(Currency token)`
+
+2. Assuming caller have done `vault.mint` earlier to store surplus token on the vault, caller can call `vault.burn(Currency currency, uint256 amount)` now to use those surplus token stored in vault.
+
+### When to use `take/mint/settle/burn`?
+
+It really depends on your use case, for most use case, `take/settle` is sufficient. 
+
+However if your developing a contract which does a lot of trades eg. arbitrage bot, you can consider `mint/burn` to save on the gas cost by reducing the number of ERC-20 token transfer.

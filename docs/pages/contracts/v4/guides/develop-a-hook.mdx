@@ -1,0 +1,287 @@
+import { Callout } from 'vocs/components'
+
+# Develop a hook
+
+In this guide, we'll develop a hook for concentrated liquidity pool. The same step will apply for liquidity book. We'll start with introducing hook template before the step by step guide section.
+
+## Hooks template 
+
+Proceed to https://github.com/pancakeswap/pancake-v4-hooks-template for the hook template. Click `Use this template` to create a new repository based on the template.
+
+Once the new repository is cloned to local setup, run the following commands: 
+```
+> forge install // install dependencies
+> forge test // run the existing tests in the repository
+```
+
+Within both `src` and `test` there are 2 folders: `pool-cl` and `pool-bin`. If you are developing for concentrated liquidity pool, focus on pool-cl folder, otherwise pool-bin folder for the liquidity book pool type.
+
+### BaseHook
+BaseHook is a base contract where you will inherit for your hooks. It provides 
+
+1. helper method: `_hooksRegistrationBitmapFrom` to set up the callback required
+2. callback method: for you to overwrite
+
+```solidity 
+// Snippet from CLCounterHook.sol
+import {CLBaseHook} from "./CLBaseHook.sol";
+
+contract CLCounterHook is CLBaseHook {
+
+  constructor(ICLPoolManager _poolManager) CLBaseHook(_poolManager) {}
+
+  // 1. Set up callback required. in this case, 4 callback are required 
+  function getHooksRegistrationBitmap() external pure override returns (uint16) {
+    return _hooksRegistrationBitmapFrom(
+        Permissions({
+            beforeInitialize: false,
+            afterInitialize: false,
+            beforeAddLiquidity: true,
+            afterAddLiquidity: true,
+            beforeRemoveLiquidity: false,
+            afterRemoveLiquidity: false,
+            beforeSwap: true,
+            afterSwap: true,
+            beforeDonate: false,
+            afterDonate: false,
+            noOp: false
+        })
+    );
+  }
+
+  // 2. For each callback required, overwrite the method 
+  function beforeAddLiquidity(address,PoolKey calldata key, ICLPoolManager.ModifyLiquidityParams calldata, bytes calldata) 
+    external override poolManagerOnly returns (bytes4) {
+      // implement hook logic and then return selector 
+      return this.beforeAddLiquidity.selector;
+  }
+}
+
+```
+
+## Step by step guide
+
+We will develop a hook that allows [veCake](https://docs.pancakeswap.finance/products/vecake/what-is-vecake) holder to get a 50% swap fee discount when swapping through pool with this hook.
+
+<Callout type="info">
+  You may also watch the step by step tutorial at youtube embedded link
+</Callout>
+
+### Step 1: Downlaod hook template
+
+1. Create a new repository from the template: https://github.com/pancakeswap/pancake-v4-hooks-template 
+2. Clone the repository locally and run `forge install` and `forge test` to verify setup.
+
+### Step 2: Implementation idea
+
+The flow will be as follows:
+
+1. Before swap, CLPoolManager will call `hook.beforeSwap()` 
+2. At `beforeSwap()`, hook call `CLPoolManager.updateDynamicSwapFee()`
+3. At `CLPoolManager.updateDynamicSwapFee()`, pool manager will call `hook.getFee()` to fetch the swap fee. This is where our hook will check and return either default swap fee or 50% discount. Pool manager will save the returned value from the value and set that as swap fee for the pool.
+
+![High level](/v4/guides-develop-hook-1.png)
+
+
+### Step 3: Implement the hook
+
+We'll perform the following:
+
+1. add `beforeSwap` permission 
+2. call `poolManager.updateDynamicSwapFee(key)` in `beforeSwap()` 
+3. implement `getFee` method 
+
+Create a file called at `src/pool-cl/VeCakeDiscountHook.sol` and implement the following:
+
+<details>
+  <summary>View `VeCakeDiscountHook` complete source code</summary>
+  
+  ```solidity
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.24;
+
+import {PoolKey} from "@pancakeswap/v4-core/src/types/PoolKey.sol";
+import {PoolId, PoolIdLibrary} from "@pancakeswap/v4-core/src/types/PoolId.sol";
+import {FeeLibrary} from "@pancakeswap/v4-core/src/libraries/FeeLibrary.sol";
+import {ICLPoolManager} from "@pancakeswap/v4-core/src/pool-cl/interfaces/ICLPoolManager.sol";
+import {ICLDynamicFeeManager} from "@pancakeswap/v4-core/src/pool-cl/interfaces/ICLDynamicFeeManager.sol";
+import {CLBaseHook} from "./CLBaseHook.sol";
+
+interface IVeCake {
+    function balanceOf(address account) external view returns (uint256 balance);
+}
+
+/// @notice VeCakeDiscountHook is a dynamic swap fee hook that provide swap fee discount for veCake holders
+///         To keep this simple, so long swapper has >= 1 veCake, they will get 50% discount on swap fee
+contract VeCakeDiscountHook is CLBaseHook, ICLDynamicFeeManager {
+    using PoolIdLibrary for PoolKey;
+    using FeeLibrary for uint24;
+
+    IVeCake veCake;
+
+    constructor(ICLPoolManager _poolManager, address _veCake) CLBaseHook(_poolManager) {
+        veCake = IVeCake(_veCake);
+    }
+
+    function getHooksRegistrationBitmap() external pure override returns (uint16) {
+        return _hooksRegistrationBitmapFrom(
+            Permissions({
+                beforeInitialize: false,
+                afterInitialize: false,
+                beforeAddLiquidity: false,
+                afterAddLiquidity: false,
+                beforeRemoveLiquidity: false,
+                afterRemoveLiquidity: false,
+                beforeSwap: true,
+                afterSwap: false,
+                beforeDonate: false,
+                afterDonate: false,
+                noOp: false
+            })
+        );
+    }
+
+    function beforeSwap(address, PoolKey calldata key, ICLPoolManager.SwapParams calldata, bytes calldata)
+        external
+        override
+        poolManagerOnly
+        returns (bytes4)
+    {
+        poolManager.updateDynamicSwapFee(key);
+        return this.beforeSwap.selector;
+    }
+
+    function getFee(address, PoolKey calldata key) external view override returns (uint24 swapFee) {
+        if (veCake.balanceOf(tx.origin) >= 1 ether) {
+            swapFee = key.fee.getStaticFee() / 2;
+        } else {
+            swapFee = key.fee.getStaticFee();
+        }
+    }
+}
+```
+</details>
+
+
+
+### Step 4: Add Hook test
+
+In the test, we'll test 2 scenarios:
+
+1. when swapping as a normal user
+1. when swapping as a veCkae holder
+
+<Callout type="warning">
+    The assertion has been simplified, in the real world, you should calculate the `amtOut` and verify it. 
+</Callout>
+
+Create a file called at `test/pool-cl/VeCakeDiscountHook.t.sol` and implement the following:
+
+<details>
+    <summary> View complete source code here </summary>
+    
+```solidity
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.24;
+
+import {MockERC20} from "solmate/test/utils/mocks/MockERC20.sol";
+import {Test} from "forge-std/Test.sol";
+import {Constants} from "@pancakeswap/v4-core/test/pool-cl/helpers/Constants.sol";
+import {Currency} from "@pancakeswap/v4-core/src/types/Currency.sol";
+import {PoolKey} from "@pancakeswap/v4-core/src/types/PoolKey.sol";
+import {CLPoolParametersHelper} from "@pancakeswap/v4-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
+import {FeeLibrary} from "@pancakeswap/v4-core/src/libraries/FeeLibrary.sol";
+import {VeCakeDiscountHook} from "../../src/pool-cl/VeCakeDiscountHook.sol";
+import {CLTestUtils} from "./utils/CLTestUtils.sol";
+import {CLPoolParametersHelper} from "@pancakeswap/v4-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
+import {PoolIdLibrary} from "@pancakeswap/v4-core/src/types/PoolId.sol";
+import {ICLSwapRouterBase} from "pancake-v4-periphery/src/pool-cl/interfaces/ICLSwapRouterBase.sol";
+
+contract VeCakeDiscountHookTest is Test, CLTestUtils {
+    using PoolIdLibrary for PoolKey;
+    using CLPoolParametersHelper for bytes32;
+
+    VeCakeDiscountHook hook;
+    Currency currency0;
+    Currency currency1;
+    PoolKey key;
+    MockERC20 veCake = new MockERC20("veCake", "veCake", 18);
+    address alice = makeAddr("alice");
+
+    function setUp() public {
+        (currency0, currency1) = deployContractsWithTokens();
+        hook = new VeCakeDiscountHook(poolManager, address(veCake));
+
+        // create the pool key
+        key = PoolKey({
+            currency0: currency0,
+            currency1: currency1,
+            hooks: hook,
+            poolManager: poolManager,
+            // 0.3% fee for swapFee, however hook can overwrite the swapFee
+            fee: FeeLibrary.DYNAMIC_FEE_FLAG + uint24(3000),
+            // tickSpacing: 10
+            parameters: bytes32(uint256(hook.getHooksRegistrationBitmap())).setTickSpacing(10)
+        });
+
+        // initialize pool at 1:1 price point
+        poolManager.initialize(key, Constants.SQRT_RATIO_1_1, new bytes(0));
+
+        // add deep liquidity so that swap fee discount can be observed
+        MockERC20(Currency.unwrap(currency0)).mint(address(this), 100 ether);
+        MockERC20(Currency.unwrap(currency1)).mint(address(this), 100 ether);
+        addLiquidity(key, 100 ether, 100 ether, -60, 60);
+
+        // approve from alice for swap in the test cases below
+        vm.startPrank(alice);
+        MockERC20(Currency.unwrap(currency0)).approve(address(swapRouter), type(uint256).max);
+        MockERC20(Currency.unwrap(currency1)).approve(address(swapRouter), type(uint256).max);
+        vm.stopPrank();
+    }
+
+    function testNonVeCakeHolder() public {
+        uint256 amtOut = _swap();
+
+        // amt out be at least 0.3% lesser due to swap fee
+        assertLe(amtOut, 0.997 ether);
+    }
+
+    function testVeCakeHolder() public {
+        // mint alice veCake
+        veCake.mint(address(alice), 1 ether);
+
+        uint256 amtOut = _swap();
+
+        // amt out be at least 0.15% lesser due to swap fee
+        assertLe(amtOut, 0.9985 ether);
+        assertGe(amtOut, 0.997 ether); // 0.15% swap fee, should be at least 0.997
+    }
+
+    function _swap() internal returns (uint256 amtOut) {
+        MockERC20(Currency.unwrap(currency0)).mint(address(alice), 1 ether);
+
+        // set alice as tx.origin and mint alice token
+        vm.prank(address(alice), address(alice));
+
+        amtOut = swapRouter.exactInputSingle(
+            ICLSwapRouterBase.V4CLExactInputSingleParams({
+                poolKey: key,
+                zeroForOne: true,
+                recipient: address(alice),
+                amountIn: 1 ether,
+                amountOutMinimum: 0,
+                sqrtPriceLimitX96: 0,
+                hookData: new bytes(0)
+            }),
+            block.timestamp
+        );
+    }
+}
+```
+
+</details>
+
+
+### Step 5: Verify 
+
+Run `forge test` to verify test passing.

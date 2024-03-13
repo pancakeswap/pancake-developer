@@ -1,0 +1,263 @@
+import { Callout } from 'vocs/components'
+
+# Liquidity and swap for liquidity book pool
+
+In this guide, We'll make use of periphery contracts from [v4-periphery](https://github.com/pancakeswap/pancake-v4-periphery)
+
+1. Liquidity operations with `BinFungiblePositionManager` 
+2. Swaps via `BinSwapRouter`
+
+
+<Callout type="info">
+  Before calling any of the functions below, do approve either BinFungiblePositionManager or BinSwapRouter.
+</Callout>
+
+## Liquidity operations
+
+[BinFungiblePositionManager](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-bin/BinFungiblePositionManager.sol) 
+
+### Add liquidity
+
+```solidity
+IBinFungiblePositionManager.AddLiquidityParams memory params = IBinFungiblePositionManager
+  .AddLiquidityParams({
+    poolKey: key,
+    amount0: amountX,
+    amount1: amountY,
+    amount0Min: 0, // note in real world, this should not be 0
+    amount1Min: 0, // note in real world, this should not be 0
+    activeIdDesired: uint256(currentActiveId),
+    idSlippage: 0,
+    deltaIds: convertToRelative(binIds, currentActiveId),
+    distributionX: distribX,
+    distributionY: distribY,
+    to: address(this),
+    deadline: block.timestamp + 600
+});
+
+(uint128 amount0, uint128 amount1, uint256[] memory tokenIds, uint256[] memory liquidityMinted) 
+  = positionManager.addLiquidity(params);
+
+/// @dev Given list of binIds and activeIds, return the delta ids.
+//       eg. given id: [100, 101, 102] and activeId: 101, return [-1, 0, 1]
+function convertToRelative(uint24[] memory absoluteIds, uint24 activeId)
+  internal
+  pure
+  returns (int256[] memory relativeIds) {
+    relativeIds = new int256[](absoluteIds.length);
+    for (uint256 i = 0; i < absoluteIds.length; i++) {
+      relativeIds[i] = int256(uint256(absoluteIds[i])) - int256(uint256(activeId));
+    }
+}
+```
+
+Input:
+
+- `poolKey`: struct which identify the pool 
+- `amount0 | amount1`: amount of token0 and token1 
+- `amount0Min | amount1Min`: min amount of token0 and token1. transaction will revert if required token is lesser 
+- `activeIdDesired`: active id preferred when adding liquidity 
+- `idSlippage`: max slippage on active id. transaction will revert if activeId changes more than idSlippage val
+- `deltaIds`: list of delta ids to add liquidity (`deltaId = activeId - desiredId`). see helper method `convertToRelative` above
+- `distributionX`: distribution of token0 with sum(distributionX) = 100e18 (100%)
+- `distributionY`: distribution of token1 with sum(distributionY) = 100e18 (100%)
+- `to`: address of recipient to recieve the 1155 token which represent ownership of liquidity 
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+Output:
+- `amount0`: amount of token0 used for adding liquidity 
+- `amount0`: amount of token1 used for adding liquidity 
+- `tokenIds`: list of tokenIds minted for each bin 
+- `liquidityMinted`: list of liquidity minted for each bin 
+
+
+### Remove liqudiity 
+
+```solidity 
+IBinFungiblePositionManager.RemoveLiquidityParams memory params = IBinFungiblePositionManager
+  .RemoveLiquidityParams({
+    poolKey: key,
+    amount0Min: 0,
+    amount1Min: 0,
+    ids: ids,
+    amounts: amounts,
+    from: address(this),
+    to: address(this),
+    deadline: block.timestamp
+});
+
+(uint128 amount0, uint128 amount1, uint256[] memory tokenIds) 
+  = positionManager.removeLiquidity(params);
+```
+
+Input:
+
+- `poolKey`: struct which identify the pool 
+- `amount0Min | amount1Min`: min amount of token0 and token1. transaction will revert if token out is lesser
+- `ids`: list of bin ids 
+- `amounts`: list of lquidity to remove for each bin 
+- `from`: Address of holder who have the liquidity 
+- `to`: user to receive the the token0 and token1 from removing liquidity 
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+
+## Swaps
+
+[CLSwapRouter](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-cl/CLSwapRouter.sol) 
+
+### Exact Input Single 
+
+```solidity
+IBinSwapRouterBase.V4BinExactInputSingleParams memory params = IBinSwapRouterBase
+  .V4BinExactInputSingleParams({
+    poolKey: key1,
+    swapForY: true, 
+    recipient: address(this),
+    amountIn: 1 ether,
+    amountOutMinimum: 0,
+    hookData: new bytes(0)
+});
+
+uint256 amtOut = router.exactInputSingle(params, block.timestamp);
+```
+
+Input:
+
+- `poolKey`: struct which identify the pool 
+- `swapForY`: if true swap token0 for token1, else swap token1 for token0
+- `recipient`: address to receive the output token 
+- `amountIn`: desired amount in
+- `amountOutMinimum`: min amount out. transaction revert if amount out is lesser 
+- `hookData`: if set, will be passed to hooks in both beforeSwap and afterSwap 
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+Output: 
+
+- `amountOut`: amount of token out from the swap
+
+
+### Exact Input 
+
+```solidity 
+bytes32 params;
+ISwapRouterBase.PathKey[] memory path = new ISwapRouterBase.PathKey[](2);
+
+path[0] = ISwapRouterBase.PathKey({
+  intermediateCurrency: currency1,
+  fee: uint24(3000),
+  hooks: IHooks(address(0)),
+  hookData: new bytes(0),
+  poolManager: poolManager,
+  parameters: params.setBinStep(10)
+});
+
+path[1] = ISwapRouterBase.PathKey({
+  intermediateCurrency: currency2,
+  fee: uint24(3000),
+  hooks: IHooks(address(0)),
+  hookData: new bytes(0),
+  poolManager: poolManager,
+  parameters: params.setBinStep(10)
+});
+
+IBinSwapRouterBase.V4BinExactInputParams memory input = IBinSwapRouterBase
+  .V4BinExactInputParams({
+    currencyIn: currency0,
+    path: path,
+    recipient: address(this),
+    amountIn: 1 ether,
+    amountOutMinimum: 0
+});
+
+uint256 amountOut = router.exactInput(input, block.timestamp);
+```
+
+Input:
+
+- `currencyIn`: input token 
+- `path`: Array of `PathKey[]` which describe the pool to hop 
+- `recipient`: address to receive the output token 
+- `amountIn`: desired amount in
+- `amountOutMinimum`: min amount out. transaction revert if amount out is lesser 
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+Output:
+- `amountOut`: amount of token out from the swap 
+
+
+### Exact Output Single 
+
+```solidity
+IBinSwapRouterBase.V4ExactOutputSingleParams memory input = IBinSwapRouterBase
+  .V4ExactOutputSingleParams({
+    poolKey: key1,
+    swapForY: false,
+    recipient: address(this),
+    amountOut: 1 ether,
+    amountInMaximum: 1.1 ether,
+    hookData: new bytes(0)
+});
+
+uint256 amountIn = router.exactOutputSingle(input, block.timestamp);
+```
+
+Input:
+
+- `poolKey`: struct which identify the pool 
+- `swapForY`: if true swap token0 for token1, else swap token1 for token0
+- `recipient`: address to receive the output token 
+- `amountOut`: desired amount out
+- `amountInMaximum`: max amount in. transaction revert if amount out is lesser 
+- `hookData`: if set, will be passed to hooks in both beforeSwap and afterSwap 
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+Output: 
+- `amountIn`: amount of token in from the swap 
+
+
+### Exact Output
+
+```solidity
+bytes32 params;
+ISwapRouterBase.PathKey[] memory path = new ISwapRouterBase.PathKey[](2);
+path[0] = ISwapRouterBase.PathKey({
+  intermediateCurrency: currency0,
+  fee: uint24(3000),
+  hooks: IHooks(address(0)),
+  hookData: new bytes(0),
+  poolManager: poolManager,
+  parameters: params.setBinStep(10)
+});
+
+path[1] = ISwapRouterBase.PathKey({
+  intermediateCurrency: currency1,
+  fee: uint24(3000),
+  hooks: IHooks(address(0)),
+  hookData: new bytes(0),
+  poolManager: poolManager,
+  parameters: params.setBinStep(10)
+});
+
+IBinSwapRouterBase.V4ExactOutputParams memory input = IBinSwapRouterBase
+  .V4ExactOutputParams({
+    currencyOut: currency2,
+    path: path,
+    recipient: address(this),
+    amountOut: 1 ether,
+    amountInMaximum: 1.1 ether
+});
+
+uint256 amountIn = router.exactOutput(input, block.timestamp);
+```
+
+Input:
+
+- `currencyOut`: output token 
+- `path`: Array of `PathKey[]` which describe the pool to hop 
+- `recipient`: address to receive the output token 
+- `amountOut`: desired amount out
+- `amountInMaximum`: max amount out. transaction revert if amountIn required is more.  
+- `deadline`: deadline of this transaction. transaction will revert if `block.timestamp` is greater than `deadline` 
+
+Output: 
+- `amountIn`: amount of token in from the swap 

@@ -1,0 +1,93 @@
+import { Callout } from 'vocs/components'
+
+# Liquidity Book
+
+## Overview 
+
+In liquidity book AMM type, liquidity providers (LPs) have the flexibility to add liquidity in any shapes in a single call. Whereas liquidity are added in a uniform manner across the chosen price range for concentrated liquidity type.
+
+To add liquidity, LPs will specify a byte32 liquidityConfigs array. Each item in the array would indicate which bin and the percentage of amountIn would be added to this bin. For more details, see guides section on liquidity book.
+
+```solidity
+struct MintParams {
+  /// @dev see more at LiquidityConfigurations.sol
+  ///   [0 - 24[: id
+  ///   [24 - 88[: distributionY - 1e18 represent 100% of token into this bin
+  ///   [88 - 152[: distributionX - 1e18 represent 100% of token into this bin 
+  ///   [152 - 256[: empty
+  bytes32[] liquidityConfigs;
+
+  /// @dev amountIn intended
+  bytes32 amountIn;
+}
+
+/// @dev see more at BinPoolManager.sol 
+function mint(PoolKey memory key, IBinPoolManager.MintParams calldata params, bytes calldata hookData);
+```
+
+## Concepts
+
+### Bin
+
+![Liquidity book](/v4/amm-layer-poolmanager-bin-1.png)
+
+Think of bin as bucket where liquidity reside and there are a finite number of bins for each pool. Each bin has a price and id associated. 
+
+<Callout type="info">
+If a trade happen within a bin, it will incur 0 slippge. However if the trade consume all the liquidity within the bin and cross over to the next bin, there will be slippage.
+</Callout>
+
+### Bin Step
+
+Bin step define the minimum price movement between two adjacent bin. This is one of the parameter in `PoolKey`. Keep in mind that there are trade off. While smaller bin steps allow for more precise positioning of liquidity, it might come with higher gas cost potentially. Larger bin step could be cheaper on gas but comes with higher slippage in trade execution potentially.
+
+| Bin Step | Price movement between bin |
+| ------ | ------ |
+| 1 |  0.01% |
+| 10 | 0.1% |
+| 20  | 0.2% |
+| 100  | 1% |
+
+Upon initial deployment, the largest `BIN_STEP` for a pool can be 100. The limit can be raised in the future through governance process.
+
+### Bin Active id
+
+Think of `activeId` as the current bin id. To retrieve the activeId of the bin
+
+```solidity 
+// ref: BinPoolManager.sol
+binPoolManager.getSlot0(PoolId) external 
+  returns (uint24 activeId, uint16 protocolFee, uint24 swapFee);
+```
+
+### Bin Pricing 
+
+Given the current `activeId` and `binStep`, we can calculate the current price of the pool.
+
+```
+price: (1 + binStep / 10_000) ** (activeId - 8388608)
+```
+
+Example: USDT/USDC pool with bin step = 1 and activeId = 8388608
+
+```
+price: (1 + 1 / 10_000) ** (8388608 - 8388608) = 1
+// this means 1 USDT = 1 USDC 
+```
+
+
+### Fungible liquidity
+
+An advantage of Liquidity book is the fungible liquidity. Fungible liquidity provides flexibility in downstream defi application. When LPs add liquidity via `BinFungiblePositionManager.sol`, they get ERC1155 token.
+
+```solidity
+/// Ref BinFungibleToken.sol (similar to ERC1155)
+function _mint(address to, uint256 id, uint256 amount) internal {
+  totalSupply[id] += amount;
+  unchecked {
+    balanceOf[to][id] += amount;
+  }
+}
+```
+
+See [BinFungiblePositionManager](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-bin/BinFungiblePositionManager.sol#L189) on how a token is minted to the liquidity provider.

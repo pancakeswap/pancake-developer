@@ -1,0 +1,49 @@
+# AMM Layer | PoolManager
+
+Pool Managers are singleton contract that encapsulates the logic for different types of AMMs. In the initial deployment, there will be 2 AMM types, visit their respective page to learn more about them. 
+
+1. [CLPoolManager](/contracts/v4/overview/amm-layer/concentrated-liquidity)
+2. [BinPoolManager](/contracts/v4/overview/amm-layer/liquidity-book)
+
+### Singleton
+
+In PancakeSwap v3, each pool is a seperate contract. In PancakeSwap v4, all pools will be encapsulated in a single PoolManager contract. For example, all concentrated liquidity pools in [CLPoolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/pool-cl/CLPoolManager.sol) and all liquidity book pools in [BinPoolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/pool-bin/BinPoolManager.sol)
+
+
+### PoolKey | PoolId
+
+[PoolKey](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/types/PoolKey.sol) is a struct which describe each pool.
+
+```
+/// @notice Returns the key for identifying a pool
+struct PoolKey {
+    /// @notice The lower currency of the pool, sorted numerically
+    Currency currency0;
+    /// @notice The higher currency of the pool, sorted numerically
+    Currency currency1;
+    /// @notice The hooks of the pool, won't have a general interface because hooks interface vary on pool type
+    IHooks hooks;
+    /// @notice The pool manager of the pool
+    IPoolManager poolManager;
+    /// @notice The pool swap fee, capped at 1_000_000. The upper 4 bits determine if the hook sets any fees.
+    uint24 fee;
+    /// @notice Hooks callback and pool specific parameters, i.e. tickSpacing for CL, binStep for bin
+    bytes32 parameters;
+}
+```
+
+
+[PoolId](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/types/PoolId.sol) is a bytes32 of `keccak256(abi.encode(poolKey))` You will notice some input from PoolManager requiring PoolId.
+
+
+### Initializing a Pool
+
+Before swap or liquidity operations can be performed on a pool, the first step would be to initialize the pool. To initialize, call either `CLPoolManager` or `BinPoolManager` initialize method. 
+
+```solidity
+// CLPoolManager
+function initialize(PoolKey memory key, uint160 sqrtPriceX96, bytes calldata hookData);
+
+// BinPoolManager
+function initialize(PoolKey memory key, uint24 activeId, bytes calldata hookData);
+```

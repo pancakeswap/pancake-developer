@@ -17,6 +17,70 @@ export default defineConfig({
   sidebar: {
     '/': [
       {
+        text: 'PancakeSwap V4',
+        items: [
+          {
+            text: 'Overview',
+            link: '/contracts/v4/overview',
+            items: [
+              {
+                text: 'Accouting Layer | Vault',
+                link: '/contracts/v4/overview/accounting-layer-vault',
+              },
+              {
+                text: 'AMM Layer | Pool Manager',
+                collapsed: true,
+                link: '/contracts/v4/overview/amm-layer-poolmanager',
+                items: [
+                  {
+                    text: 'Concentrated Liquidity',
+                    link: '/contracts/v4/overview/amm-layer/concentrated-liquidity',
+                  },
+                  {
+                    text: 'Liquidity Book',
+                    link: '/contracts/v4/overview/amm-layer/liquidity-book',
+                  }
+                ]
+              },
+              {
+                text: 'Custom Layer | Hook',
+                link: '/contracts/v4/overview/custom-layer-hook',
+              },
+            ]
+          },
+          {
+            text: 'Guides',
+            items: [
+              {
+                text: 'Developing a hook',
+                link: '/contracts/v4/guides/develop-a-hook',
+              },
+              {
+                text: 'CL Pool - Swap and Liqudiity',
+                link: '/contracts/v4/guides/concentrated-liquidity-swap-and-liquidity',
+              },
+              {
+                text: 'Bin Pool - Swap and Liquidity',
+                link: '/contracts/v4/guides/liquidity-book-swap-and-liquidity',
+              }
+            ]
+          },
+          {
+            text: 'Resources',
+            items: [
+              {
+                text: 'Github',
+                link: '/contracts/v4/resources/github',
+              },
+              {
+                text: '<WIP> Addresses',
+                link: '/contracts/v4/resources/addresses',
+              },
+            ]
+          }
+        ]
+      },
+      {
         text: 'Exchange v3',
         items: [
           {
@@ -162,7 +226,7 @@ export default defineConfig({
         link: '/contracts/market-maker-pool',
       },
     ],
-    '/contracts-aptos/': [
+    '/contracts-aptos': [
       {
         text: 'Exchange',
         items: [
