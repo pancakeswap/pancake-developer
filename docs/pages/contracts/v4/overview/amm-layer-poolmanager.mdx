@@ -33,8 +33,26 @@ struct PoolKey {
 ```
 
 
-[PoolId](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/types/PoolId.sol) is a bytes32 of `keccak256(abi.encode(poolKey))` You will notice some input from PoolManager requiring PoolId.
+[PoolId](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/types/PoolId.sol) is a bytes32 of `keccak256(abi.encode(poolKey))` You will notice some input from PoolManager requiring PoolId. Derive `PoolId` from `PoolKey` via the following:
 
+```solidity
+import {PoolIdLibrary} from "@pancakeswap/v4-core/src/types/PoolId.sol";
+
+// Use PoolIdLibrary for PoolKey type
+using PoolIdLibrary for PoolKey;
+
+PoolKey memory key = PoolKey({
+  currency0: currency0,
+  currency1: currency1
+  hooks: IHooks(address(0)),
+  poolManager: poolManager,
+  fee: uint24(3000),
+  parameters: bytes32(uint256(counterHook.getHooksRegistrationBitmap())).setTickSpacing(10)
+});
+
+// Get PoolId from PoolKey via PoolIdLibrary
+Poolid id = key.toId();
+```
 
 ### Initializing a Pool
 
