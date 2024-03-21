@@ -15,6 +15,7 @@ export default defineConfig({
   topNav: [
     { text: 'EVM', link: '/contracts/v4/overview' },
     { text: 'Aptos', link: '/contracts-aptos' },
+    { text: 'APIs', link: '/apis/subgraph' },
     { text: 'Bug Bounty', link: '/bug-bounty' },
   ],
   sidebar: {
@@ -147,6 +148,14 @@ export default defineConfig({
       {
         text: '',
         items: [
+          {
+            text: 'Universal Router',
+            link: '/contracts/universal-router/addresses',
+          },
+          {
+            text: 'Permit2',
+            link: '/contracts/permit2/addresses',
+          },
           {
             text: 'StableSwap',
             collapsed: true,
