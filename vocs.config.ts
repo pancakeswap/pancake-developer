@@ -83,6 +83,10 @@ export default defineConfig({
               },
             ],
           },
+          {
+            text: '$500K Developer Program and CAKE Emissions Grant Program',
+            link: 'https://blog.pancakeswap.finance/articles/introducing-pancake-swap-s-500-k-developer-program-and-cake-emissions-grant-program',
+          },
         ],
       },
       {
