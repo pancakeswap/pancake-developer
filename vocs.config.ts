@@ -78,7 +78,7 @@ export default defineConfig({
                 link: '/contracts/v4/resources/github',
               },
               {
-                text: '<WIP> Addresses',
+                text: 'Addresses',
                 link: '/contracts/v4/resources/addresses',
               },
             ],
