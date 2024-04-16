@@ -65,26 +65,19 @@ contract CLCounterHook is CLBaseHook {
 
 We will develop a hook that allows [veCake](https://docs.pancakeswap.finance/products/vecake/what-is-vecake) holder to get a 50% swap fee discount when swapping through pool with this hook.
 
-<Callout type="info">
-The guide is also available in video format
-<iframe width="560" height="315" src="https://www.youtube.com/embed/48zgqAdtPJY?si=tsqMafwXXyJA8F5i" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen;"></iframe>
-</Callout>
-
 ### Step 1: Download hook template
 
-1. Create a new repository from the template: https://github.com/pancakeswap/pancake-v4-hooks-template
+1. Create a new repository from pancake-v4-hooks-template: [Click here](https://github.com/new?template_name=pancake-v4-hooks-template&template_owner=pancakeswap) 
 2. Clone the repository locally and run `forge install` and `forge test` to verify setup.
 
 ### Step 2: Implementation idea
 
 The flow will be as follows:
 
-1. Before swap, CLPoolManager will call `hook.beforeSwap()`
-2. At `beforeSwap()`, hook call `CLPoolManager.updateDynamicSwapFee()`
-3. At `CLPoolManager.updateDynamicSwapFee()`, pool manager will call `hook.getFee()` to fetch the swap fee. This is where our hook will check and return either default swap fee or 50% discount. Pool manager will save the returned value from the value and set that as swap fee for the pool.
+1. Before swap, CLPoolManager will call `hook.beforeSwap()`.
+2. At `beforeSwap()`, hook call `CLPoolManager.updateDynamicSwapFee()` to update the swap fee. This is where our hook will check and return either default swap fee or 50% discount. Pool manager will save the returned value from the value and set that as swap fee for the pool.
 
 ![High level](/v4/guides-develop-hook-1.png)
-
 
 ### Step 3: Implement the hook
 
@@ -92,7 +85,6 @@ We'll perform the following:
 
 1. add `beforeSwap` permission
 2. call `poolManager.updateDynamicSwapFee(key)` in `beforeSwap()`
-3. implement `getFee` method
 
 Let's go through the implementation step by step!
 ::::steps
@@ -100,7 +92,7 @@ Let's go through the implementation step by step!
 Create a file called at `src/pool-cl/VeCakeDiscountHook.sol` and implement the following. The hook contract extends `CLBaseHook` and `ICLDynamicFeeManager`.
 
 ```solidity
-contract VeCakeDiscountHook is CLBaseHook, ICLDynamicFeeManager { // [!code focus]
+contract VeCakeDiscountHook is CLBaseHook { // [!code focus]
     function getHooksRegistrationBitmap() external pure override returns (uint16) {
         return _hooksRegistrationBitmapFrom(
             Permissions({
@@ -121,9 +113,9 @@ contract VeCakeDiscountHook is CLBaseHook, ICLDynamicFeeManager { // [!code focu
 }
 ```
 
-#### 3.2 Call `poolManager.updateDynamicSwapFee(key)` in `beforeSwap()`
+#### 3.2 Call `poolManager.updateDynamicSwapFee(key, swapFee)` in `beforeSwap()`
 We specify the `beforeSwap` permission in the previous step. The CLPoolManager will call `beforeSwap` method before the swap that attached to this hook.
-Now, we'll implement the `beforeSwap` method to call `poolManager.updateDynamicSwapFee(key)`.
+Now, we'll implement the `beforeSwap` method to call `poolManager.updateDynamicSwapFee(key, swapFee)`.
 
 ```solidity
 function beforeSwap(address, PoolKey calldata key, ICLPoolManager.SwapParams calldata, bytes calldata)
@@ -132,20 +124,20 @@ function beforeSwap(address, PoolKey calldata key, ICLPoolManager.SwapParams cal
     poolManagerOnly
     returns (bytes4)
 {
-    poolManager.updateDynamicSwapFee(key);
+    uint24 swapFee = getDefaultSwapFee(key);
+
+    // Give 50% discount if the user is a veCake holder.
+    if (veCake.balanceOf(tx.origin) >= 1 ether) {
+        swapFee = swapFee / 2;
+    }
+
+    poolManager.updateDynamicSwapFee(key, swapFee);
     return this.beforeSwap.selector;
 }
-```
 
-#### 3.3 Implement `getFee` method
-Let's give 50% discount if the user is a veCake holder.
-```solidity
-function getFee(address, PoolKey calldata key) external view override returns (uint24 swapFee) {
-    if (veCake.balanceOf(tx.origin) >= 1 ether) {
-        swapFee = key.fee.getStaticFee() / 2;
-    } else {
-        swapFee = key.fee.getStaticFee();
-    }
+/// @return the default swap fee for the pool
+function getDefaultSwapFee(PoolKey calldata key) internal view returns (uint24) {
+    return key.fee & SwapFeeLibrary.STATIC_FEE_MASK;
 }
 ```
 ::::
@@ -157,8 +149,6 @@ function getFee(address, PoolKey calldata key) external view override returns (u
 // [!include ~/snippets/VeCakeDiscountHook.sol]
 ```
 </details>
-
-
 
 ### Step 4: Add Hook test
 
