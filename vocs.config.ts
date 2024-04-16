@@ -154,7 +154,17 @@ export default defineConfig({
           },
           {
             text: 'Permit2',
-            link: '/contracts/permit2/addresses',
+            collapsed: true,
+            items: [
+              {
+                text: 'Overview',
+                link: '/contracts/permit2',
+              },
+              {
+                text: 'Addresses',
+                link: '/contracts/permit2/addresses',
+              },
+            ],
           },
           {
             text: 'StableSwap',
