@@ -75,7 +75,7 @@ We will develop a hook that allows [veCake](https://docs.pancakeswap.finance/pro
 The flow will be as follows:
 
 1. Before swap, CLPoolManager will call `hook.beforeSwap()`.
-2. At `beforeSwap()`, hook call `CLPoolManager.updateDynamicSwapFee()` to update the swap fee. This is where our hook will check and return either default swap fee or 50% discount. Pool manager will save the returned value from the value and set that as swap fee for the pool.
+2. At `beforeSwap()`, hook call `CLPoolManager.updateDynamicSwapFee()` to update the swap fee. This is where our hook will update swap fee to 50% discount or default fee.
 
 ![High level](/v4/guides-develop-hook-1.png)
 
@@ -84,9 +84,9 @@ The flow will be as follows:
 We'll perform the following:
 
 1. add `beforeSwap` permission
-2. call `poolManager.updateDynamicSwapFee(key)` in `beforeSwap()`
+2. call `poolManager.updateDynamicSwapFee(key, swapFee)` in `beforeSwap()`
 
-Let's go through the implementation step by step!
+Let's go through the implementation step by step
 ::::steps
 #### 3.1 Add `beforeSwap` permission
 Create a file called at `src/pool-cl/VeCakeDiscountHook.sol` and implement the following. The hook contract extends `CLBaseHook` and `ICLDynamicFeeManager`.
@@ -114,7 +114,7 @@ contract VeCakeDiscountHook is CLBaseHook { // [!code focus]
 ```
 
 #### 3.2 Call `poolManager.updateDynamicSwapFee(key, swapFee)` in `beforeSwap()`
-We specify the `beforeSwap` permission in the previous step. The CLPoolManager will call `beforeSwap` method before the swap that attached to this hook.
+We specified `beforeSwap` permission in the previous step. Thus CLPoolManager will call `hook.beforeSwap` method before the swap.
 Now, we'll implement the `beforeSwap` method to call `poolManager.updateDynamicSwapFee(key, swapFee)`.
 
 ```solidity
