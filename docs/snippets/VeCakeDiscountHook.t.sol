@@ -7,7 +7,7 @@ import {Constants} from "@pancakeswap/v4-core/test/pool-cl/helpers/Constants.sol
 import {Currency} from "@pancakeswap/v4-core/src/types/Currency.sol";
 import {PoolKey} from "@pancakeswap/v4-core/src/types/PoolKey.sol";
 import {CLPoolParametersHelper} from "@pancakeswap/v4-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
-import {FeeLibrary} from "@pancakeswap/v4-core/src/libraries/FeeLibrary.sol";
+import {SwapFeeLibrary} from "@pancakeswap/v4-core/src/libraries/SwapFeeLibrary.sol";
 import {VeCakeDiscountHook} from "../../src/pool-cl/VeCakeDiscountHook.sol";
 import {CLTestUtils} from "./utils/CLTestUtils.sol";
 import {CLPoolParametersHelper} from "@pancakeswap/v4-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
@@ -36,7 +36,7 @@ contract VeCakeDiscountHookTest is Test, CLTestUtils {
             hooks: hook,
             poolManager: poolManager,
             // 0.3% fee for swapFee, however hook can overwrite the swapFee
-            fee: FeeLibrary.DYNAMIC_FEE_FLAG + uint24(3000),
+            fee: SwapFeeLibrary.DYNAMIC_FEE_FLAG + uint24(3000),
             // tickSpacing: 10
             parameters: bytes32(uint256(hook.getHooksRegistrationBitmap())).setTickSpacing(10)
         });

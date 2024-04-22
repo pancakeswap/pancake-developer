@@ -3,9 +3,8 @@ pragma solidity ^0.8.24;
 
 import {PoolKey} from "@pancakeswap/v4-core/src/types/PoolKey.sol";
 import {PoolId, PoolIdLibrary} from "@pancakeswap/v4-core/src/types/PoolId.sol";
-import {FeeLibrary} from "@pancakeswap/v4-core/src/libraries/FeeLibrary.sol";
+import {SwapFeeLibrary} from "@pancakeswap/v4-core/src/libraries/SwapFeeLibrary.sol";
 import {ICLPoolManager} from "@pancakeswap/v4-core/src/pool-cl/interfaces/ICLPoolManager.sol";
-import {ICLDynamicFeeManager} from "@pancakeswap/v4-core/src/pool-cl/interfaces/ICLDynamicFeeManager.sol";
 import {CLBaseHook} from "./CLBaseHook.sol";
 
 interface IVeCake {
@@ -14,9 +13,8 @@ interface IVeCake {
 
 /// @notice VeCakeDiscountHook is a dynamic swap fee hook that provide swap fee discount for veCake holders
 ///         To keep this simple, so long swapper has >= 1 veCake, they will get 50% discount on swap fee
-contract VeCakeDiscountHook is CLBaseHook, ICLDynamicFeeManager {
+contract VeCakeDiscountHook is CLBaseHook {
     using PoolIdLibrary for PoolKey;
-    using FeeLibrary for uint24;
 
     IVeCake veCake;
 
@@ -48,15 +46,17 @@ contract VeCakeDiscountHook is CLBaseHook, ICLDynamicFeeManager {
         poolManagerOnly
         returns (bytes4)
     {
-        poolManager.updateDynamicSwapFee(key);
+        uint24 swapFee = getDefaultSwapFee(key);
+        if (veCake.balanceOf(tx.origin) >= 1 ether) {
+            swapFee = swapFee / 2;
+        }
+
+        poolManager.updateDynamicSwapFee(key, swapFee);
         return this.beforeSwap.selector;
     }
 
-    function getFee(address, PoolKey calldata key) external view override returns (uint24 swapFee) {
-        if (veCake.balanceOf(tx.origin) >= 1 ether) {
-            swapFee = key.fee.getStaticFee() / 2;
-        } else {
-            swapFee = key.fee.getStaticFee();
-        }
+    /// @return the default swap fee for the pool
+    function getDefaultSwapFee(PoolKey calldata key) internal view returns (uint24) {
+        return key.fee & SwapFeeLibrary.STATIC_FEE_MASK;
     }
 }
