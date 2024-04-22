@@ -221,8 +221,18 @@ export default defineConfig({
             link: '/contracts/ifo-commit-limit-icake',
           },
           {
-            text: 'Cross Chain CAKE Bridging',
-            link: '/contracts/cross-chain-cake-bridging',
+            text: 'Cake',
+            collapsed: true,
+            items: [
+              {
+                text: 'Addresses',
+                link: '/contracts/cake',
+              },
+              {
+                text: 'Cross Chain CAKE Bridging',
+                link: '/contracts/cake/cross-chain-cake-bridging',
+              },
+            ]
           },
           {
             text: 'CAKE Syrup Pool (deprecated)',
