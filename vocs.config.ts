@@ -265,6 +265,10 @@ export default defineConfig({
             text: 'NFT Market',
             link: '/contracts/nft-market',
           },
+          {
+            text: 'Affiliate Program',
+            link: '/contracts/affiliate-program/overview',
+          },
         ],
       },
     ],
