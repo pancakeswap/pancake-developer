@@ -1,8 +1,4 @@
----
-description: Fork of Curve Finance
----
-
-# Stable Swap
+# Affiliate Program
 
 ## Contract info
 
