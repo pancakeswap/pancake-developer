@@ -63,3 +63,7 @@ Code: [https://github.com/pancakeswap/pancake-subgraph](https://github.com/panca
     - Linea https://thegraph.com/explorer/subgraphs/6gCTVX98K3A9Hf9zjvgEKwjz7rtD4C1V173RYEdbeMFX?view=Query&chain=arbitrum-one
     - Base https://thegraph.com/explorer/subgraphs/BHWNsedAHtmTCzXxCCDfhPmm6iN9rxUhoRHdHKyujic3?view=Query&chain=arbitrum-one
     - opBNB https://opbnb-mainnet-graph.nodereal.io/subgraphs/name/pancakeswap/exchange-v3
+
+17. **Exchange (StableSwap)**: Tracks all PancakeSwap Stableswap Exchange data with price, volume, liquidity
+    - BSC https://thegraph.com/explorer/subgraphs/C5EuiZwWkCge7edveeMcvDmdr7jjc1zG4vgn8uucLdfz?view=Query&chain=arbitrum-one
+    - ARB https://thegraph.com/explorer/subgraphs/y7G5NUSq5ngsLH2jBGQajjxuLgW1bcqWiBqKmBk3MWM?view=Query&chain=arbitrum-one
