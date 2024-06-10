@@ -8,80 +8,62 @@ Please refer to Github repo for the latest version
 
 Code: [https://github.com/pancakeswap/pancake-subgraph](https://github.com/pancakeswap/pancake-subgraph)
 
-1. **[Blocks](https://thegraph.com/legacy-explorer/subgraph/pancakeswap/blocks)**: Tracks all blocks on Binance Smart Chain.
-
-   - BSC https://thegraph.com/legacy-explorer/subgraph/pancakeswap/blocks
-   - zkSync https://api.studio.thegraph.com/query/45376/blocks-zksync/version/latest
-   - zkSync testnet https://api.studio.thegraph.com/query/45376/blocks-zksync-testnet/version/latest
-   - Polygon zkEVM https://api.studio.thegraph.com/query/45376/polygon-zkevm-block/version/latest
-   - opBNB https://opbnb-mainnet-graph.nodereal.io/subgraphs/name/pancakeswap/blocks
-
-2. **[Exchange V2](https://nodereal.io/meganode/api-marketplace/pancakeswap-graphql)**: Tracks all PancakeSwap V2 Exchange data with price, volume, liquidity, ...
+1. **[Exchange V2](https://nodereal.io/meganode/api-marketplace/pancakeswap-graphql)**: Tracks all PancakeSwap V2 Exchange data with price, volume, liquidity, ...
 
    - BSC https://nodereal.io/meganode/api-marketplace/pancakeswap-graphql
-   - ETH https://api.thegraph.com/subgraphs/name/pancakeswap/exhange-eth
-   - ARB
-     - Hosted https://thegraph.com/hosted-service/subgraph/pancakeswap/exchange-v2-arb
-     - Studio https://api.studio.thegraph.com/query/45376/exchange-v2-arbitrum/version/latest
+   - ETH https://thegraph.com/explorer/subgraphs/9opY17WnEPD4REcC43yHycQthSeUMQE26wyoeMjZTLEx?view=Query&chain=arbitrum-one
+   - ARB https://thegraph.com/explorer/subgraphs/EsL7geTRcA3LaLLM9EcMFzYbUgnvf8RixoEEGErrodB3?view=Query&chain=arbitrum-one
    - ARB GRO https://api.thegraph.com/subgraphs/name/chef-jojo/exchange-v2-arb-goerli
-   - Polygon zkEVM https://api.studio.thegraph.com/query/45376/exchange-v2-polygon-zkevm/version/latest
-   - Polygon zkEVM testnet https://api.studio.thegraph.com/query/45376/exchange-v2-polygon-zkevm-test/version/latest
-   - zkSync https://api.studio.thegraph.com/query/45376/exchange-v2-zksync/version/latest
-   - zkSync testnet https://api.studio.thegraph.com/query/45376/exchange-v2-zksync-testnet/version/latest
-   - Linea https://graph-query.linea.build/subgraphs/name/pancakeswap/exhange-v2
-   - Base https://api.studio.thegraph.com/query/45376/exchange-v2-base/version/latest
-   - Base testnet https://api.studio.thegraph.com/query/45376/exchange-v2-base-testnet/version/latest
+   - Polygon zkEVM https://thegraph.com/explorer/subgraphs/37WmH5kBu6QQytRpMwLJMGPRbXvHgpuZsWqswW4Finc2?view=Query&chain=arbitrum-one
+   - zkSync https://thegraph.com/explorer/subgraphs/6dU6WwEz22YacyzbTbSa3CECCmaD8G7oQ8aw6MYd5VKU?view=Query&chain=arbitrum-one
+   - Linea https://thegraph.com/explorer/subgraphs/Eti2Z5zVEdARnuUzjCbv4qcimTLysAizsqH3s6cBfPjB?view=Query&chain=arbitrum-one
+   - Base https://thegraph.com/explorer/subgraphs/2NjL7L4CmQaGJSacM43ofmH6ARf6gJoBeBaJtz9eWAQ9?view=Query&chain=arbitrum-one
    - opBNB https://opbnb-mainnet-graph.nodereal.io/subgraphs/name/pancakeswap/exchange-v2
 
-3. **[Farm Auctions](https://thegraph.com/legacy-explorer/subgraph/pancakeswap/farm-auctions)**: Tracks all PancakeSwap Farm Auctions with auctions and bids.
+2. **[Lottery](https://thegraph.com/explorer/subgraphs/8wcykciFiBhVwnHbMeKoN5QNFGCJwBvFy5bWTUgDEgBq?view=Query&chain=arbitrum-one)**: Tracks all PancakeSwap Lottery with rounds, draws and tickets.
 
-4. **[Lottery](https://thegraph.com/legacy-explorer/subgraph/pancakeswap/lottery)**: Tracks all PancakeSwap Lottery with rounds, draws and tickets.
+3. **[Pottery](https://thegraph.com/explorer/subgraphs/3wRSNMaGhwzdrq76sjcWuiceTEdLAsNesxtMx2A8XMdV?view=Query&chain=arbitrum-one)**: Tracks all PancakeSwap Pottery with rounds, draws and tickets.
 
-5. **[NFT Market (v1)](https://thegraph.com/legacy-explorer/subgraph/pancakeswap/nft-market)**: Tracks all PancakeSwap NFT Market for ERC-721.
+4. **[NFT Market (v1)](https://thegraph.com/explorer/subgraphs/2LHYMstVV7vuxR8zz3Lx8i4pD1JgYS5mPoecBTzMKFmW?view=Query&chain=arbitrum-one)**: Tracks all PancakeSwap NFT Market for ERC-721.
 
-6. **[Pairs](https://thegraph.com/legacy-explorer/subgraph/pancakeswap/pairs)**: Tracks all PancakeSwap Pairs and Tokens.
+5. **[Prediction (v1)](https://thegraph.com/explorer/subgraphs/5ZQGSZ74JUeSQdCjqALFEhYjWsiFJAsqJpuLhWvJ9fkP?view=Query&chain=arbitrum-one)**: Tracks all PancakeSwap Prediction (v1) with market, rounds, and bets.
 
-7. **[Pancake Squad](https://thegraph.com/legacy-explorer/subgraph/pancakeswap/pancake-squad)**: Tracks all Pancake Squad metrics with Owners, Tokens (including metadata), and Transactions.
+6. **[Prediction (v2)](https://thegraph.com/explorer/subgraphs/4kRuZVKCR9dsG2ePXhLSiKw5oaw3YMJo4nAwxZbUaqVY?view=Query&chain=arbitrum-one)**: Tracks all PancakeSwap Prediction (v2) with market, rounds, and bets.
 
-8. **[Prediction (v1)](https://thegraph.com/legacy-explorer/subgraph/pancakeswap/prediction)**: Tracks all PancakeSwap Prediction (v1) with market, rounds, and bets.
+7. **[Prediction (v2 CAKE)](https://thegraph.com/explorer/subgraphs/4KLfz3gEPwXXP67jraV2ew8SwV9Ke359BHW3phxny35X?view=Query&chain=arbitrum-one)**: Tracks all PancakeSwap Prediction (v2) CAKE with market, rounds, and bets.
 
-9. **[Prediction (v2)](https://thegraph.com/legacy-explorer/subgraph/pancakeswap/prediction-v2)**: Tracks all PancakeSwap Prediction (v2) with market, rounds, and bets.
+8. **[Profile](https://thegraph.com/explorer/subgraphs/ER6tpJy2kHQNuGFjN8KEzUi8JGvvEwFZwQq7f7upvkF5?view=Query&chain=arbitrum-one)**: Tracks all PancakeSwap Profile with teams, users, points and campaigns.
 
-10. **[Profile](https://thegraph.com/legacy-explorer/subgraph/pancakeswap/profile)**: Tracks all PancakeSwap Profile with teams, users, points and campaigns.
+9. **[SmartChef](https://thegraph.com/explorer/subgraphs/Gr629imGYJckFywitY1bndE4LhVaLF7pFJPEtHMw6EBr?view=Query&chain=arbitrum-one)**: Tracks all PancakeSwap SmartChef (a.k.a. Syrup Pools) with tokens and rewards.
 
-11. **[SmartChef](https://thegraph.com/legacy-explorer/subgraph/pancakeswap/smartchef)**: Tracks all PancakeSwap SmartChef (a.k.a. Syrup Pools) with tokens and rewards.
+10. **[Trading Competition (v1)](https://thegraph.com/explorer/subgraphs/8zwHPqpf5RVVevNzgR5Hfo2ZcZP6drVNBqMZT15SWXjU?view=Query&chain=arbitrum-one)**: Tracks all metrics for the Easter Battle (April 07—14, 2021).
 
-12. **[Timelock](https://thegraph.com/legacy-explorer/subgraph/pancakeswap/timelock)**: Tracks all PancakeSwap Timelock queued, executed, and cancelled transactions.
+11. **[Trading Competition (v2)](https://thegraph.com/explorer/subgraphs/9AJmNCwQr75PkAxrne2gLBfYFwhhizeLj3Njf2zWM8dc?view=Query&chain=arbitrum-one)**: Tracks all metrics for Trading competition v2.
 
-13. **[Trading Competition (v1)](https://thegraph.com/legacy-explorer/subgraph/pancakeswap/trading-competition-v1)**: Tracks all metrics for the Easter Battle (April 07—14, 2021).
+12. **[Trading Competition (v3)](https://thegraph.com/explorer/subgraphs/FyuHMgf4nUG8z7EXgkuPxfGg1zXyBDuTpKYHw9NoRanD?view=Query&chain=arbitrum-one)**: Tracks all metrics for Trading competition v3.
 
-14. **[MasterChef (v2)](https://thegraph.com/hosted-service/subgraph/pancakeswap/masterchef-v2)**: Tracks data for MasterChefV2.
+13. **[Trading Competition (v4)](https://thegraph.com/explorer/subgraphs/62TXi7ERoFE7F75XEuvu77bxuVFYWrdQGP1J3CrTGDvG?view=Query&chain=arbitrum-one)**: Tracks all metrics for Trading competition v4
+
+14. **[MasterChef (v2)](https://thegraph.com/explorer/subgraphs/5PoeuRQVgTMVEMPghv5EmsqaTFzPnNZeekTiQQNxvUNC?view=Query&chain=arbitrum-one)**: Tracks data for MasterChefV2.
 
 15. **MasterChef (v3)**: Tracks data for MasterChefV3.
-    - BSC https://thegraph.com/hosted-service/subgraph/pancakeswap/masterchef-v3-bsc
-    - BSC testnet https://thegraph.com/hosted-service/subgraph/pancakeswap/masterchef-v3-chapel
-    - ETH https://thegraph.com/hosted-service/subgraph/pancakeswap/masterchef-v3-eth
-    - GOR https://thegraph.com/hosted-service/subgraph/pancakeswap/masterchef-v3-goerli
-    - Polygon zkEVM https://api.studio.thegraph.com/query/45376/masterchef-v3-polygon-zkevm/version/latest
-    - Polygon zkEVM testnet https://api.studio.thegraph.com/query/45376/masterchef-v3-zkevm-testnet/version/latest
-    - ARB https://api.thegraph.com/subgraphs/name/pancakeswap/masterchef-v3-arb
-    - zkSync https://api.studio.thegraph.com/query/45376/masterchef-v3-zksync/version/latest
-    - Base https://api.studio.thegraph.com/query/45376/masterchef-v3-base/version/latest
+    - BSC https://thegraph.com/explorer/subgraphs/QProcZexB8KYHueG55aoLhBmwnLXExxopq7CUnFkjMv?view=Query&chain=arbitrum-one
+    - ETH https://thegraph.com/explorer/subgraphs/9psTWtnVVQwSHUVRtCuR8985UfzotdtdZwVt8K9kJGeg?view=Query&chain=arbitrum-one
+    - Polygon zkEVM https://thegraph.com/explorer/subgraphs/GY319RL3CwRYq4LvTcGnE2ftVtWfM7D7FLzsy21GFYUb?view=Query&chain=arbitrum-one
+    - ARB https://thegraph.com/explorer/subgraphs/2fq9U1dYX1bxuu6D3HuZcfyZSBxPHd8yWduJnVoxNjSP?view=Query&chain=arbitrum-one
+    - zkSync https://thegraph.com/explorer/subgraphs/BnTM866GHTEyhxzrSmqnCdDAEixc34R87SnZaxH4BChy?view=Query&chain=arbitrum-one
+    - Base https://thegraph.com/explorer/subgraphs/3oYoAoCJMV2ZyZSTpg6cUS1gKTzcc2cjmCVfpNyWZVmr?view=Query&chain=arbitrum-one
 
 16. **Exchange (v3)**: Tracks all PancakeSwap V3 Exchange data with price, volume, liquidity
-    - BSC https://thegraph.com/hosted-service/subgraph/pancakeswap/exchange-v3-bsc
-    - BSC testnet https://thegraph.com/hosted-service/subgraph/pancakeswap/exchange-v3-chapel
-    - ETH https://thegraph.com/hosted-service/subgraph/pancakeswap/exchange-v3-eth
-    - GOR https://thegraph.com/hosted-service/subgraph/pancakeswap/exchange-v3-goerli
-    - ARB
-      - Hosted https://thegraph.com/hosted-service/subgraph/pancakeswap/exchange-v3-arb
-      - Studio https://api.studio.thegraph.com/query/45376/exchange-v3-arbitrum/version/latest
-    - ARB GOR https://api.thegraph.com/subgraphs/name/chef-jojo/exhange-v3-arb-goerli
-    - Polygon zkEVM https://api.studio.thegraph.com/query/45376/exchange-v3-polygon-zkevm/version/latest
-    - Polygon zkEVM testnet https://api.studio.thegraph.com/query/45376/exchange-v3-polygon-zkevm-test/version/latest
-    - zkSync https://api.studio.thegraph.com/query/45376/exchange-v3-zksync/version/latest
-    - zkSync testnet https://api.studio.thegraph.com/query/45376/exchange-v3-zksync-testnet/version/latest
-    - Linea https://graph-query.linea.build/subgraphs/name/pancakeswap/exchange-v3-linea
-    - Base https://api.studio.thegraph.com/query/45376/exchange-v3-base/version/latest
-    - Base testnet https://api.studio.thegraph.com/query/45376/exchange-v3-base-testnet/version/latest
+    - BSC https://thegraph.com/explorer/subgraphs/Hv1GncLY5docZoGtXjo4kwbTvxm3MAhVZqBZE4sUT9eZ?view=Query&chain=arbitrum-one
+    - ETH https://thegraph.com/explorer/subgraphs/CJYGNhb7RvnhfBDjqpRnD3oxgyhibzc7fkAMa38YV3oS?view=Query&chain=arbitrum-one
+    - ARB https://thegraph.com/explorer/subgraphs/251MHFNN1rwjErXD2efWMpNS73SANZN8Ua192zw6iXve?view=Query&chain=arbitrum-one
+    - Polygon zkEVM https://thegraph.com/explorer/subgraphs/7HroSeAFxfJtYqpbgcfAnNSgkzzcZXZi6c75qLPheKzQ?view=Query&chain=arbitrum-one
+    - zkSync https://thegraph.com/explorer/subgraphs/3dKr3tYxTuwiRLkU9vPj3MvZeUmeuGgWURbFC72ZBpYY?view=Query&chain=arbitrum-one
+    - Linea https://thegraph.com/explorer/subgraphs/6gCTVX98K3A9Hf9zjvgEKwjz7rtD4C1V173RYEdbeMFX?view=Query&chain=arbitrum-one
+    - Base https://thegraph.com/explorer/subgraphs/BHWNsedAHtmTCzXxCCDfhPmm6iN9rxUhoRHdHKyujic3?view=Query&chain=arbitrum-one
     - opBNB https://opbnb-mainnet-graph.nodereal.io/subgraphs/name/pancakeswap/exchange-v3
+
+17. **Exchange (StableSwap)**: Tracks all PancakeSwap Stableswap Exchange data with price, volume, liquidity
+    - BSC https://thegraph.com/explorer/subgraphs/C5EuiZwWkCge7edveeMcvDmdr7jjc1zG4vgn8uucLdfz?view=Query&chain=arbitrum-one
+    - ARB https://thegraph.com/explorer/subgraphs/y7G5NUSq5ngsLH2jBGQajjxuLgW1bcqWiBqKmBk3MWM?view=Query&chain=arbitrum-one
