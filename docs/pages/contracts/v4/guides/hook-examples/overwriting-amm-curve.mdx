@@ -1,0 +1,55 @@
+import { Callout } from 'vocs/components';
+
+# Overwrite amm-curve via hook
+
+In this guide, we'll build a hook which  overwrite the default pricing curve by the AMM. This guide assume you have read [develop-a-hook](/contracts/v4/guides/develop-a-hook) guide.
+
+<Callout type="info">
+[Hook return delta](/contracts/v4/overview/custom-layer-hook#hook-return-delta) feature will be used in this guide. Do read up on the page before starting on this guide.
+</Callout>
+
+### Requirements
+
+1. A new protocol have a new stablecoin and would like to leverage PCS infrastructure to allow user to swap
+between their stablecoin and USDC at 0 slippage.
+
+2. This mimic the typical mint/redeem functionality available at many other protocols.
+
+3. To keep this guide simple, there will not be any fee taken for the hook.
+
+## Step by Step guide
+
+### Step 1: Implementation idea
+
+Within `beforeSwap()` callback: we'll check how much amount user are swapping and return the appropriate BalanceDelta.
+
+For example if the user swap `exactIn 100 token0 for token1` with `-100 amountSpecified`, beforeSwap() will return BeforeSwapDelta of (100, -100). User will then get 100 tokenOut in this case implying a 1:1 swap. 
+
+
+### Step 2: Implement the hook
+
+Take note of 
+
+1. The hook permission which includes `beforeSwapReturnsDelta` as the hook modify the delta in beforeSwap.
+2. How the hook take/settle the currency and the BeforeSwapDelta returned.
+
+<details>
+    <summary> View complete source code here </summary>
+
+```solidity [src/pool-cl/CustomAMMCurveHook.sol]
+// [!include ~/snippets/CustomAMMCurveHook.sol]
+```
+</details>
+
+
+### Step 3: Write the test 
+
+The test is straight-forward, with 4 test cases of swapping exactIn / exactOut and zeroForOne / oneForZero.
+
+<details>
+    <summary> View complete source code here </summary>
+
+```solidity [src/pool-cl/CustomAMMCurveHook.t.sol]
+// [!include ~/snippets/CustomAMMCurveHook.t.sol]
+```
+</details>

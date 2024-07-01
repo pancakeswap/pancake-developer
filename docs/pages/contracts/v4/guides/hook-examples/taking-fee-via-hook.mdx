@@ -1,0 +1,62 @@
+import { Callout } from 'vocs/components';
+
+
+# Taking a fee via hook
+
+In this guide, we'll build a hook which takes a fee when user remove liquidity. This guide assume you have read [develop-a-hook](/contracts/v4/guides/develop-a-hook) guide.
+
+<Callout type="info">
+[Hook return delta](/contracts/v4/overview/custom-layer-hook#hook-return-delta) feature will be used in this guide. Do read up on the page before starting on this guide.
+</Callout>
+
+### Requirements
+
+1. The hook needs to take 10% amt0 and amt1 whenever user removes liquidity. 
+
+## Step by Step guide
+
+### Step 1: Implementation idea
+
+Within `afterRemoveLiquidity()` callback: we'll calculate how much fee to take based on the amount the user is getting from liquidity removal. The amount user get can be found in `BalanceDelta delta` parameter.
+
+```solidity
+function afterRemoveLiquidity
+    (address sender,
+    PoolKey calldata key,
+    ICLPoolManager.ModifyLiquidityParams calldata params,
+    BalanceDelta delta,
+    bytes calldata hookData
+) external override poolManagerOnly returns (bytes4, BalanceDelta) {
+
+    // calculate how much fee
+    uint128 amt0Fee = uint128(delta.amount0()) / 10;
+    uint128 amt1Fee = uint128(delta.amount1()) / 10;
+
+```
+
+### Step 2: Implement the hook
+
+Take note of 
+
+1. The hook permission which includes `afterRemoveLiquidityReturnsDelta` as the hook modify the delta in afterRemoveLiquidity.
+
+<details>
+    <summary> View complete source code here </summary>
+
+```solidity [src/pool-cl/LiquidityRemovalFeeHook.sol]
+// [!include ~/snippets/LiquidityRemovalFeeHook.sol]
+```
+</details>
+
+
+### Step 3: Write the test 
+
+The test is straight-forward, add liquidity first and verify the user balance after removing all liquidity.
+
+<details>
+    <summary> View complete source code here </summary>
+
+```solidity [src/pool-cl/LiquidityRemovalFeeHook.t.sol]
+// [!include ~/snippets/LiquidityRemovalFeeHook.t.sol]
+```
+</details>
