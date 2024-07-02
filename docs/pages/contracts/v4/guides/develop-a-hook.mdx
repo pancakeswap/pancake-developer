@@ -11,7 +11,7 @@ Proceed to https://github.com/pancakeswap/pancake-v4-hooks-template for the hook
 The template requires Foundry. If you don't have Foundry installed, please follow the [installation guide](https://book.getfoundry.sh/getting-started/installation).
 
 Once the new repository is cloned to local setup, run the following commands:
-```
+```bash
 > forge install // install dependencies
 > forge test // run the existing tests in the repository
 ```
@@ -73,18 +73,18 @@ We will develop a hook that allows [veCake](https://docs.pancakeswap.finance/pro
 ### Step 1: Download hook template
 
 1. Create a new repository from pancake-v4-hooks-template: [Click here](https://github.com/new?template_name=pancake-v4-hooks-template&template_owner=pancakeswap) 
-2. Clone the repository locally and run `forge install` and `forge test` to verify setup.
+2. Clone the repository locally and run `forge install` and `forge test` to verify local setup.
 
 ---
 
 ### Step 2: Implementation idea
 
 The flow will be as follows:
-1. We need to first store the default swap in the hook. We can do during pool initialization, passing the swap fee in the hookData which will flow to the hook. The hook can abi.decode the hookData and store the swap fee.
+1. We need to first store the default swap fee in the hook. We can do during pool initialization, passing the swap fee in the hookData which will eventually flow to the hook. The hook can `abi.decode` the bytes hookData and store the swap fee.
 
 ![Store default swap fee in hook](/v4/guides-develop-hook-2.png)
 
-2. With the hook fee stored, at `beforeSwap()`, hook check if the swapper is veCake holder and return the updated swap fee accordingly through `lpFeeOverride` value.
+2. The default swap fee is stored at hook now. At `beforeSwap()`, hook check if the swapper is veCake holder and return the updated swap fee accordingly through `lpFeeOverride` value.
 
 ![Store default swap fee in hook](/v4/guides-develop-hook-3.png)
 
@@ -137,6 +137,7 @@ mapping(PoolId => uint24) public poolIdToLpFee;
 function afterInitialize(address, PoolKey calldata key, uint160, int24, bytes calldata hookData)
     external override returns (bytes4)
 {
+    // decode hookdata to get the default swap fee
     uint24 swapFee = abi.decode(hookData, (uint24));
     poolIdToLpFee[key.toId()] = swapFee;
 
@@ -145,7 +146,7 @@ function afterInitialize(address, PoolKey calldata key, uint160, int24, bytes ca
 ```
 
 #### 3.3 Return the swap fee based on whether user is veCake holder in `beforeSwap`
-`beforeSwap` will be called before a swap happens, and the third return value `uint24` is where we can override the swap fee.
+`beforeSwap` will be called before a swap happens, and the third return value `uint24 lpFeeOverride` is where we can override the swap fee.
 
 Note the return value need to include `LPFeeLibrary.OVERRIDE_FEE_FLAG` so pool manager knows the intention is to override swap fee.
 

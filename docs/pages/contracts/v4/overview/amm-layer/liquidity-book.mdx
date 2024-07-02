@@ -108,9 +108,9 @@ binPoolManager.getBin(PoolId id, uint24 binId)
 
 ### Composition fee
 
-When liquidity is added to the current active binId and does not add in the current bin tokenY and tokenX ratio, a "swap" will occur when liquidity is being added.
+When liquidity breing added to the current active binId is not the current bin tokenY and tokenX ratio, a "swap" will occur when liquidity is being added. This "swap" will incur composition fee. The fee is the same as typical swap (lp + protocol) fee.
 
-This "swap" will incur composition fee. The fee is the same as typical swap (lp + protocol) fee.
+The purpose of composition fee is to prevent user leveraging add/remove liquidity to perform a "free swap".
 
 For example 
 1. Current active bin reserve is `[1,000e18 token0, 1000e18 token1]` 

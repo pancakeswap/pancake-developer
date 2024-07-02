@@ -31,14 +31,13 @@ function afterRemoveLiquidity
     // calculate how much fee
     uint128 amt0Fee = uint128(delta.amount0()) / 10;
     uint128 amt1Fee = uint128(delta.amount1()) / 10;
-
 ```
 
 ### Step 2: Implement the hook
 
 Take note of 
 
-1. The hook permission which includes `afterRemoveLiquidityReturnsDelta` as the hook modify the delta in afterRemoveLiquidity.
+1. The hook permission which includes `afterRemoveLiquidityReturnsDelta` as the hook modify the delta in afterRemoveLiquidity().
 
 <details>
     <summary> View complete source code here </summary>
@@ -51,7 +50,7 @@ Take note of
 
 ### Step 3: Write the test 
 
-The test is straight-forward, add liquidity first and verify the user balance after removing all liquidity.
+The test is straight-forward, add liquidity first then remove liquidity and verify fee is taken.
 
 <details>
     <summary> View complete source code here </summary>

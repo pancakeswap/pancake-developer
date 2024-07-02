@@ -6,9 +6,9 @@ import { Callout } from 'vocs/components'
 
 Rebasing token are not natively supported in v4. 
 
-When negative rebase happen: `Vault` would end up in the state where `reserveOfApp[app][currency]` would be greater than the actual amount in vault leading to losses by LP. When positive rebase happen: LPs would not get those extra rebased token and those extra token will be in the vault.
+When negative rebase happen: `Vault` would end up in the state where the recorded balance in `reserveOfApp[app][currency]` would be greater than the actual amount in vault leading to losses by LP. When positive rebase happen: LPs would not get those extra rebased token and those extra token will be stuck in the vault.
 
-One possibility is to have a custom token wrapper around the rebasing token. Otherwise consider using PCS v2 instead for rebasing tokens.
+You will have a custom token wrapper around the rebasing token, otherwise consider using PCS v2 instead for rebasing tokens.
 
 ---
 
@@ -16,7 +16,7 @@ One possibility is to have a custom token wrapper around the rebasing token. Oth
 
 Fee on transfer tokens are not supported on our router.
 
-Our router will transfer token amount based on `BalanceDelta` returned from the operation and settle with vault. If there was a fee on transfer, the amount of token in vault will be lesser than intended and will result in `CurrencyNotSettled()` with the vault.
+Our router will transfer token amount based on `BalanceDelta` returned from the operation and settle with vault. If there was a fee on transfer, the amount of token in vault after the transfer will be lesser than intended and will result in `CurrencyNotSettled()` error from the vault accounting.
 
 You will have to build your own custom router or have a custom token wrapper around it.
 
@@ -24,15 +24,15 @@ You will have to build your own custom router or have a custom token wrapper aro
 
 ### Q3: How is protocol fee charged in v4? 
 
-When a pool is initialized, PoolManager will fetch protocol fee from ProtocolFeeController. Alternatively, ProtocolFeeController also can update the protocol fee for a pool. 
+When a pool is initialized, PoolManager will fetch protocol fee from ProtocolFeeController. At any point, ProtocolFeeController can update the protocol fee for a pool. 
 
-Protocol fee is a `uint24` with the upper 12 bits for `oneForZero` and the lower 12 bits for `zeroForOne` fee. The max protocol fee is `0.1%` on token0 or token1 depending on the swap direction. If a user swap token0 for token1, then the fee would be `zeroForOne` fee and on token0. Otherwise if a user swap token1 for token0, the fee will be on token1.
+Protocol fee is a `uint24` with the upper 12 bits for `oneForZero` and the lower 12 bits for `zeroForOne` fee. The max protocol fee is `1000 (0.1%)` on token0 or token1 depending on the swap direction. If a user swap token0 for token1, then the fee would be `zeroForOne` fee and on token0. Otherwise if a user swap token1 for token0, the fee will be on token1.
 
 ---
 
 ### Q4: How is swap fee (or lpFee) charged in v4? 
 
-Pool creator sets the fee in `poolKey.fee`, eg. a value of 3000 would mean 0.3% swap fee. 
+Pool creator sets the fee in `poolKey.fee`, a value of 3000 would mean 0.3% swap fee. 
 
 Similarly to protocol fee, when a user swap token0 for token1, the swap fee will be applied on token0. And when a user swap token1 for token0, the swap fee will be applied on token1.
 
