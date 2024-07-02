@@ -33,7 +33,6 @@ export default defineConfig({
               },
               {
                 text: 'AMM Layer | Pool Manager',
-                collapsed: true,
                 link: '/contracts/v4/overview/amm-layer-poolmanager',
                 items: [
                   {
@@ -58,6 +57,11 @@ export default defineConfig({
               {
                 text: 'Developing a hook',
                 link: '/contracts/v4/guides/develop-a-hook',
+                collapsed: true,
+                items: [
+                  { text: 'Taking a fee via Hook', link: '/contracts/v4/guides/hook-examples/taking-fee-via-hook' },
+                  { text: 'Overwriting AMM curve', link: '/contracts/v4/guides/hook-examples/overwriting-amm-curve' },
+                ]
               },
               {
                 text: 'CL Pool - Swap and Liqudiity',
@@ -82,6 +86,11 @@ export default defineConfig({
                 link: '/contracts/v4/resources/addresses',
               },
             ],
+          },
+          {
+            text: 'FAQ',
+            collapsed: true,
+            link: '/contracts/v4/faq',
           },
         ],
       },
