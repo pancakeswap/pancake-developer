@@ -121,7 +121,9 @@ For more details, see the calculation over in [BinHelper.sol](https://github.com
 
 ### Fungible liquidity
 
-An advantage of Liquidity book is the fungible liquidity. Fungible liquidity provides flexibility in downstream defi application. When LPs add liquidity via `BinFungiblePositionManager.sol`, they get ERC1155 token.
+An advantage of Liquidity book is the fungible liquidity. When user add lp, they get a share of the current bin. As more swaps happen, that same share will grow in token amount.
+
+Fungible liquidity also provides flexibility in downstream defi application. When LPs add liquidity via `BinFungiblePositionManager.sol`, they get ERC1155 token.
 
 ```solidity
 /// Ref BinFungibleToken.sol (similar to ERC1155)
