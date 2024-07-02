@@ -17,7 +17,7 @@ In this guide, we'll build a hook which takes a fee when user remove liquidity. 
 
 ### Step 1: Implementation idea
 
-Within `afterRemoveLiquidity()` callback: we'll calculate how much fee to take based on the amount the user is getting from liquidity removal. The amount user get can be found in `BalanceDelta delta` parameter.
+In the `afterRemoveLiquidity()` callback, we calculate the fee based on the amount the user receives from liquidity removal. This amount can be found in the BalanceDelta delta parameter.
 
 ```solidity
 function afterRemoveLiquidity

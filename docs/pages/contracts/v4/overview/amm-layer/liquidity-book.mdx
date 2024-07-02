@@ -108,16 +108,16 @@ binPoolManager.getBin(PoolId id, uint24 binId)
 
 ### Composition fee
 
-When liquidity breing added to the current active binId is not the current bin tokenY and tokenX ratio, a "swap" will occur when liquidity is being added. This "swap" will incur composition fee. The fee is the same as typical swap (lp + protocol) fee.
+When adding liquidity to the current active bin, if the bin's tokenY and tokenX ratio does not match the liquidity being added, a "swap" will occur. This swap will incur a composition fee, which is the same as the typical swap (LP + protocol) fee.
 
-The purpose of composition fee is to prevent user leveraging add/remove liquidity to perform a "free swap".
+The composition fee prevents users from exploiting the add/remove liquidity process to perform a "free swap."
 
-For example 
+**Example:** 
 1. Current active bin reserve is `[1,000e18 token0, 1000e18 token1]` 
-2. User add `[500e18 token0, 400e18 token1]`
-3. As user add in the ratio with more token0, there'll be a composition fee which arise from swapping some token0 to token1 in the active bin.
+2. User adds: `[500e18 token0, 400e18 token1]`
+3. Since the user is adding liquidity with a higher ratio of token0, a composition fee will be applied. This fee arises from swapping some token0 to token1 in the active bin.
 
-For more details, see the calculation over in [BinHelper.sol](https://github.com/pancakeswap/pancake-v4-core/blob/df64445/src/pool-bin/libraries/BinHelper.sol#L175)
+For more details, see the calculation in [BinHelper.sol](https://github.com/pancakeswap/pancake-v4-core/blob/df64445/src/pool-bin/libraries/BinHelper.sol#L175)
 
 ### Fungible liquidity
 
