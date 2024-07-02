@@ -1,0 +1,19 @@
+import { Callout } from 'vocs/components'
+
+# FAQ(s)
+
+### Q1: Are rebasing token supported?
+
+Rebasing token are not natively supported in v4. 
+
+When negative rebase happen: `Vault` would end up in the state where `reserveOfApp[app][currency]` would be greater than the actual amount in vault leading to losses by LP. When positive rebase happen: LPs would not get those extra rebased token and those extra token will be in the vault.
+
+One possibility is to have a custom token wrapper around the rebasing token. Otherwise consider using PCS v2 instead for rebasing tokens.
+
+### Q2: Are fee-on-transfer token supported?
+
+Fee on transfer tokens are not supported on our router.
+
+Our router will transfer token amount based on `BalanceDelta` returned from the operation and settle with vault. If there was a fee on transfer, the amount of token in vault will be lesser than intended and will result in `CurrencyNotSettled()` with the vault.
+
+You will have to build your own custom router or have a custom token wrapper around it.
