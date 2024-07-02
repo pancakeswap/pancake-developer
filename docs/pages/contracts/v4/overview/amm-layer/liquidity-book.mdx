@@ -10,15 +10,18 @@ To add liquidity, LPs will specify a byte32 liquidityConfigs array. Each item in
 
 ```solidity
 struct MintParams {
-  /// @dev see more at LiquidityConfigurations.sol
-  ///   [0 - 24[: id
-  ///   [24 - 88[: distributionY - 1e18 represent 100% of token into this bin
-  ///   [88 - 152[: distributionX - 1e18 represent 100% of token into this bin 
-  ///   [152 - 256[: empty
+  // see more at LiquidityConfigurations.sol
+  //   [0 - 24[: id
+  //   [24 - 88[: distributionY - 1e18 represent 100% of token into this bin
+  //   [88 - 152[: distributionX - 1e18 represent 100% of token into this bin 
+  //   [152 - 256[: empty
   bytes32[] liquidityConfigs;
 
-  /// @dev amountIn intended
+  // amountIn intended
   bytes32 amountIn;
+  
+  // the salt to distinguish different mint from the same owner
+  bytes32 salt;
 }
 
 /// @dev see more at BinPoolManager.sol 
@@ -39,7 +42,7 @@ If a trade happen within a bin, it will incur 0 slippge. However if the trade co
 
 ### Bin Step
 
-Bin step define the minimum price movement between two adjacent bin. This is one of the parameter in `PoolKey`. Keep in mind that there are trade off. While smaller bin steps allow for more precise positioning of liquidity, it might come with higher gas cost potentially. Larger bin step could be cheaper on gas but comes with higher slippage in trade execution potentially.
+Bin step define the minimum price movement between two adjacent bin. This is one of the parameter in `PoolKey`. Keep in mind that there are trade off. While smaller bin steps allow for more precise positioning of liquidity, it might come with higher gas cost potentially (in liquidity and swap operation). Larger bin step could be cheaper on gas but comes with higher slippage in trade execution potentially.
 
 | Bin Step | Price movement between bin |
 | ------ | ------ |
@@ -64,17 +67,57 @@ binPoolManager.getSlot0(PoolId) external
 
 Given the current `activeId` and `binStep`, we can calculate the current price of the pool.
 
-```
+```solidity
 price: (1 + binStep / 10_000) ** (activeId - 8388608)
 ```
 
 Example: USDT/USDC pool with bin step = 1 and activeId = 8388608
 
-```
+```solidity
 price: (1 + 1 / 10_000) ** (8388608 - 8388608) = 1
 // this means 1 USDT = 1 USDC 
 ```
 
+### Bin Liquidity 
+
+Liquidity is concentrated in discrete price bins, unlike the continuous price ranges in other AMM types like concentrated liquidity type. Each bin holds a constant sum of assets, allowing for zero slippage trades.
+
+```solidity
+// price is the price of the bin.
+// x is amount of tokenX 
+// y is amount of tokenY 
+Liquidity = price * x + y
+```
+
+Example: USDT/USDC pool with bin step = 1 and activeId = 8388608 with 100 usdc and 50 usdt (assume 6 decimal place).
+
+```solidity
+// price from above example
+Liquidity = price * x + y
+          = 1 * 100e6 + 50e6
+          = 150e6
+```
+
+To retrieve the liquidity and reserve of a bin, take note of the result within the code, it is a 128.128-binary fixed-point number.
+
+```solidity
+// ref: BinPoolManager.sol
+binPoolManager.getBin(PoolId id, uint24 binId)
+  returns (uint128 binReserveX, uint128 binReserveY, uint256 binLiquidity);
+```
+
+### Composition fee
+
+When liquidity is added to the current active binId and does not add in the current bin tokenY and tokenX ratio, a "swap" will occur when liquidity is being added.
+
+This "swap" will incur composition fee. The fee is the same as typical swap (lp + protocol) fee.
+
+For example 
+1. Current active bin reserve is `[1,000e18 token0, 1000e18 token1]` 
+2. User add `[500e18 token0, 400e18 token1]`
+3. As user add in the ratio with more token0, there'll be a composition fee which arise from swapping some token0 to token1 in the active bin.
+
+For more details, see the calculation over in [BinHelper.sol](https://github.com/pancakeswap/pancake-v4-core/blob/df64445/src/pool-bin/libraries/BinHelper.sol#L175)
 
 ### Fungible liquidity
 

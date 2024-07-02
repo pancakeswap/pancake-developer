@@ -28,7 +28,6 @@ When a pool is initialized, PoolManager will fetch protocol fee from ProtocolFee
 
 Protocol fee is a `uint24` with the upper 12 bits for `oneForZero` and the lower 12 bits for `zeroForOne` fee. The max protocol fee is `0.1%` on token0 or token1 depending on the swap direction. If a user swap token0 for token1, then the fee would be `zeroForOne` fee and on token0. Otherwise if a user swap token1 for token0, the fee will be on token1.
 
-
 ---
 
 ### Q4: How is swap fee (or lpFee) charged in v4? 
