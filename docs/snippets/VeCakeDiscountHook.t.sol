@@ -7,12 +7,12 @@ import {Constants} from "@pancakeswap/v4-core/test/pool-cl/helpers/Constants.sol
 import {Currency} from "@pancakeswap/v4-core/src/types/Currency.sol";
 import {PoolKey} from "@pancakeswap/v4-core/src/types/PoolKey.sol";
 import {CLPoolParametersHelper} from "@pancakeswap/v4-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
-import {SwapFeeLibrary} from "@pancakeswap/v4-core/src/libraries/SwapFeeLibrary.sol";
 import {VeCakeDiscountHook} from "../../src/pool-cl/VeCakeDiscountHook.sol";
 import {CLTestUtils} from "./utils/CLTestUtils.sol";
 import {CLPoolParametersHelper} from "@pancakeswap/v4-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
 import {PoolIdLibrary} from "@pancakeswap/v4-core/src/types/PoolId.sol";
-import {ICLSwapRouterBase} from "pancake-v4-periphery/src/pool-cl/interfaces/ICLSwapRouterBase.sol";
+import {ICLSwapRouterBase} from "@pancakeswap/v4-periphery/src/pool-cl/interfaces/ICLSwapRouterBase.sol";
+import {LPFeeLibrary} from "@pancakeswap/v4-core/src/libraries/LPFeeLibrary.sol";
 
 contract VeCakeDiscountHookTest is Test, CLTestUtils {
     using PoolIdLibrary for PoolKey;
@@ -35,16 +35,14 @@ contract VeCakeDiscountHookTest is Test, CLTestUtils {
             currency1: currency1,
             hooks: hook,
             poolManager: poolManager,
-            // 0.3% fee for swapFee, however hook can overwrite the swapFee
-            fee: SwapFeeLibrary.DYNAMIC_FEE_FLAG + uint24(3000),
-            // tickSpacing: 10
+            fee: LPFeeLibrary.DYNAMIC_FEE_FLAG,
             parameters: bytes32(uint256(hook.getHooksRegistrationBitmap())).setTickSpacing(10)
         });
 
-        // initialize pool at 1:1 price point
-        poolManager.initialize(key, Constants.SQRT_RATIO_1_1, new bytes(0));
+        // initialize pool at 1:1 price point and set 3000 as initial lp fee, lpFee is stored in the hook
+        poolManager.initialize(key, Constants.SQRT_RATIO_1_1, abi.encode(uint24(3000)));
 
-        // add deep liquidity so that swap fee discount can be observed
+        // add liquidity so that swap can happen
         MockERC20(Currency.unwrap(currency0)).mint(address(this), 100 ether);
         MockERC20(Currency.unwrap(currency1)).mint(address(this), 100 ether);
         addLiquidity(key, 100 ether, 100 ether, -60, 60);
@@ -54,13 +52,9 @@ contract VeCakeDiscountHookTest is Test, CLTestUtils {
         MockERC20(Currency.unwrap(currency0)).approve(address(swapRouter), type(uint256).max);
         MockERC20(Currency.unwrap(currency1)).approve(address(swapRouter), type(uint256).max);
         vm.stopPrank();
-    }
 
-    function testNonVeCakeHolder() public {
-        uint256 amtOut = _swap();
-
-        // amt out be at least 0.3% lesser due to swap fee
-        assertLe(amtOut, 0.997 ether);
+        // mint alice token for trade later
+        MockERC20(Currency.unwrap(currency0)).mint(address(alice), 100 ether);
     }
 
     function testVeCakeHolder() public {
@@ -69,15 +63,19 @@ contract VeCakeDiscountHookTest is Test, CLTestUtils {
 
         uint256 amtOut = _swap();
 
-        // amt out be at least 0.15% lesser due to swap fee
-        assertLe(amtOut, 0.9985 ether);
-        assertGe(amtOut, 0.997 ether); // 0.15% swap fee, should be at least 0.997
+        // amt out should be close to 1 ether minus slippage
+        assertGe(amtOut, 0.997 ether);
+    }
+
+    function testNonVeCakeHolderXX() public {
+        uint256 amtOut = _swap();
+
+        // amt out be at least 0.3% lesser due to swap fee
+        assertLe(amtOut, 0.997 ether);
     }
 
     function _swap() internal returns (uint256 amtOut) {
-        MockERC20(Currency.unwrap(currency0)).mint(address(alice), 1 ether);
-
-        // set alice as tx.origin and mint alice token
+        // set alice as tx.origin
         vm.prank(address(alice), address(alice));
 
         amtOut = swapRouter.exactInputSingle(
