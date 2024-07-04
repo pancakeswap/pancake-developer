@@ -2,7 +2,7 @@ import { Callout } from 'vocs/components'
 
 # FAQ(s)
 
-### Q1: Are rebasing token supported?
+## Q1: Are rebasing token supported?
 
 Rebasing tokens are not natively supported in v4.
 
@@ -11,11 +11,7 @@ Rebasing tokens are not natively supported in v4.
 
 You will need a custom token wrapper for rebasing tokens, or consider using PCS v2 instead.
 
-
-
----
-
-### Q2: Are fee-on-transfer token supported?
+## Q2: Are fee-on-transfer token supported?
 
 Fee-on-transfer tokens are not supported on our router.
 
@@ -24,15 +20,12 @@ Fee-on-transfer tokens are not supported on our router.
 
 You will need to build a custom router or use a custom token wrapper for such tokens.
 
----
-
-### Q3: How is protocol fee charged in v4? 
+## Q3: How is protocol fee charged in v4? 
 
 Protocol fee is set on the pool during:
 
 - **Initialization**: PoolManager fetches the protocol fee from ProtocolFeeController when a pool is initialized.
 - **Update**: ProtocolFeeController can update the protocol fee for a pool at any time.
-
 
 Protocol fee is a uint24 with:
 
@@ -44,9 +37,7 @@ Maximum protocol fee: `1000 (0.1%)` on token0 or token1, depending on swap direc
 - Swap token0 for token1: fee on token0 (`zeroForOne` fee).
 - Swap token1 for token0: fee on token1 (`oneForZero` fee).
 
----
-
-### Q4: How is swap fee (or lpFee) charged in v4? 
+## Q4: How is swap fee (or lpFee) charged in v4? 
 
 - Setting the Fee: Pool creator sets the fee in poolKey.fee (e.g., 3000 means 0.3% swap fee).
 
