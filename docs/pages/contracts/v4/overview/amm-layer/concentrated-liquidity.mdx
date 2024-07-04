@@ -20,6 +20,8 @@ struct ModifyLiquidityParams {
     int24 tickUpper;
     // how to modify the liquidity
     int256 liquidityDelta;
+    // a value to set if you want unique liquidity positions at the same range
+    bytes32 salt;
 }
 
 /// @dev see more at CLPoolManager
@@ -59,6 +61,7 @@ ratio of WETH/USDT with decimals: = 4.04965646e-9 * (10**18/10**6): 1 WETH = 404
 ### Tick Spacing
 
 Tick spacing define the minimum price movement between two adjacent ticks within a pool. This is one of the parameter in `PoolKey`. 
+
 Keep in mind that there are trade off. While smaller tick spacing allow for more precise positioning of liquidity, it might come with higher gas cost potentially. Larger tick spacing could be cheaper on gas but comes with higher slippage in trade execution potentially.
 
 | Tick spacing | Price movement between tick |
@@ -68,7 +71,9 @@ Keep in mind that there are trade off. While smaller tick spacing allow for more
 | 50  | 0.5% |
 | 100  | 1% |
 
-
+**Example**
+- tickSpacing is 10: adjacent tick to 1000 is 990 and 1010.
+- tickSpacing is 100: adjacent tick to 1000 is 900 and 1100
 
 ### sqrtPriceX96
 

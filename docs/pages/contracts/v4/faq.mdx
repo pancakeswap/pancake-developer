@@ -1,0 +1,53 @@
+import { Callout } from 'vocs/components'
+
+# FAQ(s)
+
+## Q1: Are rebasing token supported?
+
+Rebasing tokens are not natively supported in v4.
+
+- **Negative Rebase:** The recorded balance in reserveOfApp[app][currency] will exceed the actual vault amount, causing LP losses.
+- **Positive Rebase:** LPs will not receive the extra rebased tokens, which will remain stuck in the vault.
+
+You will need a custom token wrapper for rebasing tokens, or consider using PCS v2 instead.
+
+## Q2: Are fee-on-transfer token supported?
+
+Fee-on-transfer tokens are not supported on our router.
+
+- The router transfers tokens based on the BalanceDelta from the operation and settles with the vault.
+- If there's a transfer fee, the token amount in the vault post-transfer will be less than intended, causing a CurrencyNotSettled() error in vault accounting.
+
+You will need to build a custom router or use a custom token wrapper for such tokens.
+
+## Q3: How is protocol fee charged in v4? 
+
+Protocol fee is set on the pool during:
+
+- **Initialization**: PoolManager fetches the protocol fee from ProtocolFeeController when a pool is initialized.
+- **Update**: ProtocolFeeController can update the protocol fee for a pool at any time.
+
+Protocol fee is a uint24 with:
+
+- Upper 12 bits for `oneForZero` fee.
+- Lower 12 bits for `zeroForOne` fee.
+
+Maximum protocol fee: `1000 (0.1%)` on token0 or token1, depending on swap direction:
+
+- Swap token0 for token1: fee on token0 (`zeroForOne` fee).
+- Swap token1 for token0: fee on token1 (`oneForZero` fee).
+
+## Q4: How is swap fee (or lpFee) charged in v4? 
+
+- Setting the Fee: Pool creator can either sets a fixed fee in poolKey.fee (e.g., 3000 means 0.3% swap fee), or [dynamic fee](/contracts/v4/overview/custom-layer-hook#dynamic-lp-swap-fee)
+
+Swap fee application:
+
+- Swap token0 for token1: fee on token0.
+- Swap token1 for token0: fee on token1.
+
+When both protocol fee and swap fee are present:
+
+1. Protocol fee is taken from the input amount first.
+2. LP fee is taken from the remaining amount after deducting the protocol fee.
+
