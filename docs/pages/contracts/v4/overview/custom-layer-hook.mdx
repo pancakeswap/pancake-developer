@@ -176,6 +176,44 @@ function afterRemoveLiquidity(...) external returns (bytes4, BalanceDelta)
 1. Returning positive BalanceDelta will indicate the hook will take some token0 or token1. 
 2. Returning negative BalanceDelta will indicate the hook will give some token0 or token1. 
 
+## Dynamic lp (swap) fee
+
+A pool can be initialized with either fixed fee or dynamic fee in `poolKey.fee`.
+
+To enable dynamic fees, the dynamic fee flag must be set in the fee.
+
+```solidity
+key = PoolKey({
+  currency0: currency0,
+  currency1: currency1,
+  hooks: hook, 
+  poolManager: poolManager,
+  fee: LPFeeLibrary.DYNAMIC_FEE_FLAG, // [!code focus]
+  parameters: bytes32(uint256(hook.getHooksRegistrationBitmap())).setTickSpacing(10)
+});
+```
+
+A hook with beforeSwap() permission should be attached to the pool, as the dynamic LP fee for each swap comes from the third return value of beforeSwap(). If the dynamic fee flag is set but no hook with beforeSwap() is attached, the LP fee will be 0% for all swaps.
+
+**Example** 
+
+In the example below, the hook returns 3000 (0.3%) as dynamic fee in beforeSwap() callback.
+
+```solidity
+// Pool will call hook.beforeSwap() before a swap:
+
+// With the hook.beforeSwap() implementation: 
+function beforeSwap(..) external returns (bytes4 selector, BeforeSwapDelta delta, uint24 lpFeeOverRide) {
+  // Set 0.3% for this swap. In your hook, you can add custom logic here.
+  uint24 lpFee = 3000;
+
+  return (
+    this.beforeSwap.selector, 
+    BeforeSwapDeltaLibrary.ZERO_DELTA, 
+    lpFee | LPFeeLibrary.OVERRIDE_FEE_FLAG);
+}
+```
+
 ## FAQ(s)
 
 -----
