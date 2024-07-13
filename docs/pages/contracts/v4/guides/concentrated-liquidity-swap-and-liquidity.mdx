@@ -26,6 +26,7 @@ INonfungiblePositionManager.MintParams memory params = INonfungiblePositionManag
   poolKey: key,
   tickLower: tickLower,
   tickUpper: tickUpper,
+  salt: bytes32(0),
   amount0Desired: amount0,
   amount1Desired: amount1,
   amount0Min: 0,
@@ -42,6 +43,7 @@ Input:
 
 - `poolKey`: struct which identify the pool
 - `tickLower | tickUpper`: add liquidity from tickLower to tickUpper
+- `salt`: Add extra information to the position, for most use cases, set as `bytes32(0)` is sufficient. 
 - `amount0Desired | amount1Desired`: intended amt0 and amt1
 - `amount0Min | amount1Min`: minimum amt0 and amt1. transaction will revert if the amount is less than that. In the real-world, set a realistic amount instead of `0`.
 - `recipient`: who to receive the NFT which represent ownership of this position
