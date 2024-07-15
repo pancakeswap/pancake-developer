@@ -64,6 +64,10 @@ export default defineConfig({
                 ]
               },
               {
+                text: 'Developing a hook - veCake Timestamp',
+                link: '/contracts/v4/guides/develop-a-hook-veCake-timestamp',
+              },
+              {
                 text: 'CL Pool - Swap and Liqudiity',
                 link: '/contracts/v4/guides/concentrated-liquidity-swap-and-liquidity',
               },
