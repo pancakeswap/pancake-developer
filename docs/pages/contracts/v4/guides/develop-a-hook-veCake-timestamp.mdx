@@ -1,0 +1,238 @@
+import { Callout } from 'vocs/components'
+
+# Develop a hook - veCake Timestamp 
+
+Custom hooks in PancakeSwap V4 allow developers to add custom logic to key operations within the protocol, such as swaps, adding liquidity, and more. This guide will walk you through the process of creating and deploying custom hooks using the PancakeSwap V4 hooks template.
+
+Below we'll demostrate how to develop a hook. Find out more about Pancake v4 hooks [here](https://developer.pancakeswap.finance/contracts/v4/overview/custom-layer-hook).
+In this guide we'll develop a hook for for [concentrated liquidity pool](https://developer.pancakeswap.finance/contracts/v4/overview/amm-layer/concentrated-liquidity). The same step will apply for [liquidity book](https://developer.pancakeswap.finance/contracts/v4/overview/amm-layer/liquidity-book). We'll start with introducing hook template before the step by step guide section.
+
+## Hooks template
+Creating custom hooks in PancakeSwap V4 involves understanding and implementing various components provided in the hooks template.
+
+### Setup
+
+Proceed to https://github.com/pancakeswap/pancake-v4-hooks-template for the hook template. Click `Use this template` to create a new repository based on the template.
+
+The template requires Foundry. If you don't have Foundry installed, please follow the [installation guide](https://book.getfoundry.sh/getting-started/installation).
+
+Once the new repository is cloned to local setup, run the following commands:
+```bash
+> forge install // install dependencies
+> forge test // run the existing tests in the repository
+```
+
+Within both `src` and `test` there are 2 folders: `pool-cl` and `pool-bin`. If you are developing for concentrated liquidity pool, focus on pool-cl folder, otherwise pool-bin folder for the liquidity book pool type.
+
+### Contracts involved
+
+#### BaseHook
+
+The CLBaseHook contract is an abstract contract that provides the foundation for implementing custom hooks within the PancakeSwap V4 ecosystem. This contract outlines the basic structure and permissions needed for various lifecycle hooks related to liquidity pools. 
+It also includes helper functions and modifiers to enforce access control and validate pool interactions. It provides
+
+1. helper method: `_hooksRegistrationBitmapFrom` to set up the callback required
+2. callback method: for you to overwrite
+
+
+The contract imports several constants, types, and interfaces from the PancakeSwap V4 core:
+
+1. Hook offsets: Constants representing the bit positions for different hooks.
+2. PoolKey: Represents a unique identifier for a liquidity pool.
+3. BalanceDelta: Represents changes in pool balances.
+4. BeforeSwapDelta: Represents changes in state before a swap.
+5. IHooks: Interface for hooks.
+6. IVault: Interface for the vault.
+7. ICLHooks: Interface for CL (Concentrated Liquidity) hooks.
+8. ICLPoolManager: Interface for the pool manager that manages CL pools.
+9. CLPoolManager: The actual implementation of the pool manager.
+
+```solidity
+// Snippet from CLCounterHook.sol
+import {CLBaseHook} from "./CLBaseHook.sol";
+
+contract CLCounterHook is CLBaseHook {
+
+  constructor(ICLPoolManager _poolManager) CLBaseHook(_poolManager) {}
+
+  // 1. Set up callback required. in this case, 4 callback are required
+  function getHooksRegistrationBitmap() external pure override returns (uint16) {
+    return _hooksRegistrationBitmapFrom(
+        Permissions({
+            beforeInitialize: false,
+            afterInitialize: false,
+            beforeAddLiquidity: true,
+            afterAddLiquidity: true,
+            beforeRemoveLiquidity: false,
+            afterRemoveLiquidity: false,
+            beforeSwap: true,
+            afterSwap: true,
+            beforeDonate: false,
+            afterDonate: false,
+            beforeSwapReturnsDelta: false,
+            afterSwapReturnsDelta: false,
+            afterAddLiquidityReturnsDelta: false,
+            afterRemoveLiquidityReturnsDelta: false
+        })
+    );
+  }
+
+  // 2. For each callback required, overwrite the method
+  function beforeAddLiquidity(address,PoolKey calldata key, ICLPoolManager.ModifyLiquidityParams calldata, bytes calldata)
+    external override poolManagerOnly returns (bytes4) {
+      // implement hook logic and then return selector
+      return this.beforeAddLiquidity.selector;
+  }
+}
+
+```
+
+
+## Step by step guide
+
+We will develop a hook that allows only [veCake](https://docs.pancakeswap.finance/products/vecake/what-is-vecake) holders to perform a swap in the first hour of the pool initialization with this hook.
+
+---
+
+### Step 1: Download hook template
+
+1. Create a new repository from pancake-v4-hooks-template: [Click here](https://github.com/new?template_name=pancake-v4-hooks-template&template_owner=pancakeswap) 
+2. Clone the repository locally and run `forge install` and `forge test` to verify local setup.
+
+---
+
+### Step 2: Implementation idea
+
+The flow will be as follows:
+1. Store the initialization timestamp: Store the pool's initialization timestamp during pool initialization.
+![Store default swap fee in hook](/v4/guides-develop-hook-2.png)
+
+2. Check veCake balance and time condition: In the beforeSwap function, check if the swapper holds veCake and whether the swap is happening within the first hour of pool initialization.
+
+![Store default swap fee in hook](/v4/guides-develop-hook-3.png)
+
+3. Return updated swap fee: Adjust the swap fee based on these conditions.
+---
+
+### Step 3: Implement the hook
+
+We'll perform the following:
+
+1. Add `afterInitialize` and `beforeSwap` permission
+2. Store the initialization timestamp in `afterInitialize`.
+2. Return the swap fee based on whether the user is a veCake holder within the first hour in `beforeSwap`.
+
+Let's go through the implementation step by step
+
+::::steps
+#### 3.1 Add `afterInitialize` and `beforeSwap` permission
+Create a file called `src/pool-cl/VeCakeTimeLockHook.sol` and implement the following. The hook contract extends `CLBaseHook`.
+
+```solidity
+contract VeCakeDiscountHook is CLBaseHook { // [!code focus]
+    function getHooksRegistrationBitmap() external pure override returns (uint16) {
+        return _hooksRegistrationBitmapFrom(
+            Permissions({
+                beforeInitialize: false,
+                afterInitialize: true, // [!code focus]
+                beforeAddLiquidity: false,
+                afterAddLiquidity: false,
+                beforeRemoveLiquidity: false,
+                afterRemoveLiquidity: false,
+                beforeSwap: true, // [!code focus]
+                afterSwap: false,
+                beforeDonate: false,
+                afterDonate: false,
+                noOp: false
+            })
+        );
+    }
+}
+```
+
+#### 3.2 Store Initialization Timestamp in `afterInitialize`
+We specified `afterInitialize` permission in previous step. Thus CLPoolManager will call `hook.afterInitialize` after pool is initialized.
+Now we'll implement the `afterInitialize` method to store the default swap fee.
+
+```solidity
+// mapping to store poolId 
+mapping(PoolId => uint24) public poolIdToLpFee;
+
+ffunction afterInitialize(address, PoolKey calldata key, uint160, int24, bytes calldata)
+        external override returns (bytes4)
+    {
+        poolInitializationTime[key.toId()] = block.timestamp;
+        return this.afterInitialize.selector;
+    }
+```
+
+#### 3.3 Return the Swap Fee Based on veCake Balance and Time Condition in `beforeSwap`
+In the `beforeSwap` function, check if the swapper holds veCake and whether the swap is happening within the first hour of pool initialization. Adjust the swap fee accordingly.
+
+Note the return value need to include `LPFeeLibrary.OVERRIDE_FEE_FLAG` so pool manager knows the intention is to override swap fee.
+
+```solidity
+function beforeSwap(address, PoolKey calldata key, ICLPoolManager.SwapParams calldata, bytes calldata)
+        external view override poolManagerOnly returns (bytes4, BeforeSwapDelta, uint24)
+    {
+        uint256 initializationTime = poolInitializationTime[key.toId()];
+        uint24 swapFee = poolIdToLpFee[key.toId()];
+
+        if (block.timestamp < initializationTime + 1 hours && veCake.balanceOf(tx.origin) > 0) {
+            swapFee = 0; 
+        }
+
+        return (this.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, swapFee | LPFeeLibrary.OVERRIDE_FEE_FLAG);
+    }
+```
+::::
+
+<details>
+    <summary> View complete source code here </summary>
+
+```solidity [src/pool-cl/VeCakeTimeLockHook.sol]
+// [!include ~/snippets/VeCakeTimeLockHook.sol]
+```
+
+</details>
+
+---
+
+### Step 4: Add Hook test
+
+In the test, we'll test 2 scenarios:
+
+1. when swapping as a normal user
+1. When swapping as a veCake holder within the first hour of pool initialization.
+
+Create a file called `test/pool-cl/VeCakeTimeLockHook.t.sol` and copy the content from below.
+
+<details>
+    <summary> View complete source code here </summary>
+    <Callout type="warning">
+        The assertion in the test has been simplified, in the real world, you should calculate the `amtOut` and verify it.
+    </Callout>
+
+```solidity [test/pool-cl/VeCakeTimeLockHook.t.sol]
+// [!include ~/snippets/VeCakeTimeLockHook.t.sol]
+```
+</details>
+
+In order to allow dynamic swap fee, the `fee` variable in poolKey must have dynamic flag set.
+
+```solidity
+key = PoolKey({
+    currency0: currency0,
+    currency1: currency1,
+    hooks: hook,
+    poolManager: poolManager,
+    fee: LPFeeLibrary.DYNAMIC_FEE_FLAG, // [!code focus]
+    parameters: bytes32(uint256(hook.getHooksRegistrationBitmap())).setTickSpacing(10)
+});
+```
+
+---
+
+### Step 5: Verify
+
+Run `forge test` to verify test passing. 
