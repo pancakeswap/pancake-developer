@@ -60,7 +60,7 @@ function modifyLiquiditiesWithoutLock(bytes calldata actions, bytes[] calldata p
 
 The `payload` in `modifyLiquidities` is `abi.encode(actions, params)` of the input in `modifyLiquiditiesWithoutLock(bytes calldata actions, bytes[] calldata params)`
 
-- List of `actions` can be found [here](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/Actions). Actions includes liquidity related `CL_INCREASE_LIQUIDITY` or settlement related such as `SETTLE_PAIR`. 
+- List of `actions` can be found in [Actions.sol](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/Actions.sol). Actions includes liquidity related `CL_INCREASE_LIQUIDITY` or settlement related such as `SETTLE_PAIR`. 
 
 - `bytes[] params` is an array of bytes string. Each element in the array is the abi-encoded input for each respective action.
 
