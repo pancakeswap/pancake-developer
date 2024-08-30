@@ -1,0 +1,285 @@
+import { Callout } from 'vocs/components'
+
+# Manage liquidity for CL and Bin pool
+
+We'll make use of periphery contracts from [v4-periphery](https://github.com/pancakeswap/pancake-v4-periphery) for liquidity management in v4.
+
+The topic would include:
+
+1. Permit2 integration
+2. PositionManager execution flow
+3. Type of cl pool liquidity actions (`CLPositionManager`)
+4. Type of bin pool liquidity actions (`BinPositionManager`)
+5. Type of settlement actions (applicable for both pool type)
+
+## 1. Permit2 integration
+Both [CLPositionManager](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-cl/CLPositionManager.sol) and [BinPositionManager](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-bin/BinPositionManager.sol) integrates with [Permit2](/contracts/permit2)
+
+**Frontend**
+
+For Frontend, this means that when performing any operation that involves taking token from the user, user needs to sign a permit message and pass that signature in the multiCall. 
+
+Example:
+
+```solidity
+bytes[] memory calls = new bytes[](2);
+
+// signature from user
+calls[0] = abi.encodeWithSelector(IAllowanceTransfer.Permit.selector, owner, PermitSingle permitSIngle, bytes signature);
+// modifyLiquidites call - explained in next section
+calls[1] = abi.encodeWithSelector(IPositionManager.modifyLiquidities.selector, abi.encode(...));
+
+positonManager.multiCall(...)
+```
+
+**Solidity**
+For contract calls to CLPositionManager, call permit2.approve positionManager. 
+
+```solidity 
+// call permit2.approve(address token, address spender, uint160 amount, uint48 expiration);
+// example infinite approval to clPositionManager
+permit2.approve(tokenAddress, address(clPositionManager), type(uint160).max, type(uint48).max));
+```
+
+Frontend can also follow this approach, however this means its a 2 step process for user:
+
+- Step 1: call permit2.approve
+- Step 2: call clPositionManager.modifyLiquidites
+
+## 2. PositionManager execution flow
+
+If you are familar with universal router, PositionManager follows the same approach (one method, with actions and params).
+
+```solidity 
+// @notice Unlocks Vault and batches actions for modifying liquidity
+function modifyLiquidities(bytes calldata payload, uint256 deadline) external payable;
+
+// @notice Batches actions for modifying liquidity without getting a lock from vault
+function modifyLiquiditiesWithoutLock(bytes calldata actions, bytes[] calldata params) external payable;
+```
+
+The `payload` in `modifyLiquidities` is `abi.encode(actions, params)` of the input in `modifyLiquiditiesWithoutLock(bytes calldata actions, bytes[] calldata params)`
+
+- List of `actions` can be found [here](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/Actions). Actions includes liquidity related `CL_INCREASE_LIQUIDITY` or settlement related such as `SETTLE_PAIR`. 
+
+- `bytes[] params` is an array of bytes string. Each element in the array is the abi-encoded input for each respective action.
+
+
+Given `actions = 0x021717`, it would mean 3 actions processed in order:
+
+1. 02: CL_MINT_POSITION
+2. 17: CLOSE_CURRENCY
+3. 17: CLOSE_CURRENCY
+
+With 3 actions, it would mean `bytes[] params` of length = 3.
+
+1. param[0] = abi encoded param of CL_MINT_POSITION action 
+1. param[1] = abi encoded param of CLOSE_CURRENCY action 
+1. param[2] = abi encoded param of CLOSE_CURRENCY action 
+
+### Example
+
+The example tries to mint a position with CLPositionManager and uses [Planner](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/Planner.sol) which is a helper class to build actions. 
+
+```solidity
+PositionConfig memory config = PositionConfig({poolKey: key, tickLower: tickLower, tickUpper: tickUpper});
+
+// Assume other field such as liquidity and amount0Max are present
+Plan memory planner = Planner.init();
+
+// For each action to add, call planner.add 
+planner.add(ACTIONS.CL_MINT_POSITION, abi.encode(config, liquidity, amount0Max, amount1Max, recipient, hookData));
+
+// finalizeModifyLiquidityWithClose is a helper method to add CLOSE_CURRENCY actions for both currencies  
+bytes memory payload = planner.finalizeModifyLiquidityWithClose(config.poolKey)
+
+uint256 deadline = block.timestamp;
+clPositionManager.modifyLiquidities(payload, deadline);
+```
+
+## 3. Type of CL pool liquidity actions (`CLPositionManager`)
+
+Below list down CL pool related actions and its associated params.  
+
+Before we proceed, `PositionConfig` is a commonly used struct in CL liquidity related so we'll document here once
+
+```solidity
+struct PositionConfig {
+  PoolKey poolKey;
+  int24 tickLower;
+  int24 tickUpper;
+}
+```
+
+### CL_MINT_POSITION
+Mint a new position
+```solidity
+{
+  PositionConfig config; // config for the position 
+  uint256 liquidity; // the amount of liquidity to increase
+  uint128 amount0Max; // max amount0, revert if amount0 exceeds amount0Max
+  uint128 amount1Max; // max amount1, revert if amount1 exceeds amount1Max
+  address owner; // owner to recieve the minted NFT  
+  bytes hookData: // hook data to pass to hook, or empty bytes if nothing to pass
+}
+```
+
+### CL_BURN_POSITION
+Burn the NFT and automatically decrease liquidity to 0 if the position is not already empty.
+```solidity
+{
+  uint256 tokenId; // the NFT tokenId to burn
+  PositionConfig config; // config for the position 
+  uint128 amount0Min; // min amount0, revert if less than amount0Min is removed
+  uint128 amount1Min: min amount1, revert if less than amount1Min is removed
+  bytes hookData: // hook data to pass to hook, or empty bytes if nothing to pass
+}
+```
+
+
+### CL_INCREASE_LIQUIDITY
+Increase liquidity from existing position
+```solidity
+{
+  uint256 tokenId; // the NFT tokenId to increase liquidity 
+  PositionConfig config; // config for the position 
+  uint256 liquidity; // the amount of liquidity to increase
+  uint128 amount0Max; // max amount0, revert if more than amount0Max is added
+  uint128 amount1Max: max amount1, revert if more than amount1Max is added
+  bytes hookData: // hook data to pass to hook, or empty bytes if nothing to pass
+}
+```
+
+### CL_DECREASE_LIQUIDITY
+Decrease liquidity from existing position
+```solidity
+{
+  uint256 tokenId; // the NFT tokenId to decrease liquidity 
+  PositionConfig config; // config for the position 
+  uint256 liquidity; // the amount of liquidity to decrease
+  uint128 amount0Min; // min amount0, revert if less than amount0Min is removed
+  uint128 amount1Min: min amount1, revert if less than amount1Min is removed
+  bytes hookData: // hook data to pass to hook, or empty bytes if nothing to pass
+}
+```
+
+## 4. Type of Bin pool liquidity actions (`BinPositionManager`)
+Add liqudiity, will mint the correspond ERC-1155 token.
+### BIN_ADD_LIQUIDITY
+```solidity 
+IBinPositionManager.BinAddLiquidityParams {
+  PoolKey poolKey; // struct which identify the pool
+  uint128 amount0; // amount of token0 
+  uint128 amount1;  // amount of token1 
+  uint128 amount0Min; // min amount of token0, revert if required token is lesser
+  uint128 amount1Min; // min amount of token1, revert if required token is lesser
+  uint256 activeIdDesired; // active id preferred when adding liquidity
+  uint256 idSlippage; // max slippage on active id, revert if activeId changes more than idSlippage value
+  int256[] deltaIds; // list of delta ids to add liquidity (deltaId = activeId - desiredId). see helper method convertToRelative above
+  uint256[] distributionX; // distribution of token0 with sum(distributionX) = 100e18 (100%)
+  uint256[] distributionY; // distribution of token1 with sum(distributionY) = 100e18 (100%)
+  address to; // address of recipient to receive the 1155 token which represent ownership of liquidity
+}
+```
+
+### BIN_REMOVE_LIQUIDITY
+Remove liquidity, will burn the corresponding ERC-1155 token.
+
+```solidity
+IBinPositionManager.BinRemoveLiquidityParams {
+  PoolKey poolKey; // struct which identify the pool
+  uint128 amount0Min; // min amount of token0 to receive, revert if required token is lesser
+  uint128 amount1Min; // min amount of token1 to receive, revert if required token is lesser
+  uint256[] ids; // list of bin ids
+  uint256[] amounts; // list of lquidity to remove for each bin
+  address from; // Address of holder who owns the 1155 token
+}
+```
+
+## 5. Type of settlement actions 
+
+These action are applicable for both CLPositionManager and BinPositionManager.
+
+### SETTLE_PAIR
+Pay and settle currency pair. User's token0 and token1 will be transferred from user and paid. This is commonly used for increase liquidity or mint action.
+```solidity
+{
+  Currency currency0; // address of currency0
+  Currency currency1; // address of currency1
+}
+```
+
+### TAKE_PAIR
+Take all amount owed from currency pair. Owed token0 and token1 will be transfered to `to`. This is commonly used for decrease liquidity or burn action.
+```solidity
+{
+  Currency currency0; // address of currency0
+  Currency currency1; // address of currency1
+  address to; // recipient of the tokens 
+}
+```
+### SETTLE 
+Pay and settle currency. 
+
+For amount, there are constants [ActionConstants](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/ActionConstants.sol).
+
+- `amount=ActionConstants.CONTRACT_BALANCE`: amount will be currency.balance(positionManager)
+- `amount=ActionConstants.OPEN_DELTA`: amount will be the outstanding amount  
+
+```solidity
+{
+  Currency currency; // address of currency to settle 
+  uint256 amount; // amount to settle
+  bool payerIsUser; // if true, transfer token from msgSender(), otherwise from positionManager 
+}
+```
+
+### TAKE 
+Take all amount owed from currency.
+
+For amount, there are constants [ActionConstants](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/ActionConstants.sol).
+
+- `amount=ActionConstants.OPEN_DELTA`: amount will be the owed amount  
+
+```solidity
+{
+  Currency currency; // address of currency to take 
+  address recipient; // recipient of the token taken 
+  uint256 amount; // amount to take
+}
+```
+
+### CLOSE_CURRENCY 
+Close currency by either take or settle so debt is netted off. If take, token will be sent to caller, if settle, token will be transferred from caller.
+
+```solidity
+{
+  Currency currency; // currency to close 
+}
+```
+
+### CLEAR_OR_TAKE 
+
+Either take amount owed from currency or forfeit the amount. 
+
+Users might opt to forfeit as the gas cost might of erc20 transfer is higher than the amount taken.
+
+```solidity
+{
+  Currency currency; // currency to clear or take 
+  uint256 amountMax; // forfeit if the amount to take is lesser than this 
+}
+```
+
+
+## 6. Other actions 
+
+### SWEEP 
+Transfer any outstanding token balance in positionManager to `to`. 
+
+```solidity
+{
+  Currency currency; // currency to sweep
+  address to; // recipient 
+}
+```
