@@ -64,12 +64,12 @@ export default defineConfig({
                 ]
               },
               {
-                text: 'CL Pool - Swap and Liqudiity',
-                link: '/contracts/v4/guides/concentrated-liquidity-swap-and-liquidity',
+                text: 'Manage Liquidity',
+                link: '/contracts/v4/guides/manage-liquidity',
               },
               {
-                text: 'Bin Pool - Swap and Liquidity',
-                link: '/contracts/v4/guides/liquidity-book-swap-and-liquidity',
+                text: 'Perform a swap',
+                link: '/contracts/v4/guides/perform-a-swap',
               },
             ],
           },
