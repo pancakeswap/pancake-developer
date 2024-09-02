@@ -3,16 +3,16 @@ import { Callout } from 'vocs/components'
 
 # Perform a swap in v4 
 
-We'll make use of UniversalRouter from [v4-universal-router](https://github.com/pancakeswap/pancake-v4-universal-router) for swaps in v4.
+We'll utilize Universal Router from [v4-universal-router](https://github.com/pancakeswap/pancake-v4-universal-router) to handle swaps in v4.
 
 <Callout type="info">
-  This guide will be moved to the Universal Router section once v4 is launched as it is applicable for swapping for v2, v3, and StableSwap
+  This guide will be relocated to the Universal Router section after v4 is launched as it covers swapping processes for v2, v3, and StableSwap
 </Callout>
 
 The topic would include:
 
 1. Universal Router and Permit2 integration
-2. UniversalRouter execution flow
+2. Universal Router execution flow
 3. List of commands 
 4. Example to perform a swap in v4
 
@@ -20,7 +20,7 @@ The topic would include:
 ## 1. Universal Router and Permit2 integration
 UniversalRouter integrates with [Permit2](/contracts/permit2)
 
-For Frontend, this means that when performing any operation that involves taking token from the user, user needs to sign a permit message and pass that signature in the multiCall. 
+For the frontend, this means that any operation involving token transfers from the user requires the user to sign a permit message and include that signature in the permit command.
 
 Example:
 
@@ -30,13 +30,13 @@ bytes memory commands = abi.encodePacked(
     bytes1(uint8(Commands.V2_SWAP_EXACT_IN)));
 
 bytes[] memory inputs = new bytes[](2);
-inputs[0] = abi.encode(IAllowanceTransfer.PermitSingle permitSingle, bytes signature); // permit2 input
+inputs[0] = abi.encode(IAllowanceTransfer.PermitSingle permitSingle, bytes signature); // permit2 input with user's signature
 inputs[1] = abi.encode(...v2 swap input);
 
 universalRouter.execute(commands, inputs);
 ```
 
-For soldiity contract calls to universal router, call permit2.approve router. 
+For soldiity contract calls to Universal Router, make sure to first call `permit2.approve` to authorize the router. 
 
 ```solidity 
 // function permit(address owner, PermitSingle memory permitSingle, bytes calldata signature) external;
@@ -45,9 +45,9 @@ For soldiity contract calls to universal router, call permit2.approve router.
 permit2.approve(tokenAddress, address(universalRouter), type(uint160).max, type(uint48).max);
 ```
 
-## 2. UniversalRouter execution flow
+## 2. Universal Router execution flow
 
-Universal router expose 2 key functions:
+Universal Router expose 2 key functions:
 
 ```solidity
 // Executes encoded commands along with provided inputs. Reverts if deadline has expired.
@@ -57,7 +57,7 @@ function execute(bytes calldata commands, bytes[] calldata inputs, uint256 deadl
 function execute(bytes calldata commands, bytes[] calldata inputs);
 ```
 
-Both function are similar, with the first function including an additional `deadline` field, transaction will revert if `block.timestamp > deadline`. 
+Both functions are similar, with the first function including an additional `deadline` field. The transaction will revert if `block.timestamp > deadline`. 
 
 ### Commands 
 The first parameter `bytes calldata commands` is a list of commands to execute. Each command is encoded in 1 byte, containing the following split of 8 bits:
@@ -67,18 +67,17 @@ The first parameter `bytes calldata commands` is a list of commands to execute. 
 | f | command       |
 
 - `f`: 
-    - if set as `0`, and if command revert, the entire transaction will revert. 
-    - if set as `1`, and if command revert, the transaction will continue. This achieve partial fills, be careful and ensure there are further commands to remove any funds remaining in UniversalRouter.
+    - if set as `0` and the command revert, the entire transaction will revert. 
+    - if set as `1` and the command revert, the transaction will continue. This allows for partial fills, but be cautious and ensure there are subsequent commands to handle any remaining funds in the Universal Router.
 
 - `command`: 
-    - a 7 bit unique identifier, list of commands can be found in [Commands.sol](https://github.com/pancakeswap/pancake-v4-universal-router/blob/main/src/libraries/Commands.sol). 
-
+    - a 7 bit unique identifier. A list of commands can be found in [Commands.sol](https://github.com/pancakeswap/pancake-v4-universal-router/blob/main/src/libraries/Commands.sol) and this document.
 
 ### Commands inputs 
 
-The second parameter, `bytes[] calldata input`, is an array of byte strings where each element contains the ABI-encoded input for its corresponding command.
+The second parameter, `bytes[] calldata input`, is an array of byte strings. Each element in this array contains the ABI-encoded input data corresponding to the specific command being executed.
 
-**Example**
+**Example*
 
 Given `commands = 0x0a00`, it would mean 2 commands processed in order:
 
@@ -87,13 +86,13 @@ Given `commands = 0x0a00`, it would mean 2 commands processed in order:
 
 With 2 commands, it would mean `bytes[] calldata input` of length 2.
 
-1. `input[0]`: abi-encoded params of PERMIT2_PERMIT command 
-1. `input[1]`: abi-encoded params of V3_SWAP_EXACT_IN command
+1. `input[0]`: abi-encoded params of `PERMIT2_PERMIT` command 
+1. `input[1]`: abi-encoded params of `V3_SWAP_EXACT_IN` command
 
 
 ## 3. List of commands and input 
 
-This section document the list of commands and its input. List of commands can be found in [Commands.sol](https://github.com/pancakeswap/pancake-v4-universal-router/blob/main/src/libraries/Commands.sol). 
+This section document the list of commands and its input. A list of commands can be found in [Commands.sol](https://github.com/pancakeswap/pancake-v4-universal-router/blob/main/src/libraries/Commands.sol). 
 
 ### V3_SWAP_EXACT_IN
 
@@ -390,13 +389,13 @@ Perform an exactOut with PCS StableSwap
 
 ## 4. Example of performing a swap in v4
 
-When performing a swap in v4, the command is: `V4_SWAP` 
+When performing a swap in v4, the command to use is: `V4_SWAP` 
 
 For both CL and Bin pool, the following are supported:
 - exactInSingle and exactIn (for multi-hop)
 - exactOutSingle and exactOut (for multi-hop)
 
-For the param to each swap, see [CLRouterBase.sol](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-cl/interfaces/ICLRouterBase.sol) for CL and [IBinRouterBase](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-bin/interfaces/IBinRouterBase.sol) for Bin.
+For details on the parameters required for each swap type refer to [CLRouterBase.sol](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-cl/interfaces/ICLRouterBase.sol) for the concentrated liquidity pool and [IBinRouterBase](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-bin/interfaces/IBinRouterBase.sol) for the Bin pools.
 
 ----
 

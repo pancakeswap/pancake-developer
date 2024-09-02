@@ -2,7 +2,7 @@ import { Callout } from 'vocs/components'
 
 # Manage liquidity for CL and Bin pool
 
-We'll make use of periphery contracts from [v4-periphery](https://github.com/pancakeswap/pancake-v4-periphery) for liquidity management in v4.
+We'll utilize the periphery contracts from [v4-periphery](https://github.com/pancakeswap/pancake-v4-periphery) to manage liqudity in v4.
 
 The topic would include:
 
@@ -17,7 +17,7 @@ Both [CLPositionManager](https://github.com/pancakeswap/pancake-v4-periphery/blo
 
 **Frontend**
 
-For Frontend, this means that when performing any operation that involves taking token from the user, user needs to sign a permit message and pass that signature in the multiCall. 
+For the frontend, this means that any operation involving token transfers from the user requires the user to sign a permit message and include that signature in the multiCall. 
 
 Example:
 
@@ -33,7 +33,7 @@ positonManager.multiCall(...)
 ```
 
 **Solidity**
-For contract calls to CLPositionManager, call permit2.approve positionManager. 
+For soldiity contract calls to PosiitonManager, make sure to first call `permit2.approve` to authorize the position manager. 
 
 ```solidity 
 // call permit2.approve(address token, address spender, uint160 amount, uint48 expiration);
@@ -41,14 +41,9 @@ For contract calls to CLPositionManager, call permit2.approve positionManager.
 permit2.approve(tokenAddress, address(clPositionManager), type(uint160).max, type(uint48).max));
 ```
 
-Frontend can also follow this approach, however this means its a 2 step process for user:
-
-- Step 1: call permit2.approve
-- Step 2: call clPositionManager.modifyLiquidites
-
 ## 2. PositionManager execution flow
 
-If you are familar with universal router, PositionManager follows the same approach (one method, with actions and params).
+If you are familar with Universal Router, PositionManager follows the same approach (one method, with actions and params).
 
 ```solidity 
 // @notice Unlocks Vault and batches actions for modifying liquidity
@@ -58,7 +53,7 @@ function modifyLiquidities(bytes calldata payload, uint256 deadline) external pa
 function modifyLiquiditiesWithoutLock(bytes calldata actions, bytes[] calldata params) external payable;
 ```
 
-The `payload` in `modifyLiquidities` is `abi.encode(actions, params)` of the input in `modifyLiquiditiesWithoutLock(bytes calldata actions, bytes[] calldata params)`
+The `bytes calldata payload` in `modifyLiquidities` is `abi.encode(actions, params)` of the input in `modifyLiquiditiesWithoutLock(bytes calldata actions, bytes[] calldata params)`
 
 - List of `actions` can be found in [Actions.sol](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/Actions.sol). Actions includes liquidity related `CL_INCREASE_LIQUIDITY` or settlement related such as `SETTLE_PAIR`. 
 
@@ -67,19 +62,19 @@ The `payload` in `modifyLiquidities` is `abi.encode(actions, params)` of the inp
 
 Given `actions = 0x021717`, it would mean 3 actions processed in order:
 
-1. 02: CL_MINT_POSITION
-2. 17: CLOSE_CURRENCY
-3. 17: CLOSE_CURRENCY
+1. `0x02`: `CL_MINT_POSITION`
+2. `0x17`: `CLOSE_CURRENCY`
+3. `0x17`: `CLOSE_CURRENCY`
 
 With 3 actions, it would mean `bytes[] params` of length = 3.
 
-1. param[0] = abi encoded param of CL_MINT_POSITION action 
-1. param[1] = abi encoded param of CLOSE_CURRENCY action 
-1. param[2] = abi encoded param of CLOSE_CURRENCY action 
+1. `params[0]` = abi encoded param of `CL_MINT_POSITION` action 
+1. `params[1]` = abi encoded param of `CLOSE_CURRENCY` action 
+1. `params[2]` = abi encoded param of `CLOSE_CURRENCY` action 
 
 ### Example
 
-The example tries to mint a position with CLPositionManager and uses [Planner](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/Planner.sol) which is a helper class to build actions. 
+This example tries to mint a position with CLPositionManager and uses [Planner](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/Planner.sol) which is a helper class to build actions. 
 
 ```solidity
 PositionConfig memory config = PositionConfig({poolKey: key, tickLower: tickLower, tickUpper: tickUpper});
@@ -105,9 +100,9 @@ Before we proceed, `PositionConfig` is a commonly used struct in CL liquidity re
 
 ```solidity
 struct PositionConfig {
-  PoolKey poolKey;
-  int24 tickLower;
-  int24 tickUpper;
+  PoolKey poolKey; // struct which determine the poolKey 
+  int24 tickLower; // tickLower for the position
+  int24 tickUpper; // tickUpper for the position
 }
 ```
 
