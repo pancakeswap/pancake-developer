@@ -36,7 +36,7 @@ inputs[1] = abi.encode(...v2 swap input);
 universalRouter.execute(commands, inputs);
 ```
 
-For soldiity contract calls to Universal Router, make sure to first call `permit2.approve` to authorize the router. 
+For solidity contract calls to Universal Router, make sure to first call `permit2.approve` to authorize the router. 
 
 ```solidity 
 // function permit(address owner, PermitSingle memory permitSingle, bytes calldata signature) external;
@@ -62,11 +62,11 @@ Both functions are similar, with the first function including an additional `dea
 ### Commands 
 The first parameter `bytes calldata commands` is a list of commands to execute. Each command is encoded in 1 byte, containing the following split of 8 bits:
 
-| 0 | 1 2 3 4 5 6 7 |
-| - | ------------- |
-| f | command       |
+| 0    | 1 2 3 4 5 6 7 |
+| ---- | ------------- |
+| flag | command       |
 
-- `f`: 
+- `flag`: 
     - if set as `0` and the command revert, the entire transaction will revert. 
     - if set as `1` and the command revert, the transaction will continue. This allows for partial fills, but be cautious and ensure there are subsequent commands to handle any remaining funds in the Universal Router.
 
@@ -320,7 +320,12 @@ input[i] = abi.encodeWithSelector(IV3NonfungiblePositionManager.collect.selector
 
 ### V4_CL_POSITION_CALL
 
-Make a call to v4 cl position manager.
+Make a call to v4 cl position manager. 
+
+<Callout type="warning">
+  Do not permit or approve Universal Router over a v4 position or someone could use this command to decrease/burn your position.
+  Should only call modifyLiquidities() with Actions.CL_MINT_POSITION. 
+</Callout>
 
 ```solidity
 {
@@ -342,6 +347,11 @@ input[i] = abi.encodeWithSelector(IPositionManager.modifyLiquidities.selector, p
 
 Make a call to v4 BinPositionManager.
 
+<Callout type="warning">
+  Do not permit or approve Universal Router over a v4 position or someone could use this command decrease your position.
+  Should only call modifyLiquidities() with Actions.BIN_ADD_LIQUIDITY. 
+</Callout>
+
 ```solidity 
 {
     bytes data;
@@ -349,8 +359,9 @@ Make a call to v4 BinPositionManager.
 
 // 'data' varies depending on which action of v4 position manager
 
-// example: calling CL BIN_ADD_LIQUIDITY action 
+// example: calling BIN_ADD_LIQUIDITY action: 
 Plan memory planner = Planner.init();
+// addParam would be IBinPositionManager.BinAddLiquidityParams
 planner.add(Actions.BIN_ADD_LIQUIDITY, abi.encode(addParams));
 // remember to add settlement action 
 
