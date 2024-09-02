@@ -95,6 +95,10 @@ clPositionManager.modifyLiquidities(payload, deadline);
 
 ## 3. Type of CL pool liquidity actions (`CLPositionManager`)
 
+<Callout type="info">
+  In v4, there's no longer `collect()` to collect LP fee(s) for a position. Instead, use CL_INCREASE_LIQUIDITY or CL_DECREASE_LIQUIDITY action with `liqudiity: 0` to collect LP fees. 
+</Callout>
+
 Below list down CL pool related actions and its associated params.  
 
 Before we proceed, `PositionConfig` is a commonly used struct in CL liquidity related so we'll document here once
