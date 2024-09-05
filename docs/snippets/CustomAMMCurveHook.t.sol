@@ -138,7 +138,6 @@ contract CustomAMMCurveHookTest is Test, CLTestUtils {
             })
         );
 
-        // assertEq(amtIn, 1 ether);
         uint256 amt1After = MockERC20(Currency.unwrap(currency1)).balanceOf(address(alice));
         uint256 amtIn = amt1Before - amt1After;
 
