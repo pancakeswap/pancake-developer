@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {PoolKey} from "@pancakeswap/v4-core/src/types/PoolKey.sol";
-import {BeforeSwapDelta, toBeforeSwapDelta} from "@pancakeswap/v4-core/src/types/BeforeSwapDelta.sol";
-import {PoolId, PoolIdLibrary} from "@pancakeswap/v4-core/src/types/PoolId.sol";
-import {Currency} from "@pancakeswap/v4-core/src/types/Currency.sol";
-import {ICLPoolManager} from "@pancakeswap/v4-core/src/pool-cl/interfaces/ICLPoolManager.sol";
-import {LPFeeLibrary} from "@pancakeswap/v4-core/src/libraries/LPFeeLibrary.sol";
-import {CurrencySettlement} from "@pancakeswap/v4-core/test/helpers/CurrencySettlement.sol";
+import {PoolKey} from "pancake-v4-core/src/types/PoolKey.sol";
+import {BeforeSwapDelta, toBeforeSwapDelta} from "pancake-v4-core/src/types/BeforeSwapDelta.sol";
+import {PoolId, PoolIdLibrary} from "pancake-v4-core/src/types/PoolId.sol";
+import {Currency} from "pancake-v4-core/src/types/Currency.sol";
+import {ICLPoolManager} from "pancake-v4-core/src/pool-cl/interfaces/ICLPoolManager.sol";
+import {LPFeeLibrary} from "pancake-v4-core/src/libraries/LPFeeLibrary.sol";
+import {CurrencySettlement} from "pancake-v4-core/test/helpers/CurrencySettlement.sol";
 import {CLBaseHook} from "./CLBaseHook.sol";
 
 /// @notice CustomAMMCurveHook override AMM curve with 1:1 curve and 0 trading slippage
