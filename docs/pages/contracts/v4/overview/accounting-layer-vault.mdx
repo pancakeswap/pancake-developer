@@ -21,8 +21,7 @@ The high level steps are as follow:
  
 ```solidity
 // An example of the 4 steps process, some codes are removed to keep this simple
-// Ref: https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-bin/BinFungiblePositionManager.sol 
-contract BinFungiblePositionManager {
+contract ExamplePositionManager {
     function addLiquidity(AddLiquidity calldata params) external {
         // Step 1: Get a lock
         vault.lock(..)
