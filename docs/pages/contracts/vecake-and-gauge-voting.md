@@ -11,8 +11,8 @@ description: CAKE locked staking and its benefits
 [View on BscScan](https://bscscan.com/address/0x5692DB8177a81A6c6afc8084C2976C9933EC1bAB)
 
 **Contract name:** GaugeVoting\
-**Contract address:** 0xffdcDD4cF85Ba1b51D7aB498208C0EC7E1910e3b\
-[View on BscScan](https://bscscan.com/token/0xffdcDD4cF85Ba1b51D7aB498208C0EC7E1910e3b)
+**Contract address:** 0xf81953dC234cdEf1D6D0d3ef61b232C6bCbF9aeF\
+[View on BscScan](https://bscscan.com/address/0xf81953dC234cdEf1D6D0d3ef61b232C6bCbF9aeF)
 
 :::warning
 Due to some necessary updates on the calculation logic. A new `GaugeVotingCalc` contract has been deployed, and both the absolute and relative weights for each voting gauge should be referenced based on the output of this contract. NOT the returns from `GaugeVoting`
