@@ -7,12 +7,12 @@ description: Fork of Curve Finance
 ## Contract info
 
 ### Binance smart chain
-Stableswap Factory Contract: `0x36bBb126e75351C0DfB651e39b38fe0BC436FFD2`
+Stableswap Factory Contract: `0x25a55f9f2279a54951133d503490342b50e5cd15`
 
-View the [PancakeSwap: Stableswap Factory contract on BscScan](https://bscscan.com/address/0x36bBb126e75351C0DfB651e39b38fe0BC436FFD2)
+View the [PancakeSwap: Stableswap Factory contract on BscScan](https://bscscan.com/address/0x25a55f9f2279a54951133d503490342b50e5cd15)
 
 ### Smart Router
 
-Contract address: `0xC6665d98Efd81f47B03801187eB46cbC63F328B0`
+Contract address: `0x13f4EA83D0bd40E75C8222255bc855a974568Dd4`
 
-View the [PancakeSwap: Smart Router contract on BscScan](https://bscscan.com/address/0xc6665d98efd81f47b03801187eb46cbc63f328b0)
+View the [PancakeSwap: Smart Router contract on BscScan](https://bscscan.com/address/0x13f4EA83D0bd40E75C8222255bc855a974568Dd4)
