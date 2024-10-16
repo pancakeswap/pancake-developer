@@ -13,6 +13,6 @@ View the [PancakeSwap: Stableswap Factory contract on BscScan](https://bscscan.c
 
 ### Smart Router
 
-Contract address: `0xC6665d98Efd81f47B03801187eB46cbC63F328B0`
+Contract address: `0x13f4EA83D0bd40E75C8222255bc855a974568Dd4`
 
-View the [PancakeSwap: Smart Router contract on BscScan](https://bscscan.com/address/0xc6665d98efd81f47b03801187eb46cbc63f328b0)
+View the [PancakeSwap: Smart Router contract on BscScan](https://bscscan.com/address/0x13f4EA83D0bd40E75C8222255bc855a974568Dd4)
