@@ -32,6 +32,6 @@ Due to some necessary updates on the calculation logic. A new `GaugeVotingCalc` 
 [View on BscScan](https://bscscan.com/address/0x9cac9745731d1Cf2B483f257745A512f0938DD01)
 
 **Contract name:** RevenueSharingPoolGateway\
-**Contract address:** 0x011f2a82846a4E9c62C2FC4Fd6fDbad19147D94A\
+**Contract address:** 0x53276f5311Ed95a0E984b5D438f84a6e0b5e61B4\
 **Note:** Contract for multi claiming rewards from "RevenueSharingPool" contracts\
-[View on BscScan](https://bscscan.com/address/0x011f2a82846a4E9c62C2FC4Fd6fDbad19147D94A)
+[View on BscScan](https://bscscan.com/address/0x53276f5311Ed95a0E984b5D438f84a6e0b5e61B4)
