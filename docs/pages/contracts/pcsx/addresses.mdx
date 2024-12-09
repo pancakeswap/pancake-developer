@@ -1,0 +1,34 @@
+import { Callout } from 'vocs/components'
+
+# PancakeSwap x Addresses 
+
+--- 
+
+From https://github.com/pancakeswap/pancake-x-contracts
+
+:::note
+PancakeSwapX integrates permit2, see addresses [here](/contracts/permit2/addresses) 
+:::
+
+## ExclusiveDutchOrderReactor
+
+`ExclusiveDutchOrderReactor` facilitates the execution of exclusive Dutch orders, which are a type of order where the execution price decays linearly over time, similar to a Dutch auction. 
+
+This reactor introduces a period of exclusivity before the price decay begins, granting a specific filler exclusive rights to fulfill the order within this timeframe.
+
+------
+**Mainnet**
+
+| Network | Address  | 
+| ------ | ------ |
+| BSC  | 0xDB9D365b50E62fce747A90515D2bd1254A16EbB9 | 
+| Etherum | 0x35db01D1425685789dCc9228d47C7A5C049388d8 | 
+| Arbitrum | 0x35db01D1425685789dCc9228d47C7A5C049388d8 | 
+
+------
+**Testnet**
+
+| Network | Address  | 
+| ------ | ------ |
+| BSC Tesnet | 0xCfe2a565072f85381775Eb12644d297bf0F66773 | 
+| Sepolia | 0xbfCC755375250C1EA9722EB1B8d97076f681627C | 

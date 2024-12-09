@@ -155,6 +155,16 @@ export default defineConfig({
         ],
       },
       {
+        text: 'PancakeSwap X',
+        collapsed: false,
+        items: [
+          {
+            text: 'Addresses',
+            link: '/contracts/pcsx/addresses',
+          },
+        ],
+      },
+      {
         text: '',
         items: [
           {
