@@ -19,8 +19,8 @@ Old address (before Dec 4th 2024): 0xf81953dC234cdEf1D6D0d3ef61b232C6bCbF9aeF
 Both the absolute and relative weights for each voting gauge should be referenced based on the output of this contract. NOT the returns from `GaugeVoting`
 
 **Contract name:** GaugeVotingCalc (as of Dec 4th 2024 epoch) \
-**Contract address:** 0x52c17e45eb629688EA4838C9E4e99A6133179298\
-[View on BscScan](https://bscscan.com/address/0x52c17e45eb629688EA4838C9E4e99A6133179298#readContract) \
+**Contract address:** 0x4fF7C80Df31e5864776314D89220Ae18626a6D67\
+[View on BscScan](https://bscscan.com/address/0x4fF7C80Df31e5864776314D89220Ae18626a6D67#readContract) \
 Old address (before Dec 4th 2024): 0x94f8cba8712b3e72c9bf8ba4d6619ac9046fe695
 
 :::
