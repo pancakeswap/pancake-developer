@@ -24,4 +24,5 @@ description: Contracts involved in cross-EVM-chains CAKE farming with Celer
 [View on BaseScan](https://basescan.org/address/0xF24BDEfa7A77BEdB0D5d5900a962ebB55b96C732)
 
 **Contract name:** FarmBoosterV3\
-**Contract address:**
+**Contract address:** 0xe1B937722686f1967C22238B510595b610Ad2032
+[View on BaseScan](https://basescan.org/address/0xe1B937722686f1967C22238B510595b610Ad2032)
