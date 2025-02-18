@@ -11,6 +11,7 @@ For more in-depth information on the core contract logic, read the [Uniswap v2 C
 
 View [PancakeFactory.sol on GitHub](https://github.com/pancakeswap/pancake-contracts/blob/master/projects/exchange-protocol/contracts/PancakeFactory.sol).
 
+Mainnet
 | Chain    | Address                                    |
 | -------- | ------------------------------------------ |
 | BSC      | 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73 |
@@ -21,6 +22,11 @@ View [PancakeFactory.sol on GitHub](https://github.com/pancakeswap/pancake-contr
 | Linea    | 0x02a84c1b3BBD7401a5f7fa98a384EBC70bB5749E |
 | Base     | 0x02a84c1b3BBD7401a5f7fa98a384EBC70bB5749E |
 | opBNB    | 0x02a84c1b3BBD7401a5f7fa98a384EBC70bB5749E |
+
+Testnet
+| Chain       | Address                                    |
+| --------    | ------------------------------------------ |
+| BSC Testnet | 0x6725F303b657a9451d8BA641348b6761A6CC7a17 |
 
 ## Read functions
 

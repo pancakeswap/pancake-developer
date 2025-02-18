@@ -11,6 +11,7 @@ For more in-depth information on the core contract logic, read the [Uniswap v2 C
 
 View [PancakeRouter.sol on GitHub](https://github.com/pancakeswap/pancake-smart-contracts/blob/master/projects/exchange-protocol/contracts/PancakeRouter.sol).
 
+Mainnet
 | Chain    | Address                                    |
 | -------- | ------------------------------------------ |
 | BSC      | 0x10ED43C718714eb63d5aA57B78B54704E256024E |
@@ -21,6 +22,11 @@ View [PancakeRouter.sol on GitHub](https://github.com/pancakeswap/pancake-smart-
 | Linea    | 0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb |
 | Base     | 0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb |
 | opBNB    | 0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb |
+
+Testnet
+| Chain       | Address                                    |
+| --------    | ------------------------------------------ |
+| BSC Testnet | 0xD99D1c33F9fC3444f8101754aBC46c52416550D1 |
 
 ## Read functions
 
