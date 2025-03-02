@@ -1,12 +1,12 @@
 import { Callout } from 'vocs/components'
 
 
-# Perform a swap in v4 
+# Perform a swap 
 
-We'll utilize Universal Router from [v4-universal-router](https://github.com/pancakeswap/pancake-v4-universal-router) to handle swaps in v4.
+We'll utilize Universal Router from [infinity-universal-router](https://github.com/pancakeswap/infinity-universal-router) to handle swaps.
 
 <Callout type="info">
-  This guide will be relocated to the Universal Router section after v4 is launched as it covers swapping processes for v2, v3, and StableSwap
+  This guide will be relocated to the Universal Router section after Infinity is launched as it covers swapping processes for v2, v3, and StableSwap
 </Callout>
 
 The topic would include:
@@ -14,7 +14,7 @@ The topic would include:
 1. Universal Router and Permit2 integration
 2. Universal Router execution flow
 3. List of commands 
-4. Example to perform a swap in v4
+4. Example to perform a swap
 
 
 ## 1. Universal Router and Permit2 integration
@@ -71,7 +71,7 @@ The first parameter `bytes calldata commands` is a list of commands to execute. 
     - if set as `1` and the command revert, the transaction will continue. This allows for partial fills, but be cautious and ensure there are subsequent commands to handle any remaining funds in the Universal Router.
 
 - `command`: 
-    - a 7 bit unique identifier. A list of commands can be found in [Commands.sol](https://github.com/pancakeswap/pancake-v4-universal-router/blob/main/src/libraries/Commands.sol) and this document.
+    - a 7 bit unique identifier. A list of commands can be found in [Commands.sol](https://github.com/pancakeswap/infinity-universal-router/blob/main/src/libraries/Commands.sol) and this document.
 
 ### Commands inputs 
 
@@ -92,7 +92,7 @@ With 2 commands, it would mean `bytes[] calldata input` of length 2.
 
 ## 3. List of commands and input 
 
-This section document the list of commands and its input. A list of commands can be found in [Commands.sol](https://github.com/pancakeswap/pancake-v4-universal-router/blob/main/src/libraries/Commands.sol). 
+This section document the list of commands and its input. A list of commands can be found in [Commands.sol](https://github.com/pancakeswap/infinity-universal-router/blob/main/src/libraries/Commands.sol). 
 
 ### V3_SWAP_EXACT_IN
 
@@ -262,8 +262,8 @@ Verify the balance of a specific ERC-20 token held by an address
 }
 ```
 
-### V4_SWAP
-Perform a swap on v4 - see example of performing a swap in v4 section below.
+### INFI_SWAP
+Perform a swap on Infinity - see example of performing a swap below.
 
 ```solidity
 {
@@ -273,7 +273,7 @@ Perform a swap on v4 - see example of performing a swap in v4 section below.
 
 ### V3_POSITION_MANAGER_PERMIT
 
-Approve an NFT. This should only be used for v3 to v4 migration. If only this command is done, it means others can decrease your v3 NFT liquidity and take your token.
+Approve an NFT. This should only be used for v3 to Infinity migration. If only this command is done, it means others can decrease your v3 NFT liquidity and take your token.
 
 ```solidity
 {
@@ -318,12 +318,12 @@ IV3NonfungiblePositionManager.CollectParams memory collectParam =
 input[i] = abi.encodeWithSelector(IV3NonfungiblePositionManager.collect.selector, collectParam);
 ```
 
-### V4_CL_POSITION_CALL
+### INFI_CL_POSITION_CALL
 
-Make a call to v4 cl position manager. 
+Make a call to Infinity cl position manager. 
 
 <Callout type="warning">
-  Do not permit or approve Universal Router over a v4 position or someone could use this command to decrease/burn your position.
+  Do not permit or approve Universal Router over a Infinity position or someone could use this command to decrease/burn your position.
   Should only call modifyLiquidities() with Actions.CL_MINT_POSITION. 
 </Callout>
 
@@ -332,7 +332,7 @@ Make a call to v4 cl position manager.
     bytes data;
 }
 
-// 'data' varies depending on which action of v4 position manager
+// 'data' varies depending on which action of Infinity position manager
 
 // example: calling CL MINT_POSITION action
 PositionConfig memory positionConfig = PositionConfig({poolKey: clPoolKey, tickLower: -120, tickUpper: 120});
@@ -343,12 +343,12 @@ planner.add(Actions.CL_MINT_POSITION, abi.encode(positionConfig, 1 ether, 10 eth
 input[i] = abi.encodeWithSelector(IPositionManager.modifyLiquidities.selector, planner.encode(), block.timestamp);
 ```
 
-### V4_BIN_POSITION_CALL
+### INFI_BIN_POSITION_CALL
 
-Make a call to v4 BinPositionManager.
+Make a call to Infinity BinPositionManager.
 
 <Callout type="warning">
-  Do not permit or approve Universal Router over a v4 position or someone could use this command decrease your position.
+  Do not permit or approve Universal Router over a Infinity position or someone could use this command decrease your position.
   Should only call modifyLiquidities() with Actions.BIN_ADD_LIQUIDITY. 
 </Callout>
 
@@ -357,7 +357,7 @@ Make a call to v4 BinPositionManager.
     bytes data;
 }
 
-// 'data' varies depending on which action of v4 position manager
+// 'data' varies depending on which action of Infinity position manager
 
 // example: calling BIN_ADD_LIQUIDITY action: 
 Plan memory planner = Planner.init();
@@ -398,26 +398,26 @@ Perform an exactOut with PCS StableSwap
 }
 ```
 
-## 4. Example of performing a swap in v4
+## 4. Example of performing a swap in Infinity
 
-When performing a swap in v4, the command to use is: `V4_SWAP` 
+When performing a swap in Infinity, the command to use is: `INFI_SWAP` 
 
 For both CL and Bin pool, the following are supported:
 - exactInSingle and exactIn (for multi-hop)
 - exactOutSingle and exactOut (for multi-hop)
 
-For details on the parameters required for each swap type refer to [CLRouterBase.sol](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-cl/interfaces/ICLRouterBase.sol) for the concentrated liquidity pool and [IBinRouterBase](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-bin/interfaces/IBinRouterBase.sol) for the Bin pools.
+For details on the parameters required for each swap type refer to [CLRouterBase.sol](https://github.com/pancakeswap/infinity-periphery/blob/main/src/pool-cl/interfaces/ICLRouterBase.sol) for the concentrated liquidity pool and [IBinRouterBase](https://github.com/pancakeswap/infinity-periphery/blob/main/src/pool-bin/interfaces/IBinRouterBase.sol) for the Bin pools.
 
 ----
 
 For the examples below:
 - Assume permit2 approval has been given, and the smart contract is trying to call universal router to swap.
-- We will use [Planner](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/Planner.sol) which is a helper class to build actions for v4. 
+- We will use [Planner](https://github.com/pancakeswap/infinity-periphery/blob/main/src/libraries/Planner.sol) which is a helper class to build actions for Infinity. 
 
 **Example 1**: Swap exactInSingle with CL pool type
 
 ```solidity
-// step 1: build the v4 swap param 
+// step 1: build the Infinity swap param 
 ICLRouterBase.CLSwapExactInputSingleParams memory params =
     ICLRouterBase.CLSwapExactInputSingleParams({
         poolKey: poolKey, // struct which determine the poolKey 
@@ -428,13 +428,13 @@ ICLRouterBase.CLSwapExactInputSingleParams memory params =
         hookData: "" // hook data 
     });
 
-// Step 2: build the v4 payload 
+// Step 2: build the Infinity payload 
 Plan plan = Planner.init();
 plan.add(Actions.CL_SWAP_EXACT_IN_SINGLE, abi.encode(params));
 bytes memory data = plan.finalizeSwap(poolKey.currency0, poolKey.currency1, ActionConstants.MSG_SENDER);
 
 // step 3: build command/input 
-bytes memory commands = abi.encodePacked(bytes1(uint8(Commands.V4_SWAP)));
+bytes memory commands = abi.encodePacked(bytes1(uint8(Commands.INFI_SWAP)));
 bytes[] memory inputs = new bytes[](1);
 inputs[0] = data;
 
@@ -450,7 +450,7 @@ Swap includes:
 - Swap exactInSingle token1 -> token2 via Bin
 
 ```solidity
-// step 1: build the v4 swap param 
+// step 1: build the Infinity swap param 
 ICLRouterBase.CLSwapExactInputSingleParams memory clParam =
     ICLRouterBase.CLSwapExactInputSingleParams({
         poolKey: poolKey0, // struct which determine the poolKey 
@@ -470,14 +470,14 @@ IBinRouterBase.BinSwapExactInputSingleParams memory binParam =
         hookData: "" // hook data 
     });
 
-// step 2: build the v4 payload with CL token0->token1 and Bin token1->token2    
+// step 2: build the Infinity payload with CL token0->token1 and Bin token1->token2    
 Plan plan = Planner.init();
 plan.add(Actions.CL_SWAP_EXACT_IN_SINGLE, abi.encode(clParam));
 plan.add(Actions.BIN_SWAP_EXACT_IN_SINGLE, abi.encode(binParam));
 bytes memory data = plan.finalizeSwap(poolKey0.currency0, poolKey1.currency1, ActionConstants.MSG_SENDER);
 
 // step 3: build command/input 
-bytes memory commands = abi.encodePacked(bytes1(uint8(Commands.V4_SWAP)));
+bytes memory commands = abi.encodePacked(bytes1(uint8(Commands.INFI_SWAP)));
 bytes[] memory inputs = new bytes[](1);
 inputs[0] = data;
 

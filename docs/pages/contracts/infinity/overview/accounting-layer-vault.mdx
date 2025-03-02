@@ -1,13 +1,13 @@
 # Accounting Layer | Vault
 
 At the core of this architecture is the 
-[Vault](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/Vault.sol), which functions as an immutable accounting layer. It maintains a ledger of tokens that are either deposited or owed, facilitating a secure and efficient settlement process at the end of each transaction.
+[Vault](https://github.com/pancakeswap/infinity-core/blob/main/src/Vault.sol), which functions as an immutable accounting layer. It maintains a ledger of tokens that are either deposited or owed, facilitating a secure and efficient settlement process at the end of each transaction.
 
 ## Lock Mechanism 
 
 One of the key mechaism in the vault is the **lock mechanism**. Caller need to get a lock from the vault before performing any operation (swap, liquidity or donate) with the pool manager.
 
-![Vault](/v4/vault.png)
+![Vault](/infinity/vault.png)
 
 The high level steps are as follow: 
 
@@ -47,7 +47,7 @@ contract ExamplePositionManager {
 
 ## Flash accounting 
 
-The vault uses [SettlementGuard](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/libraries/SettlementGuard.sol) to keep track of the number of unsettled currency and how much is owed/owe for each currency. 
+The vault uses [SettlementGuard](https://github.com/pancakeswap/infinity-core/blob/main/src/libraries/SettlementGuard.sol) to keep track of the number of unsettled currency and how much is owed/owe for each currency. 
 
 Below shows a snippet of code in `SettlementGuard.sol`. Whenever an operation happen, pool manager will call Vault.accountDelta to inform vault of the balance change 
 ```solidity
@@ -75,11 +75,11 @@ settle them at the end of all operations. An example where gas benefit shines is
 
 1. User swap A -> B -> C
 2. In PCS v3, there will be ERC20 transfer of all three token A, B and C 
-3. In PCS v4, as token B is netted off in the ledger by the end of the multi-hop operation, there will only be ERC20 transfer of token A and C. 
+3. In PCS Infinity, as token B is netted off in the ledger by the end of the multi-hop operation, there will only be ERC20 transfer of token A and C. 
 
 ## Reconciling balance
 
-BalanceDelta is returned whenever you perform some actions with [poolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/pool-cl/CLPoolManager.sol), eg. `swap | modifyLiquidity | donate`. It contains `int128 amount0` and `int128 amount1` that we need to take or settle with the vault.
+BalanceDelta is returned whenever you perform some actions with [poolManager](https://github.com/pancakeswap/infinity-core/blob/main/src/pool-cl/CLPoolManager.sol), eg. `swap | modifyLiquidity | donate`. It contains `int128 amount0` and `int128 amount1` that we need to take or settle with the vault.
 
 ### Positive balance delta
 In this case, vault owes the caller the amount of token. 
@@ -105,7 +105,7 @@ Caller have 2 choices:
 2. After which token transfer to the vault 
 3. `vault.settle()` inform vault to compare the balance of token in vault now and (1) to know how many token are sent to the vault.
 
-You may refer to this [CurrencySettlement.sol](https://github.com/pancakeswap/pancake-v4-core/blob/main/test/helpers/CurrencySettlement.sol) library as a reference implementation on the 3 step settlement.
+You may refer to this [CurrencySettlement.sol](https://github.com/pancakeswap/infinity-core/blob/main/test/helpers/CurrencySettlement.sol) library as a reference implementation on the 3 step settlement.
 
 ##### Q2. When to use `take/mint/settle/burn`?
 

@@ -6,7 +6,7 @@ In this guide, we'll develop a hook for concentrated liquidity pool. The same st
 
 ## Hooks template
 
-Proceed to https://github.com/pancakeswap/pancake-v4-hooks-template for the hook template. Click `Use this template` to create a new repository based on the template.
+Proceed to https://github.com/pancakeswap/infinity-hooks-template for the hook template. Click `Use this template` to create a new repository based on the template.
 
 The template requires Foundry. If you don't have Foundry installed, please follow the [installation guide](https://book.getfoundry.sh/getting-started/installation).
 
@@ -77,7 +77,7 @@ The guide is also available in video format
 
 ### Step 1: Download hook template
 
-1. Create a new repository from pancake-v4-hooks-template: [Click here](https://github.com/new?template_name=pancake-v4-hooks-template&template_owner=pancakeswap) 
+1. Create a new repository from pancake-infinity-hooks-template: [Click here](https://github.com/new?template_name=infinity-hooks-template&template_owner=pancakeswap) 
 2. Clone the repository locally and run `forge install` and `forge test` to verify local setup.
 
 ---
@@ -87,11 +87,11 @@ The guide is also available in video format
 The flow will be as follows:
 1. We need to first store the default swap fee in the hook. We can do during pool initialization, passing the swap fee in the hookData which will eventually flow to the hook. The hook can `abi.decode` the bytes hookData and store the swap fee.
 
-![Store default swap fee in hook](/v4/guides-develop-hook-2.png)
+![Store default swap fee in hook](/infinity/guides-develop-hook-2.png)
 
 2. The default swap fee is stored at hook now. At `beforeSwap()`, hook check if the swapper is veCake holder and return the updated swap fee accordingly through `lpFeeOverride` value.
 
-![Store default swap fee in hook](/v4/guides-develop-hook-3.png)
+![Store default swap fee in hook](/infinity/guides-develop-hook-3.png)
 
 ---
 

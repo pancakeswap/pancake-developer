@@ -13,7 +13,7 @@ export default defineConfig({
 
   titleTemplate: '%s | PancakeSwap Developer',
   topNav: [
-    { text: 'EVM', link: '/contracts/v4/overview' },
+    { text: 'EVM', link: '/contracts/infinity/overview' },
     { text: 'Aptos', link: '/contracts-aptos' },
     { text: 'APIs', link: '/apis/subgraph' },
     { text: 'Bug Bounty', link: '/bug-bounty' },
@@ -21,33 +21,33 @@ export default defineConfig({
   sidebar: {
     '/contracts': [
       {
-        text: 'PancakeSwap V4',
+        text: 'PancakeSwap Infinity',
         items: [
           {
             text: 'Overview',
-            link: '/contracts/v4/overview',
+            link: '/contracts/infinity/overview',
             items: [
               {
                 text: 'Accounting Layer | Vault',
-                link: '/contracts/v4/overview/accounting-layer-vault',
+                link: '/contracts/infinity/overview/accounting-layer-vault',
               },
               {
                 text: 'AMM Layer | Pool Manager',
-                link: '/contracts/v4/overview/amm-layer-poolmanager',
+                link: '/contracts/infinity/overview/amm-layer-poolmanager',
                 items: [
                   {
                     text: 'Concentrated Liquidity',
-                    link: '/contracts/v4/overview/amm-layer/concentrated-liquidity',
+                    link: '/contracts/infinity/overview/amm-layer/concentrated-liquidity',
                   },
                   {
                     text: 'Liquidity Book',
-                    link: '/contracts/v4/overview/amm-layer/liquidity-book',
+                    link: '/contracts/infinity/overview/amm-layer/liquidity-book',
                   },
                 ],
               },
               {
                 text: 'Custom Layer | Hook',
-                link: '/contracts/v4/overview/custom-layer-hook',
+                link: '/contracts/infinity/overview/custom-layer-hook',
               },
             ],
           },
@@ -56,20 +56,20 @@ export default defineConfig({
             items: [
               {
                 text: 'Developing a hook',
-                link: '/contracts/v4/guides/develop-a-hook',
+                link: '/contracts/infinity/guides/develop-a-hook',
                 collapsed: true,
                 items: [
-                  { text: 'Taking a fee via Hook', link: '/contracts/v4/guides/hook-examples/taking-fee-via-hook' },
-                  { text: 'Overwriting AMM curve', link: '/contracts/v4/guides/hook-examples/overwriting-amm-curve' },
+                  { text: 'Taking a fee via Hook', link: '/contracts/infinity/guides/hook-examples/taking-fee-via-hook' },
+                  { text: 'Overwriting AMM curve', link: '/contracts/infinity/guides/hook-examples/overwriting-amm-curve' },
                 ]
               },
               {
                 text: 'Manage Liquidity',
-                link: '/contracts/v4/guides/manage-liquidity',
+                link: '/contracts/infinity/guides/manage-liquidity',
               },
               {
                 text: 'Perform a swap',
-                link: '/contracts/v4/guides/perform-a-swap',
+                link: '/contracts/infinity/guides/perform-a-swap',
               },
             ],
           },
@@ -79,18 +79,18 @@ export default defineConfig({
             items: [
               {
                 text: 'Github',
-                link: '/contracts/v4/resources/github',
+                link: '/contracts/infinity/resources/github',
               },
               {
                 text: 'Addresses',
-                link: '/contracts/v4/resources/addresses',
+                link: '/contracts/infinity/resources/addresses',
               },
             ],
           },
           {
             text: 'FAQ',
             collapsed: true,
-            link: '/contracts/v4/faq',
+            link: '/contracts/infinity/faq',
           },
         ],
       },

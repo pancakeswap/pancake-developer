@@ -2,7 +2,7 @@ import { Callout } from 'vocs/components'
 
 # Manage liquidity for CL and Bin pool
 
-We'll utilize the periphery contracts from [v4-periphery](https://github.com/pancakeswap/pancake-v4-periphery) to manage liqudity in v4.
+We'll utilize the periphery contracts from [infinity-periphery](https://github.com/pancakeswap/infinity-periphery) to manage liqudity.
 
 The topic would include:
 
@@ -13,7 +13,7 @@ The topic would include:
 5. Type of settlement actions (applicable for both pool type)
 
 ## 1. Permit2 integration
-Both [CLPositionManager](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-cl/CLPositionManager.sol) and [BinPositionManager](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-bin/BinPositionManager.sol) integrates with [Permit2](/contracts/permit2)
+Both [CLPositionManager](https://github.com/pancakeswap/infinity-periphery/blob/main/src/pool-cl/CLPositionManager.sol) and [BinPositionManager](https://github.com/pancakeswap/infinity-periphery/blob/main/src/pool-bin/BinPositionManager.sol) integrates with [Permit2](/contracts/permit2)
 
 **Frontend**
 
@@ -56,7 +56,7 @@ function modifyLiquiditiesWithoutLock(bytes calldata actions, bytes[] calldata p
 
 The `bytes calldata payload` in `modifyLiquidities` is `abi.encode(actions, params)` of the input in `modifyLiquiditiesWithoutLock(bytes calldata actions, bytes[] calldata params)`
 
-- List of `actions` can be found in [Actions.sol](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/Actions.sol). Actions includes liquidity related `CL_INCREASE_LIQUIDITY` or settlement related such as `SETTLE_PAIR`. 
+- List of `actions` can be found in [Actions.sol](https://github.com/pancakeswap/infinity-periphery/blob/main/src/libraries/Actions.sol). Actions includes liquidity related `CL_INCREASE_LIQUIDITY` or settlement related such as `SETTLE_PAIR`. 
 
 - `bytes[] params` is an array of bytes string. Each element in the array is the abi-encoded input for each respective action.
 
@@ -75,7 +75,7 @@ With 3 actions, it would mean `bytes[] params` of length = 3.
 
 ### Example
 
-This example tries to mint a position with CLPositionManager and uses [Planner](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/Planner.sol) which is a helper class to build actions. 
+This example tries to mint a position with CLPositionManager and uses [Planner](https://github.com/pancakeswap/infinity-periphery/blob/main/src/libraries/Planner.sol) which is a helper class to build actions. 
 
 ```solidity
 PositionConfig memory config = PositionConfig({poolKey: key, tickLower: tickLower, tickUpper: tickUpper});
@@ -96,7 +96,7 @@ clPositionManager.modifyLiquidities(payload, deadline);
 ## 3. Type of CL pool liquidity actions (`CLPositionManager`)
 
 <Callout type="info">
-  In v4, there's no longer `collect()` to collect LP fee(s) for a position. Instead, use CL_INCREASE_LIQUIDITY or CL_DECREASE_LIQUIDITY action with `liqudiity: 0` to collect LP fees. 
+  In Infinity, there's no longer `collect()` to collect LP fee(s) for a position. Instead, use CL_INCREASE_LIQUIDITY or CL_DECREASE_LIQUIDITY action with `liqudiity: 0` to collect LP fees. 
 </Callout>
 
 Below list down CL pool related actions and its associated params.  
@@ -221,7 +221,7 @@ Take all amount owed from currency pair. Owed token0 and token1 will be transfer
 ### SETTLE 
 Pay and settle currency. 
 
-For amount, there are constants [ActionConstants](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/ActionConstants.sol).
+For amount, there are constants [ActionConstants](https://github.com/pancakeswap/infinity-periphery/blob/main/src/libraries/ActionConstants.sol).
 
 - `amount=ActionConstants.CONTRACT_BALANCE`: amount will be currency.balance(positionManager)
 - `amount=ActionConstants.OPEN_DELTA`: amount will be the outstanding amount  
@@ -237,7 +237,7 @@ For amount, there are constants [ActionConstants](https://github.com/pancakeswap
 ### TAKE 
 Take all amount owed from currency.
 
-For amount, there are constants [ActionConstants](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/libraries/ActionConstants.sol).
+For amount, there are constants [ActionConstants](https://github.com/pancakeswap/infinity-periphery/blob/main/src/libraries/ActionConstants.sol).
 
 - `amount=ActionConstants.OPEN_DELTA`: amount will be the owed amount  
 

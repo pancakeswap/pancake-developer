@@ -32,7 +32,7 @@ function mint(PoolKey memory key, IBinPoolManager.MintParams calldata params, by
 
 ### Bin
 
-![Liquidity book](/v4/amm-layer-poolmanager-bin-1.png)
+![Liquidity book](/infinity/amm-layer-poolmanager-bin-1.png)
 
 Think of bin as bucket where liquidity reside and there are a finite number of bins for each pool. Each bin has a price and id associated. 
 
@@ -117,7 +117,7 @@ The composition fee prevents users from exploiting the add/remove liquidity proc
 2. User adds: `[500e18 token0, 400e18 token1]`
 3. Since the user is adding liquidity with a higher ratio of token0, a composition fee will be applied. This fee arises from swapping some token0 to token1 in the active bin.
 
-For more details, see the calculation in [BinHelper.sol](https://github.com/pancakeswap/pancake-v4-core/blob/df64445/src/pool-bin/libraries/BinHelper.sol#L175)
+For more details, see the calculation in [BinHelper.sol](https://github.com/pancakeswap/infinity-core/blob/df64445/src/pool-bin/libraries/BinHelper.sol#L175)
 
 ### Fungible liquidity
 
@@ -135,4 +135,4 @@ function _mint(address to, uint256 id, uint256 amount) internal {
 }
 ```
 
-See [BinFungiblePositionManager](https://github.com/pancakeswap/pancake-v4-periphery/blob/main/src/pool-bin/BinFungiblePositionManager.sol#L189) on how a token is minted to the liquidity provider.
+See [BinFungiblePositionManager](https://github.com/pancakeswap/infinity-periphery/blob/main/src/pool-bin/BinFungiblePositionManager.sol#L189) on how a token is minted to the liquidity provider.
