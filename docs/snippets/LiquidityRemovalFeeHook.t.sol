@@ -3,13 +3,13 @@ pragma solidity ^0.8.24;
 
 import {MockERC20} from "solmate/src/test/utils/mocks/MockERC20.sol";
 import {Test} from "forge-std/Test.sol";
-import {Constants} from "pancake-v4-core/test/pool-cl/helpers/Constants.sol";
-import {Currency} from "pancake-v4-core/src/types/Currency.sol";
-import {PoolKey} from "pancake-v4-core/src/types/PoolKey.sol";
-import {CLPoolParametersHelper} from "pancake-v4-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
+import {Constants} from "infinity-core/test/pool-cl/helpers/Constants.sol";
+import {Currency} from "infinity-core/src/types/Currency.sol";
+import {PoolKey} from "infinity-core/src/types/PoolKey.sol";
+import {CLPoolParametersHelper} from "infinity-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
 import {LiquidityRemovalFeeHook} from "../../src/pool-cl/LiquidityRemovalFeeHook.sol";
 import {CLTestUtils} from "./utils/CLTestUtils.sol";
-import {PoolIdLibrary} from "pancake-v4-core/src/types/PoolId.sol";
+import {PoolIdLibrary} from "infinity-core/src/types/PoolId.sol";
 
 contract LiquidityRemovalFeeHookTest is Test, CLTestUtils {
     using PoolIdLibrary for PoolKey;
@@ -35,8 +35,8 @@ contract LiquidityRemovalFeeHookTest is Test, CLTestUtils {
             parameters: bytes32(uint256(hook.getHooksRegistrationBitmap())).setTickSpacing(10)
         });
 
-        // initialize pool at 1:1 price point and set 3000 as initial lp fee, lpFee is stored in the hook
-        poolManager.initialize(key, Constants.SQRT_RATIO_1_1, abi.encode(uint24(3000)));
+        // initialize pool at 1:1 price point
+        poolManager.initialize(key, Constants.SQRT_RATIO_1_1);
 
         // approve from alice for liquidity operation in the test cases below
         permit2Approve(alice, currency0, address(positionManager));

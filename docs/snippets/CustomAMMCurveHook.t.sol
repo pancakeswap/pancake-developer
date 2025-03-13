@@ -3,15 +3,15 @@ pragma solidity ^0.8.24;
 
 import {MockERC20} from "solmate/src/test/utils/mocks/MockERC20.sol";
 import {Test} from "forge-std/Test.sol";
-import {Constants} from "pancake-v4-core/test/pool-cl/helpers/Constants.sol";
-import {Currency} from "pancake-v4-core/src/types/Currency.sol";
-import {PoolKey} from "pancake-v4-core/src/types/PoolKey.sol";
-import {CLPoolParametersHelper} from "pancake-v4-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
+import {Constants} from "infinity-core/test/pool-cl/helpers/Constants.sol";
+import {Currency} from "infinity-core/src/types/Currency.sol";
+import {PoolKey} from "infinity-core/src/types/PoolKey.sol";
+import {CLPoolParametersHelper} from "infinity-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
 import {CustomAMMCurveHook} from "../../src/pool-cl/CustomAMMCurveHook.sol";
 import {CLTestUtils} from "./utils/CLTestUtils.sol";
-import {PoolIdLibrary} from "pancake-v4-core/src/types/PoolId.sol";
-import {LPFeeLibrary} from "pancake-v4-core/src/libraries/LPFeeLibrary.sol";
-import {ICLRouterBase} from "pancake-v4-periphery/src/pool-cl/interfaces/ICLRouterBase.sol";
+import {PoolIdLibrary} from "infinity-core/src/types/PoolId.sol";
+import {LPFeeLibrary} from "infinity-core/src/libraries/LPFeeLibrary.sol";
+import {ICLRouterBase} from "infinity-periphery/src/pool-cl/interfaces/ICLRouterBase.sol";
 
 import {console2} from "forge-std/console2.sol";
 
@@ -39,8 +39,8 @@ contract CustomAMMCurveHookTest is Test, CLTestUtils {
             parameters: bytes32(uint256(hook.getHooksRegistrationBitmap())).setTickSpacing(10)
         });
 
-        // initialize pool at 1:1 price point and set 3000 as initial lp fee, lpFee is stored in the hook
-        poolManager.initialize(key, Constants.SQRT_RATIO_1_1, abi.encode(uint24(3000)));
+        // initialize pool at 1:1 price point 
+        poolManager.initialize(key, Constants.SQRT_RATIO_1_1);
 
         // Add some liquidity so currency does not go negative and negate in Vault.sol
         MockERC20(Currency.unwrap(currency0)).mint(address(this), 100 ether);
@@ -70,7 +70,6 @@ contract CustomAMMCurveHookTest is Test, CLTestUtils {
                 zeroForOne: true,
                 amountIn: 1 ether,
                 amountOutMinimum: 0,
-                sqrtPriceLimitX96: 0,
                 hookData: new bytes(0)
             })
         );
@@ -91,7 +90,6 @@ contract CustomAMMCurveHookTest is Test, CLTestUtils {
                 zeroForOne: false,
                 amountIn: 1 ether,
                 amountOutMinimum: 0,
-                sqrtPriceLimitX96: 0,
                 hookData: new bytes(0)
             })
         );
@@ -112,7 +110,6 @@ contract CustomAMMCurveHookTest is Test, CLTestUtils {
                 zeroForOne: true,
                 amountOut: 1 ether,
                 amountInMaximum: type(uint128).max,
-                sqrtPriceLimitX96: 0,
                 hookData: new bytes(0)
             })
         );
@@ -133,7 +130,6 @@ contract CustomAMMCurveHookTest is Test, CLTestUtils {
                 zeroForOne: false,
                 amountOut: 1 ether,
                 amountInMaximum: type(uint128).max,
-                sqrtPriceLimitX96: 0,
                 hookData: new bytes(0)
             })
         );

@@ -60,8 +60,8 @@ Before swap or liquidity operations can be performed on a pool, the first step w
 
 ```solidity
 // CLPoolManager
-function initialize(PoolKey memory key, uint160 sqrtPriceX96, bytes calldata hookData);
+function initialize(PoolKey memory key, uint160 sqrtPriceX96);
 
 // BinPoolManager
-function initialize(PoolKey memory key, uint24 activeId, bytes calldata hookData);
+function initialize(PoolKey memory key, uint24 activeId);
 ```

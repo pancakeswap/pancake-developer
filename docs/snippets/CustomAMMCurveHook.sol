@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {PoolKey} from "pancake-v4-core/src/types/PoolKey.sol";
-import {BeforeSwapDelta, toBeforeSwapDelta} from "pancake-v4-core/src/types/BeforeSwapDelta.sol";
-import {PoolId, PoolIdLibrary} from "pancake-v4-core/src/types/PoolId.sol";
-import {Currency} from "pancake-v4-core/src/types/Currency.sol";
-import {ICLPoolManager} from "pancake-v4-core/src/pool-cl/interfaces/ICLPoolManager.sol";
-import {LPFeeLibrary} from "pancake-v4-core/src/libraries/LPFeeLibrary.sol";
-import {CurrencySettlement} from "pancake-v4-core/test/helpers/CurrencySettlement.sol";
+import {PoolKey} from "infinity-core/src/types/PoolKey.sol";
+import {BeforeSwapDelta, toBeforeSwapDelta} from "infinity-core/src/types/BeforeSwapDelta.sol";
+import {PoolId, PoolIdLibrary} from "infinity-core/src/types/PoolId.sol";
+import {Currency} from "infinity-core/src/types/Currency.sol";
+import {ICLPoolManager} from "infinity-core/src/pool-cl/interfaces/ICLPoolManager.sol";
+import {LPFeeLibrary} from "infinity-core/src/libraries/LPFeeLibrary.sol";
+import {CurrencySettlement} from "infinity-core/test/helpers/CurrencySettlement.sol";
 import {CLBaseHook} from "./CLBaseHook.sol";
 
 /// @notice CustomAMMCurveHook override AMM curve with 1:1 curve and 0 trading slippage
@@ -30,18 +30,17 @@ contract CustomAMMCurveHook is CLBaseHook {
                 afterSwap: false,
                 beforeDonate: false,
                 afterDonate: false,
-                beforeSwapReturnsDelta: true,
-                afterSwapReturnsDelta: false,
-                afterAddLiquidityReturnsDelta: false,
-                afterRemoveLiquidityReturnsDelta: false
+                beforeSwapReturnDelta: true,
+                afterSwapReturnDelta: false,
+                afterAddLiquidityReturnDelta: false,
+                afterRemoveLiquidityReturnDelta: false
             })
         );
     }
 
-    function beforeSwap(address, PoolKey calldata key, ICLPoolManager.SwapParams calldata params, bytes calldata)
-        external
+    function _beforeSwap(address, PoolKey calldata key, ICLPoolManager.SwapParams calldata params, bytes calldata)
+        internal
         override
-        poolManagerOnly
         returns (bytes4, BeforeSwapDelta, uint24)
     {
         (Currency inputCurrency, Currency outputCurrency, uint256 amount) = _getInputOutputAndAmount(key, params);

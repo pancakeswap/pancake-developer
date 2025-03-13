@@ -46,16 +46,16 @@ contract CLCounterHook is CLBaseHook {
             afterSwap: true,
             beforeDonate: false,
             afterDonate: false,
-            beforeSwapReturnsDelta: false,
-            afterSwapReturnsDelta: false,
-            afterAddLiquidityReturnsDelta: false,
-            afterRemoveLiquidityReturnsDelta: false
+            beforeSwapReturnDelta: false,
+            afterSwapReturnDelta: false,
+            afterAddLiquidityReturnDelta: false,
+            afterRemoveLiquidityReturnDelta: false
         })
     );
   }
 
   // 2. For each callback required, overwrite the method
-  function beforeAddLiquidity(address,PoolKey calldata key, ICLPoolManager.ModifyLiquidityParams calldata, bytes calldata)
+  function _beforeAddLiquidity(address, PoolKey calldata key, ICLPoolManager.ModifyLiquidityParams calldata, bytes calldata)
     external override poolManagerOnly returns (bytes4) {
       // implement hook logic and then return selector
       return this.beforeAddLiquidity.selector;
@@ -67,11 +67,6 @@ contract CLCounterHook is CLBaseHook {
 ## Step by step guide
 
 We will develop a hook that allows [veCake](https://docs.pancakeswap.finance/products/vecake/what-is-vecake) holder to get a 50% swap fee discount when swapping through pool with this hook.
-
-<Callout type="info">
-The guide is also available in video format
-<iframe width="560" height="315" src="https://www.youtube.com/embed/PDWEC3vUUMo?si=PLmWCZa2ZocAKhM_" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen;"></iframe>
-</Callout>
 
 ---
 
@@ -85,11 +80,11 @@ The guide is also available in video format
 ### Step 2: Implementation idea
 
 The flow will be as follows:
-1. We need to first store the default swap fee in the hook. We can do during pool initialization, passing the swap fee in the hookData which will eventually flow to the hook. The hook can `abi.decode` the bytes hookData and store the swap fee.
+1. We first initialize the pool via `poolManager.function initialize(PoolKey memory key, uint160 sqrtPriceX96)`, the default swap fee for the pool is by default 0.
 
-![Store default swap fee in hook](/infinity/guides-develop-hook-2.png)
+2. We will then call `hook.setLpFee(PoolKey memory key, uint24 lpFee)` to set the default swap fee for the pool.
 
-2. The default swap fee is stored at hook now. At `beforeSwap()`, hook check if the swapper is veCake holder and return the updated swap fee accordingly through `lpFeeOverride` value.
+3. At `beforeSwap()`, hook check if the swapper is veCake holder and return the updated swap fee accordingly through `lpFeeOverride` value.
 
 ![Store default swap fee in hook](/infinity/guides-develop-hook-3.png)
 
@@ -99,14 +94,14 @@ The flow will be as follows:
 
 We'll perform the following:
 
-1. Add `afterInitialize` and `beforeSwap` permission
-2. Store default swap fee in `afterInitialize` 
+1. Add `beforeSwap` permission
+2. Implement `setLpFee()` 
 2. Return the swap fee based on whether user is veCake holder in `beforeSwap`
 
 Let's go through the implementation step by step
 
 ::::steps
-#### 3.1 Add `afterInitialize` and `beforeSwap` permission
+#### 3.1 Add `beforeSwap` permission
 Create a file called at `src/pool-cl/VeCakeSwapDiscountHook.sol` and implement the following. The hook contract extends `CLBaseHook`.
 
 ```solidity
@@ -115,7 +110,7 @@ contract VeCakeSwapDiscountHook is CLBaseHook { // [!code focus]
         return _hooksRegistrationBitmapFrom(
             Permissions({
                 beforeInitialize: false,
-                afterInitialize: true, // [!code focus]
+                afterInitialize: false, 
                 beforeAddLiquidity: false,
                 afterAddLiquidity: false,
                 beforeRemoveLiquidity: false,
@@ -134,22 +129,19 @@ contract VeCakeSwapDiscountHook is CLBaseHook { // [!code focus]
 }
 ```
 
-#### 3.2 Store default swap fee in `afterInitialize` 
-We specified `afterInitialize` permission in previous step. Thus CLPoolManager will call `hook.afterInitialize` after pool is initialized.
-Now we'll implement the `afterInitialize` method to store the default lp fee.
+
+#### 3.2 Implement `setLpFee()` 
+
+Note that in production, you will want to ensure only authorized user can call `setLpFee`
 
 ```solidity
 // mapping to store poolId 
 mapping(PoolId => uint24) public poolIdToLpFee;
 
-function afterInitialize(address, PoolKey calldata key, uint160, int24, bytes calldata hookData)
-    external override returns (bytes4)
-{
-    // Get the intended lpFee for this pool and store in mapping
-    uint24 lpFee = abi.decode(hookData, (uint24));
-    poolIdToLpFee[key.toId()] = lpFee;
-
-    return this.afterInitialize.selector;
+/// @notice Update the lp fee for a pool
+/// @dev warning: in production, ensure this function is only callable by authorized user
+function setLpFee(PoolKey calldata key, uint24 lpFee) external {
+  poolIdToLpFee[key.toId()] = lpFee;
 }
 ```
 

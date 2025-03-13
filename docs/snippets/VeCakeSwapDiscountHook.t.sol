@@ -3,15 +3,15 @@ pragma solidity ^0.8.24;
 
 import {MockERC20} from "solmate/src/test/utils/mocks/MockERC20.sol";
 import {Test} from "forge-std/Test.sol";
-import {Constants} from "pancake-v4-core/test/pool-cl/helpers/Constants.sol";
-import {Currency} from "pancake-v4-core/src/types/Currency.sol";
-import {PoolKey} from "pancake-v4-core/src/types/PoolKey.sol";
-import {LPFeeLibrary} from "pancake-v4-core/src/libraries/LPFeeLibrary.sol";
-import {CLPoolParametersHelper} from "pancake-v4-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
+import {Constants} from "infinity-core/test/pool-cl/helpers/Constants.sol";
+import {Currency} from "infinity-core/src/types/Currency.sol";
+import {PoolKey} from "infinity-core/src/types/PoolKey.sol";
+import {LPFeeLibrary} from "infinity-core/src/libraries/LPFeeLibrary.sol";
+import {CLPoolParametersHelper} from "infinity-core/src/pool-cl/libraries/CLPoolParametersHelper.sol";
 import {VeCakeSwapDiscountHook} from "../../src/pool-cl/VeCakeSwapDiscountHook.sol";
 import {CLTestUtils} from "./utils/CLTestUtils.sol";
-import {PoolIdLibrary} from "pancake-v4-core/src/types/PoolId.sol";
-import {ICLRouterBase} from "pancake-v4-periphery/src/pool-cl/interfaces/ICLRouterBase.sol";
+import {PoolIdLibrary} from "infinity-core/src/types/PoolId.sol";
+import {ICLRouterBase} from "infinity-periphery/src/pool-cl/interfaces/ICLRouterBase.sol";
 
 import {console2} from "forge-std/console2.sol";
 
@@ -41,7 +41,8 @@ contract VeCakeSwapDiscountHookTest is Test, CLTestUtils {
         });
 
         // initialize pool at 1:1 price point and set 3000 (0.3%) as lp fee, lpFee is stored in the hook
-        poolManager.initialize(key, Constants.SQRT_RATIO_1_1, abi.encode(uint24(3000)));
+        poolManager.initialize(key, Constants.SQRT_RATIO_1_1);
+        hook.setLpFee(key, 3000);
 
         // add liquidity so that swap can happen
         MockERC20(Currency.unwrap(currency0)).mint(address(this), 100 ether);
@@ -85,7 +86,6 @@ contract VeCakeSwapDiscountHookTest is Test, CLTestUtils {
                 zeroForOne: true,
                 amountIn: 1 ether,
                 amountOutMinimum: 0,
-                sqrtPriceLimitX96: 0,
                 hookData: new bytes(0)
             })
         );

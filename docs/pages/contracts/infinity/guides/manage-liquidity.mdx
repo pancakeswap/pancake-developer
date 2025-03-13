@@ -61,7 +61,7 @@ The `bytes calldata payload` in `modifyLiquidities` is `abi.encode(actions, para
 - `bytes[] params` is an array of bytes string. Each element in the array is the abi-encoded input for each respective action.
 
 
-Given `actions = 0x021717`, it would mean 3 actions processed in order:
+Given `actions = 0x021212`, it would mean 3 actions processed in order:
 
 1. `0x02`: `CL_MINT_POSITION`
 2. `0x17`: `CLOSE_CURRENCY`
@@ -78,13 +78,15 @@ With 3 actions, it would mean `bytes[] params` of length = 3.
 This example tries to mint a position with CLPositionManager and uses [Planner](https://github.com/pancakeswap/infinity-periphery/blob/main/src/libraries/Planner.sol) which is a helper class to build actions. 
 
 ```solidity
-PositionConfig memory config = PositionConfig({poolKey: key, tickLower: tickLower, tickUpper: tickUpper});
+PoolKey memory clPoolKey;
+int24 tickLower;
+int24 tickUpper;
 
 // Assume other field such as liquidity and amount0Max are present
 Plan memory planner = Planner.init();
 
 // For each action to add, call planner.add 
-planner.add(ACTIONS.CL_MINT_POSITION, abi.encode(config, liquidity, amount0Max, amount1Max, recipient, hookData));
+planner.add(ACTIONS.CL_MINT_POSITION, abi.encode(clPoolKey, tickLower, tickUpper, liquidity, amount0Max, amount1Max, recipient, hookData));
 
 // finalizeModifyLiquidityWithClose is a helper method to add CLOSE_CURRENCY actions for both currencies  
 bytes memory payload = planner.finalizeModifyLiquidityWithClose(config.poolKey)
@@ -101,21 +103,13 @@ clPositionManager.modifyLiquidities(payload, deadline);
 
 Below list down CL pool related actions and its associated params.  
 
-Before we proceed, `PositionConfig` is a commonly used struct in CL liquidity related so we'll document here once
-
-```solidity
-struct PositionConfig {
-  PoolKey poolKey; // struct which determine the poolKey 
-  int24 tickLower; // tickLower for the position
-  int24 tickUpper; // tickUpper for the position
-}
-```
-
 ### CL_MINT_POSITION
 Mint a new position
 ```solidity
 {
-  PositionConfig config; // config for the position 
+  PoolKey poolKey; // struct which determine the poolKey 
+  int24 tickLower; // tickLower for the position
+  int24 tickUpper; // tickUpper for the position
   uint256 liquidity; // the amount of liquidity to increase
   uint128 amount0Max; // max amount0, revert if amount0 exceeds amount0Max
   uint128 amount1Max; // max amount1, revert if amount1 exceeds amount1Max
@@ -129,7 +123,6 @@ Burn the NFT and automatically decrease liquidity to 0 if the position is not al
 ```solidity
 {
   uint256 tokenId; // the NFT tokenId to burn
-  PositionConfig config; // config for the position 
   uint128 amount0Min; // min amount0, revert if less than amount0Min is removed
   uint128 amount1Min: min amount1, revert if less than amount1Min is removed
   bytes hookData: // hook data to pass to hook, or empty bytes if nothing to pass
@@ -142,7 +135,6 @@ Increase liquidity from existing position
 ```solidity
 {
   uint256 tokenId; // the NFT tokenId to increase liquidity 
-  PositionConfig config; // config for the position 
   uint256 liquidity; // the amount of liquidity to increase
   uint128 amount0Max; // max amount0, revert if more than amount0Max is added
   uint128 amount1Max: max amount1, revert if more than amount1Max is added
@@ -155,7 +147,6 @@ Decrease liquidity from existing position
 ```solidity
 {
   uint256 tokenId; // the NFT tokenId to decrease liquidity 
-  PositionConfig config; // config for the position 
   uint256 liquidity; // the amount of liquidity to decrease
   uint128 amount0Min; // min amount0, revert if less than amount0Min is removed
   uint128 amount1Min: min amount1, revert if less than amount1Min is removed
@@ -281,5 +272,27 @@ Transfer any outstanding token balance in positionManager to `to`.
 {
   Currency currency; // currency to sweep
   address to; // recipient 
+}
+```
+
+### WRAP 
+Wrap `amount` to WETH
+
+```solidity
+{
+  // set to ActionConstants.CONTRACT_BALANCE to wrap contract balance. 
+  // set to ActionConstants.OPEN_DELTA to wrap delta balance
+  uint256 amount; 
+}
+```
+
+### UNWRAP 
+Unwrap `amount` 
+
+```solidity
+{
+  // set to ActionConstants.CONTRACT_BALANCE to wrap contract balance. 
+  // set to ActionConstants.OPEN_DELTA to wrap delta balance
+  uint256 aount; 
 }
 ```

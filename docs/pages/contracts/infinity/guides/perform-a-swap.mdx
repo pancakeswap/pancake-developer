@@ -322,11 +322,6 @@ input[i] = abi.encodeWithSelector(IV3NonfungiblePositionManager.collect.selector
 
 Make a call to Infinity cl position manager. 
 
-<Callout type="warning">
-  Do not permit or approve Universal Router over a Infinity position or someone could use this command to decrease/burn your position.
-  Should only call modifyLiquidities() with Actions.CL_MINT_POSITION. 
-</Callout>
-
 ```solidity
 {
     bytes data;
@@ -335,9 +330,11 @@ Make a call to Infinity cl position manager.
 // 'data' varies depending on which action of Infinity position manager
 
 // example: calling CL MINT_POSITION action
-PositionConfig memory positionConfig = PositionConfig({poolKey: clPoolKey, tickLower: -120, tickUpper: 120});
+PoolKey memory clPoolKey;
+int24 tickLower;
+int24 tickUpper;
 Plan memory planner = Planner.init();
-planner.add(Actions.CL_MINT_POSITION, abi.encode(positionConfig, 1 ether, 10 ether, 10 ether, alice, ""));
+planner.add(Actions.CL_MINT_POSITION, abi.encode(clPoolKey, tickLower, tickUpper, 1 ether, 10 ether, 10 ether, alice, ""));
 // remember to add settlement action   
 
 input[i] = abi.encodeWithSelector(IPositionManager.modifyLiquidities.selector, planner.encode(), block.timestamp);
@@ -346,11 +343,6 @@ input[i] = abi.encodeWithSelector(IPositionManager.modifyLiquidities.selector, p
 ### INFI_BIN_POSITION_CALL
 
 Make a call to Infinity BinPositionManager.
-
-<Callout type="warning">
-  Do not permit or approve Universal Router over a Infinity position or someone could use this command decrease your position.
-  Should only call modifyLiquidities() with Actions.BIN_ADD_LIQUIDITY. 
-</Callout>
 
 ```solidity 
 {
@@ -424,7 +416,6 @@ ICLRouterBase.CLSwapExactInputSingleParams memory params =
         zeroForOne: true, // if true, means 0->1 else 1->0
         amountIn: amountIn, // amountIn 
         amountOutMinimum: 0, // minAmountOut, ideally it should not be 0 
-        sqrtPriceLimitX96: 0, // price limit set by user 
         hookData: "" // hook data 
     });
 
@@ -457,7 +448,6 @@ ICLRouterBase.CLSwapExactInputSingleParams memory clParam =
         zeroForOne: true, // if true means 0->1 else 1->0
         amountIn: amountIn, // amountIn 
         amountOutMinimum: 0, // minAmountOut, ideally it should not be 0 
-        sqrtPriceLimitX96: 0, // price limit set by user 
         hookData: "" // hook data 
     });
 
