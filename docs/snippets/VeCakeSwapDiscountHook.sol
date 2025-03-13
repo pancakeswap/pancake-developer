@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
 
-import {PoolKey} from "pancake-v4-core/src/types/PoolKey.sol";
-import {LPFeeLibrary} from "pancake-v4-core/src/libraries/LPFeeLibrary.sol";
-import {BeforeSwapDelta, BeforeSwapDeltaLibrary} from "pancake-v4-core/src/types/BeforeSwapDelta.sol";
-import {PoolId, PoolIdLibrary} from "pancake-v4-core/src/types/PoolId.sol";
-import {ICLPoolManager} from "pancake-v4-core/src/pool-cl/interfaces/ICLPoolManager.sol";
+import {PoolKey} from "infinity-core/src/types/PoolKey.sol";
+import {LPFeeLibrary} from "infinity-core/src/libraries/LPFeeLibrary.sol";
+import {BeforeSwapDelta, BeforeSwapDeltaLibrary} from "infinity-core/src/types/BeforeSwapDelta.sol";
+import {PoolId, PoolIdLibrary} from "infinity-core/src/types/PoolId.sol";
+import {ICLPoolManager} from "infinity-core/src/pool-cl/interfaces/ICLPoolManager.sol";
 import {CLBaseHook} from "./CLBaseHook.sol";
 
 interface IVeCake {
@@ -34,7 +34,7 @@ contract VeCakeSwapDiscountHook is CLBaseHook {
         return _hooksRegistrationBitmapFrom(
             Permissions({
                 beforeInitialize: false,
-                afterInitialize: true,
+                afterInitialize: false,
                 beforeAddLiquidity: false,
                 afterAddLiquidity: false,
                 beforeRemoveLiquidity: false,
@@ -43,27 +43,12 @@ contract VeCakeSwapDiscountHook is CLBaseHook {
                 afterSwap: false,
                 beforeDonate: false,
                 afterDonate: false,
-                beforeSwapReturnsDelta: false,
-                afterSwapReturnsDelta: false,
-                afterAddLiquidityReturnsDelta: false,
-                afterRemoveLiquidityReturnsDelta: false
+                beforeSwapReturnDelta: false,
+                afterSwapReturnDelta: false,
+                afterAddLiquidityReturnDelta: false,
+                afterRemoveLiquidityReturnDelta: false
             })
         );
-    }
-
-    /// @notice The hook called after the state of a pool is initialized
-    /// @return bytes4 The function selector for the hook
-    function afterInitialize(address, PoolKey calldata key, uint160, int24, bytes calldata hookData)
-        external
-        override
-        poolManagerOnly
-        returns (bytes4)
-    {
-        // Get the intended lpFee for this pool and store in mapping
-        uint24 lpFee = abi.decode(hookData, (uint24));
-        poolIdToLpFee[key.toId()] = lpFee;
-
-        return this.afterInitialize.selector;
     }
 
     /// @notice The hook called before a swap
@@ -73,10 +58,9 @@ contract VeCakeSwapDiscountHook is CLBaseHook {
     ///     1) the Pool has a dynamic fee,
     ///     2) the value's override flag is set to 1 i.e. vaule & OVERRIDE_FEE_FLAG = 0x400000 != 0
     ///     3) the value is less than or equal to the maximum fee (1 million)
-    function beforeSwap(address, PoolKey calldata key, ICLPoolManager.SwapParams calldata, bytes calldata)
-        external
+    function _beforeSwap(address, PoolKey calldata key, ICLPoolManager.SwapParams calldata, bytes calldata)
+        internal
         override
-        poolManagerOnly
         returns (bytes4, BeforeSwapDelta, uint24)
     {
         uint24 lpFee = poolIdToLpFee[key.toId()];
@@ -87,5 +71,11 @@ contract VeCakeSwapDiscountHook is CLBaseHook {
         }
 
         return (this.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, lpFee | LPFeeLibrary.OVERRIDE_FEE_FLAG);
+    }
+
+    /// @notice Update the lp fee for a pool
+    /// @dev warning: in production, ensure this function is only callable by authorized user
+    function setLpFee(PoolKey calldata key, uint24 lpFee) external {
+        poolIdToLpFee[key.toId()] = lpFee;
     }
 }

@@ -2,17 +2,17 @@
 
 Pool Managers are singleton contract that encapsulates the logic for different types of AMMs. In the initial deployment, there will be 2 AMM types, visit their respective page to learn more about them.
 
-1. [CLPoolManager](/contracts/v4/overview/amm-layer/concentrated-liquidity)
-2. [BinPoolManager](/contracts/v4/overview/amm-layer/liquidity-book)
+1. [CLPoolManager](/contracts/infinity/overview/amm-layer/concentrated-liquidity)
+2. [BinPoolManager](/contracts/infinity/overview/amm-layer/liquidity-book)
 
 ### Singleton
 
-In PancakeSwap v3, each pool is a separate contract. In PancakeSwap v4, all pools will be encapsulated in a single PoolManager contract. For example, all concentrated liquidity pools in [CLPoolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/pool-cl/CLPoolManager.sol) and all liquidity book pools in [BinPoolManager](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/pool-bin/BinPoolManager.sol)
+In PancakeSwap v3, each pool is a separate contract. In PancakeSwap Infinity, all pools will be encapsulated in a single PoolManager contract. For example, all concentrated liquidity pools in [CLPoolManager](https://github.com/pancakeswap/infinity-core/blob/main/src/pool-cl/CLPoolManager.sol) and all liquidity book pools in [BinPoolManager](https://github.com/pancakeswap/infinity-core/blob/main/src/pool-bin/BinPoolManager.sol)
 
 
 ### PoolKey | PoolId
 
-[PoolKey](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/types/PoolKey.sol) is a struct which describe each pool.
+[PoolKey](https://github.com/pancakeswap/infinity-core/blob/main/src/types/PoolKey.sol) is a struct which describe each pool.
 
 ```solidity
 /// @notice Returns the key for identifying a pool
@@ -33,10 +33,10 @@ struct PoolKey {
 ```
 
 
-[PoolId](https://github.com/pancakeswap/pancake-v4-core/blob/main/src/types/PoolId.sol) is a bytes32 of `keccak256(abi.encode(poolKey))` You will notice some input from PoolManager requiring PoolId. Derive `PoolId` from `PoolKey` via the following:
+[PoolId](https://github.com/pancakeswap/infinity-core/blob/main/src/types/PoolId.sol) is a bytes32 of `keccak256(abi.encode(poolKey))` You will notice some input from PoolManager requiring PoolId. Derive `PoolId` from `PoolKey` via the following:
 
 ```solidity
-import {PoolIdLibrary} from "@pancakeswap/v4-core/src/types/PoolId.sol";
+import {PoolIdLibrary} from "@pancakeswap/infinity-core/src/types/PoolId.sol";
 
 // Use PoolIdLibrary for PoolKey type
 using PoolIdLibrary for PoolKey;
@@ -60,8 +60,8 @@ Before swap or liquidity operations can be performed on a pool, the first step w
 
 ```solidity
 // CLPoolManager
-function initialize(PoolKey memory key, uint160 sqrtPriceX96, bytes calldata hookData);
+function initialize(PoolKey memory key, uint160 sqrtPriceX96);
 
 // BinPoolManager
-function initialize(PoolKey memory key, uint24 activeId, bytes calldata hookData);
+function initialize(PoolKey memory key, uint24 activeId);
 ```

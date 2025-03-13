@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {PoolKey} from "pancake-v4-core/src/types/PoolKey.sol";
-import {BalanceDelta, toBalanceDelta} from "pancake-v4-core/src/types/BalanceDelta.sol";
-import {PoolId, PoolIdLibrary} from "pancake-v4-core/src/types/PoolId.sol";
-import {Currency} from "pancake-v4-core/src/types/Currency.sol";
-import {ICLPoolManager} from "pancake-v4-core/src/pool-cl/interfaces/ICLPoolManager.sol";
-import {CurrencySettlement} from "pancake-v4-core/test/helpers/CurrencySettlement.sol";
+import {PoolKey} from "infinity-core/src/types/PoolKey.sol";
+import {BalanceDelta, toBalanceDelta} from "infinity-core/src/types/BalanceDelta.sol";
+import {PoolId, PoolIdLibrary} from "infinity-core/src/types/PoolId.sol";
+import {Currency} from "infinity-core/src/types/Currency.sol";
+import {ICLPoolManager} from "infinity-core/src/pool-cl/interfaces/ICLPoolManager.sol";
+import {CurrencySettlement} from "infinity-core/test/helpers/CurrencySettlement.sol";
 import {CLBaseHook} from "./CLBaseHook.sol";
 
 /// @notice LiquidityRemovalFeeHook takes 10% fee when user remove liquidity
@@ -29,21 +29,22 @@ contract LiquidityRemovalFeeHook is CLBaseHook {
                 afterSwap: false,
                 beforeDonate: false,
                 afterDonate: false,
-                beforeSwapReturnsDelta: false,
-                afterSwapReturnsDelta: false,
-                afterAddLiquidityReturnsDelta: false,
-                afterRemoveLiquidityReturnsDelta: true
+                beforeSwapReturnDelta: false,
+                afterSwapReturnDelta: false,
+                afterAddLiquidityReturnDelta: false,
+                afterRemoveLiquidityReturnDelta: true
             })
         );
     }
 
-    function afterRemoveLiquidity(
+    function _afterRemoveLiquidity(
         address sender,
         PoolKey calldata key,
         ICLPoolManager.ModifyLiquidityParams calldata params,
         BalanceDelta delta,
+        BalanceDelta feesAccrued,
         bytes calldata hookData
-    ) external override poolManagerOnly returns (bytes4, BalanceDelta) {
+    ) internal override returns (bytes4, BalanceDelta) {
         // delta would be positive here as user is removing liquidity
         uint128 amt0Fee = uint128(delta.amount0()) / 10;
         uint128 amt1Fee = uint128(delta.amount1()) / 10;

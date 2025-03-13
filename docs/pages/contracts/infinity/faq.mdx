@@ -4,7 +4,7 @@ import { Callout } from 'vocs/components'
 
 ## Q1: Are rebasing token supported?
 
-Rebasing tokens are not natively supported in v4.
+Rebasing tokens are not natively supported in PancakeSwap Infinity.
 
 - **Negative Rebase:** The recorded balance in reserveOfApp[app][currency] will exceed the actual vault amount, causing LP losses.
 - **Positive Rebase:** LPs will not receive the extra rebased tokens, which will remain stuck in the vault.
@@ -20,7 +20,7 @@ Fee-on-transfer tokens are not supported on our router.
 
 You will need to build a custom router or use a custom token wrapper for such tokens.
 
-## Q3: How is protocol fee charged in v4? 
+## Q3: How is protocol fee charged? 
 
 Protocol fee is set on the pool during:
 
@@ -37,9 +37,9 @@ Maximum protocol fee: `4000 (0.4%)` on token0 or token1, depending on swap direc
 - Swap token0 for token1: fee on token0 (`zeroForOne` fee).
 - Swap token1 for token0: fee on token1 (`oneForZero` fee).
 
-## Q4: How is swap fee (or lpFee) charged in v4? 
+## Q4: How is swap fee (or lpFee) charged? 
 
-- Setting the Fee: Pool creator can either sets a fixed fee in poolKey.fee (e.g., 3000 means 0.3% swap fee), or [dynamic fee](/contracts/v4/overview/custom-layer-hook#dynamic-lp-swap-fee)
+- Setting the Fee: Pool creator can either sets a fixed fee in poolKey.fee (e.g., 3000 means 0.3% swap fee), or [dynamic fee](/contracts/infinity/overview/custom-layer-hook#dynamic-lp-swap-fee)
 
 Swap fee application:
 
