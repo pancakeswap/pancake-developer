@@ -14,9 +14,10 @@ Alternatively, you may track each syrup pool using its deployer.
 
 Latest:&#x20;
 
-* [0xFfF5812C35eC100dF51D5C9842e8cC3fe60f9ad7](https://bscscan.com/address/0xFfF5812C35eC100dF51D5C9842e8cC3fe60f9ad7#events)
+* [0x29115Bf4863648BB01a9cEc43d8306EC51800642](https://bscscan.com/address/0x29115Bf4863648BB01a9cEc43d8306EC51800642#events)
 
 Previously used:
 
+* 0xFfF5812C35eC100dF51D5C9842e8cC3fe60f9ad7
 * 0x927158Be21Fe3D4da7E96931bb27Fd5059A8CbC2
 * 0xe2aECF96D23575b11624d0891C0828E767c8cb8B&#x20;

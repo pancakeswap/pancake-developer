@@ -219,17 +219,7 @@ export default defineConfig({
           },
           {
             text: 'Syrup Pools',
-            collapsed: true,
-            items: [
-              {
-                text: 'Overview',
-                link: '/contracts/syrup-pools',
-              },
-              {
-                text: 'SmartChefInitializable',
-                link: '/contracts/syrup-pools/smartchefinitializable',
-              },
-            ],
+            link: '/contracts/syrup-pools',
           },
           {
             text: 'Farm Booster (bCAKE)',
