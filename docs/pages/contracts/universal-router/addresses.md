@@ -2,9 +2,29 @@
 description: Fork of Uniswap v3
 ---
 
+# Unversal router
+
 Integrated PancakeSwap self deployed [Permit2](/contracts/permit2/addresses)
 
-# PancakeSwap Universal Router Addresses
+## PancakeSwap Infinity Universal Router Addresses
+
+**Infinity Universal Router** is the latest version of PancakeSwap's universal router. It builds upon the v3 router by adding support for PancakeSwap Infinity and removing certain NFT-related actions.
+
+For usage details, refer to the [Perform a Swap guide](/contracts/infinity/guides/perform-a-swap).
+
+**Mainnet**
+
+| Chain    | Address                                    |
+| -------- | ------------------------------------------ |
+| BSC      | 0xd9c500dff816a1da21a48a732d3498bf09dc9aeb |
+
+**Testnet**
+
+| Chain            | Address                                    |
+| ---------------- | ------------------------------------------ |
+| BSC testnet      | 0x87FD5305E6a40F378da124864B2D479c2028BD86 |
+
+## PancakeSwap v3 Universal Router Addresses
 
 **Mainnet**
 

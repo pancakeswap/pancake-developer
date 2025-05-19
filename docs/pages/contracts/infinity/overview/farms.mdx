@@ -1,0 +1,182 @@
+# Farms 
+
+## Overview 
+
+User additional CAKE rewards by providing liquidity to Infinity Pools listed at https://pancakeswap.finance/liquidity/pools?type=1. 
+
+### Farm mechanics
+
+1. **Farm Listing**: The PancakeSwap team registers Infinity Pool farms in the [CampaignManager contract](https://bscscan.com/address/0x26Bde0AC5b77b65A402778448eCac2aCaa9c9115) 
+
+2. **Liquidity Provision**: Users add liquidity to Infinity Pools via the [Liquidity Pools & Farms](https://pancakeswap.finance/liquidity/pools?type=1)
+
+3. **Reward Calculation**: Every epoch (8 hours at 00:00, 08:00, 16:00 UTC), PancakeSwap runs a job to:
+    - Calculate fees earned by the pool in the past 8 hours.
+    - Determine the CAKE reward for each user based on their liquidity contribution.
+
+4. **Merkle Root Update**: PancakeSwap updates the Merkle root by calling the `setMerkleTree` function on the [Distributor contract](https://bscscan.com/address/0xEA8620aAb2F07a0ae710442590D649ADE8440877)
+
+5. Reward Claiming: Users with pending CAKE rewards can call the `claim` function on the [Distributor contract](https://bscscan.com/address/0xEA8620aAb2F07a0ae710442590D649ADE8440877) to claim the cake reward.
+
+
+### Amount of cake earned
+
+The CAKE reward a user earns depends on the proportion of fees their liquidity position (LP) contributes to the total fees in the Infinity Pool.
+
+- Assume the BNB-CAKE pool has 100 CAKE rewards to distribute for the next epoch.
+- Alice’s LP generates $10 in fees.
+- Bob’s LP generates $40 in fees.
+- Alice’s LP accounts for 20% of the total fees ($10 / ($10 + $40) = 0.2). Thus, Alice earns 20% of the CAKE rewards (20 CAKE).
+
+## Integration guide 
+
+This section provides guidance for integrators looking to integrate with PancakeSwap farms.
+
+:::warning
+PancakeSwap does not guarantee API uptime, and the interface may change without prior notice.
+
+If you are a protocol interested in launching a farm using your own token as a reward, we encourage you to reach out to the PancakeSwap  to share your feedback. Implementation will be considered based on demand.
+:::
+
+
+### Fetching the list of farms 
+
+The list of active farms is managed by the [CampaignManager contract](https://bscscan.com/address/0x26Bde0AC5b77b65A402778448eCac2aCaa9c9115)
+
+To retrieve the current list of active farms, use one of the following methods:
+
+#### Option 1: Index `CampaignCreated` and `CampaignStopped` events
+
+Monitor the CampaignCreated and CampaignStopped events emitted by the CampaignManager contract. 
+
+```solidity
+event CampaignCreated(
+    uint256 indexed campaignId,
+    IPoolManager indexed poolManager,
+    PoolId indexed poolId,
+    uint64 startTime,
+    uint64 duration,
+    uint128 campaignType,
+    IERC20 rewardToken,
+    int256 totalRewardAmount
+);
+
+event CampaignStopped(
+    uint256 indexed campaignId, 
+    uint128 newDuration, 
+    uint256 newTotalRewardAmount
+);
+```
+
+
+#### Option 2: Query on-chain 
+To retrieve the list of active farms directly from the blockchain, follow these steps:
+
+1. **Fetch Total Campaigns**: Call the `campaignLength` function on the [CampaignManager contract](https://bscscan.com/address/0x26Bde0AC5b77b65A402778448eCac2aCaa9c9115) to get the total number of campaigns.
+
+2. **Retrieve Campaign Details**: For each campaignId (from 1 to the total campaign length), call the `campaignInfo(uint256 campaignId)` function to obtain details such as the `poolId, totalReward`.
+
+
+```solidity
+eg. campaignManager.campaignInfo(1);
+
+[ campaignInfo(uint256) method Response ]
+  poolManager   address :  0xa0FfB9c1CE1Fe56963B0321B32E7A0302114058b
+  poolId   bytes32 :  0xcbc43b950eb089f1b28694324e76336542f1c158ec955921704cebaa53a278bc
+  startTime   uint64 :  1742457600
+  duration   uint64 :  604800 // in seconds 
+  campaignType   uint128 :  0 // will always be 0 for now 
+  rewardToken   address :  0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82
+  totalRewardAmount   uint256 :  2100000000000000000
+```
+
+
+### How to claim reward
+
+Prerequisites
+- **User Wallet Address**: Ensure you have user's wallet address.
+- **Current Time**: Obtain the current timestamp in seconds.
+
+
+::::steps
+#### Step 1: Fetch Merkle proof
+
+To claim rewards from the [Distributor contract](https://bscscan.com/address/0xEA8620aAb2F07a0ae710442590D649ADE8440877), first retrieve the Merkle proof for the user's address.
+
+- **Action**: Call the PancakeSwap API to fetch the Merkle proof for the user’s address and the relevant reward distribution period.
+
+```bash
+GET https://infinity.pancakeswap.com/farms/users/{chainId}/{user_address}/{current_ts_sec}
+
+// Example
+// BNB chainId: 56
+// user: 0x42571B8414c68B63A2729146CE93F23639d25399
+// Current time in sec: 1747382043 (Tuesday, June 21, 40749 11:16:35.266)
+GET https://infinity.pancakeswap.com/farms/users/56/0x42571B8414c68B63A2729146CE93F23639d25399/1747382043
+```
+
+It should return the below response:
+```json
+// Should only return array of 1 item as theres only CAKE as reward token currently
+{
+  "rewards": [
+    {
+      "endBlock": "49740160",
+      "epochEndTimestamp": 1747353600,
+      "user": "0x42571b8414c68b63a2729146ce93f23639d25399",
+      "rewardTokenAddress": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
+      "totalRewardAmount": "678344590635830",
+      "merkleRoot": "0xb52a93aeb6dbbd53079bd74228fff7ed4b379ba5c5313046e10c89200c605f76",
+      "proofs": [
+        "0xad47c8aee5bb023005a8b5848cd7e2adb08aeb277bd4eacc8e29fcce3fa8e0c1",
+        "0x422e4dba88b14027e2a9ae9320ce220ddeddbd001f10b57ecd48d8faac35ae7d",
+        "0xc82f2f46a827c804e9fe7dd3e4982052e8db8e4d84e0e90ee567543ab051c73d",
+        "0xbf834f1935a7033b67d0470df748fe116c00894af0dfc307c87f7b2714c44ae0",
+        "0xc6ce4dd445803d58d8c85f804cf58ebc8f4e45cc4f88470e1aee29683c688db0",
+        "0x7702608a7cf68ddc046caf09e5c838c16d4da56446bffc5811eb4f876e4fa436",
+        "0x8d4447ab25c76dd390a853fc0b76eeda382b2641cd6a111afb6c15d189f3b902",
+        "0xf7073ad0b7b7f0f647e36cc0bb58fff1cd7905c484ab9bf24cec3a058a94dd1f",
+        "0xc12e6cf2930cfec1b29f5e178ce2514d886e0a5f5cf3f662c2d0c9e92ed3e40e",
+        "0x982d67b7edb29dca77eabd39b426c0fcedb5ed09025854c53454a1cf94e3e448"
+      ]
+    }
+  ]
+}
+```
+
+#### Step 2: Call Distributor contract to claim 
+
+After obtaining the Merkle proof, call the [Distributor contract](https://bscscan.com/address/0xEA8620aAb2F07a0ae710442590D649ADE8440877) to claim CAKE rewards.
+
+**Contract Details**:
+
+The claim function allows users to claim their rewards based on the provided parameters. If a user has already claimed a portion of their rewards (e.g., 10 out of 20 CAKE), only the remaining amount (e.g., 10 CAKE) will be distributed.
+
+
+
+```solidity
+struct ClaimParams {
+  address token; // from rewards[0].rewardTokenAddress
+  uint256 amount; // from rewards[0].totalRewardAmount
+  bytes32[] proof; // from rewards[0].proofs
+}
+
+/// @dev if user have already claimed 10 out of 20 cake, user will only get 10 cake from claiming.
+function claim(ClaimParams[] calldata claimParams);
+```
+
+**Action**:
+Construct a ClaimParams array using:
+
+- token: The reward token address (from rewards[0].rewardTokenAddress in the API response).
+
+- amount: The total reward amount (from rewards[0].totalRewardAmount).
+
+- proof: The Merkle proof array (from rewards[0].proofs). Then, call the claim function with the ClaimParams array.
+
+
+
+View a sample claim transaction on [BscScan](https://bscscan.com/tx/0x807fb8502649d81828fdff9feb8f95757c57ac47e00c127119b94be9bf9a48ea)
+
+::::
+

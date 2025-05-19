@@ -58,7 +58,7 @@ contract LiquidityRemovalFeeHookTest is Test, CLTestUtils {
         assertEq(MockERC20(Currency.unwrap(currency0)).balanceOf(alice), 0 ether);
         assertEq(MockERC20(Currency.unwrap(currency1)).balanceOf(alice), 0 ether);
 
-        // remove all liqudiity
+        // remove all liquidity
         decreaseLiquidity(tokenId, key, 10 ether, 10 ether, -60, 60);
 
         // verify that only 9 ether received as 10% fee taken
