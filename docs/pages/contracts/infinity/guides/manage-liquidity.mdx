@@ -98,13 +98,18 @@ clPositionManager.modifyLiquidities(payload, deadline);
 ## 3. Type of CL pool liquidity actions (`CLPositionManager`)
 
 <Callout type="info">
-  In Infinity, there's no longer `collect()` to collect LP fee(s) for a position. Instead, use CL_INCREASE_LIQUIDITY or CL_DECREASE_LIQUIDITY action with `liqudiity: 0` to collect LP fees. 
+  In Infinity, there's no longer `collect()` to collect LP fee(s) for a position. Instead, use CL_INCREASE_LIQUIDITY or CL_DECREASE_LIQUIDITY action with `liquidity: 0` to collect LP fees. 
 </Callout>
 
 Below list down CL pool related actions and its associated params.  
 
 ### CL_MINT_POSITION
 Mint a new position
+
+:::warning
+When providing liquidity using a native token (e.g., BNB), ensure that you include a sweep action to recover any excess native token sent to the position manager.
+:::
+
 ```solidity
 {
   PoolKey poolKey; // struct which determine the poolKey 
@@ -132,12 +137,17 @@ Burn the NFT and automatically decrease liquidity to 0 if the position is not al
 
 ### CL_INCREASE_LIQUIDITY
 Increase liquidity from existing position
+
+:::warning
+When increasing liquidity using a native token (e.g., BNB), ensure that you include a sweep action to recover any excess native token sent to the position manager.
+:::
+
 ```solidity
 {
   uint256 tokenId; // the NFT tokenId to increase liquidity 
   uint256 liquidity; // the amount of liquidity to increase
   uint128 amount0Max; // max amount0, revert if more than amount0Max is added
-  uint128 amount1Max: max amount1, revert if more than amount1Max is added
+  uint128 amount1Max: // max amount1, revert if more than amount1Max is added
   bytes hookData: // hook data to pass to hook, or empty bytes if nothing to pass
 }
 ```
@@ -155,8 +165,13 @@ Decrease liquidity from existing position
 ```
 
 ## 4. Type of Bin pool liquidity actions (`BinPositionManager`)
-Add liqudiity, will mint the correspond ERC-1155 token.
+Add liquidity, will mint the correspond ERC-1155 token.
 ### BIN_ADD_LIQUIDITY
+
+:::warning
+When providing liquidity using a native token (e.g., BNB), ensure that you include a sweep action to recover any excess native token sent to the position manager.
+:::
+
 ```solidity 
 IBinPositionManager.BinAddLiquidityParams {
   PoolKey poolKey; // struct which identify the pool

@@ -97,7 +97,7 @@ export default defineConfig({
             link: '/contracts/infinity/faq',
             items: [
               {
-                text: 'PCS Infinity vs Uniswap v4',
+                text: 'PancakeSwap Infinity vs Uniswap v4',
                 link: '/contracts/infinity/faq/pancakeswap-infinity-vs-uniswap-v4',
               }
             ]
