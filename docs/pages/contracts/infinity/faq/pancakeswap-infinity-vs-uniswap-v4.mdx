@@ -2,7 +2,7 @@
 
 This section outlines the high-level architectural and integration differences between PancakeSwap Infinity and Uniswap v4, with a focus on considerations relevant to developers and integrators.
 
-## 1. Pool Type support 
+## 1. Pool Type Support 
 
 PancakeSwap Infinity features a modular architecture that enables support for multiple DEX designs.
 
@@ -97,12 +97,13 @@ In this example:
 Hook permissions occupy the first 16 bits of `parameters`. These bits determine which lifecycle callbacks are enabled.
 
 For **CL pool types**, refer to [ICLHooks](https://github.com/pancakeswap/infinity-core/blob/main/src/pool-cl/interfaces/ICLHooks.sol)
-- for Bin Pool type, see [IBinHooks](https://github.com/pancakeswap/infinity-core/blob/main/src/pool-bin/interfaces/IBinHooks.sol)
 
-Example interpretation of `0000 0000 1100 0010`:
-- afterInitialize callback enabled
-- beforeSwap callback enabled
-- afterSwap callback enabled
+- Example interpretation of `0000 0000 1100 0010`:
+    - afterInitialize callback enabled
+    - beforeSwap callback enabled
+    - afterSwap callback enabled
+
+For **Bin Pool types**, see [IBinHooks](https://github.com/pancakeswap/infinity-core/blob/main/src/pool-bin/interfaces/IBinHooks.sol)
 
 ### PoolKey Struct Reference
 
