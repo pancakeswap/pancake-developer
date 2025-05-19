@@ -28,11 +28,11 @@ export default defineConfig({
             link: '/contracts/infinity/overview',
             items: [
               {
-                text: 'Accounting Layer | Vault',
+                text: 'Accounting Layer - Vault',
                 link: '/contracts/infinity/overview/accounting-layer-vault',
               },
               {
-                text: 'AMM Layer | Pool Manager',
+                text: 'AMM Layer - Pool Manager',
                 link: '/contracts/infinity/overview/amm-layer-poolmanager',
                 items: [
                   {
@@ -46,8 +46,12 @@ export default defineConfig({
                 ],
               },
               {
-                text: 'Custom Layer | Hook',
+                text: 'Custom Layer - Hook',
                 link: '/contracts/infinity/overview/custom-layer-hook',
+              },
+              {
+                text: 'Farms',
+                link: '/contracts/infinity/overview/farms',
               },
             ],
           },
@@ -91,6 +95,12 @@ export default defineConfig({
             text: 'FAQ',
             collapsed: true,
             link: '/contracts/infinity/faq',
+            items: [
+              {
+                text: 'PCS Infinity vs Uniswap v4',
+                link: '/contracts/infinity/faq/pancakeswap-infinity-vs-uniswap-v4',
+              }
+            ]
           },
         ],
       },

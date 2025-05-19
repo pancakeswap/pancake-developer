@@ -1,0 +1,134 @@
+# Key Differences Between PancakeSwap Infinity and Uniswap v4
+
+This section outlines the high-level architectural and integration differences between PancakeSwap Infinity and Uniswap v4, with a focus on considerations relevant to developers and integrators.
+
+## 1. Pool Type support 
+
+PancakeSwap Infinity features a modular architecture that enables support for multiple DEX designs.
+
+- PancakeSwap Infinity currently supports both:
+    - Concentrated Liquidity Pools
+    - Liquidity Book Pools
+
+- Uniswap v4, by contrast, supports only:
+    - Concentrated Liquidity Pools
+
+This flexibility in PancakeSwap Infinity allows for future extensibility and experimentation with alternative AMM models.
+
+## 2. Separation of Accounting and AMM Layers 
+
+A core architectural difference lies in how the accounting logic is separated from the AMM logic:
+
+- PancakeSwap Infinity separates concerns by introducing:
+    - Vault – handles asset accounting
+    - CLPoolManager / BinPoolManager – manage the AMM logic
+
+- Uniswap v4 combines both accounting and AMM logic within a single contract:
+    - PoolManager
+
+This separation allows PancakeSwap Infinity to support multiple AMM types more easily and provides a more modular integration pattern.
+
+
+**Integration Implications**
+
+| Operation                       | PancakeSwap Infinity   | Uniswap v4                       |
+|---------------------------------|------------------------|----------------------------------|
+| Asset Transfer Target           | `Vault` contract       | `PoolManager` contract           |
+| Accounting Functions (eg. take) | `vault.take(...)`      | `poolManager.take(...)`          |
+
+Integrators interacting with the accounting layer should take this distinction into account.
+
+### Reference Implementations
+
+For further guidance and practical integration examples, refer to the following smart contracts in the PancakeSwap [Infinity periphery repository](https://github.com/pancakeswap/infinity-periphery):
+
+- [InfinityRouter.sol](https://github.com/pancakeswap/infinity-periphery/blob/main/src/InfinityRouter.sol)
+
+- [CLPositionManager.sol](https://github.com/pancakeswap/infinity-periphery/blob/main/src/pool-cl/CLPositionManager.sol)
+
+- [BinPositionManager.sol](https://github.com/pancakeswap/infinity-periphery/blob/main/src/pool-bin/BinPositionManager.sol)
+
+## 3. PoolKey Struct 
+
+PancakeSwap Infinity and Uniswap v4 define their PoolKey structs differently due to architectural differences, particularly in how they handle pool-specific parameters and hook permissions.
+
+**Key Differences**
+- PancakeSwap Infinity uses a unified `bytes32 parameters` field to encode both the hook's permissions and AMM-specific attributes.
+- Uniswap v4 uses a dedicated `int24 tickSpacing` field for AMM parameters, with hook permissions handled separately.
+
+PancakeSwap Infinity also include a `poolManager` attribute which is either CLPoolManager or BinPoolManager address.
+
+### Understanding `bytes32 parameters` in PancakeSwap Infinity
+
+In PancakeSwap Infinity, the `parameters` field encapsulates:
+
+- **Hook permissions** (first 16 bits)
+- **AMM-specific attributes**, depending on the pool type:
+    - **CLPoolManager**: tick spacing (next 24 bits). See [CLPoolParametersHelper](https://github.com/pancakeswap/infinity-core/blob/main/src/pool-cl/libraries/CLPoolParametersHelper.sol)
+    - **BinPoolManager**: bin step (next 16 bits). See [BinPoolParameterHelper](https://github.com/pancakeswap/infinity-core/blob/main/src/pool-bin/libraries/BinPoolParametersHelper.sol)
+
+
+**Example: CLPool: BNB/CAKE with dynamic fee hook**
+
+```solidity
+// ref: https://pancakeswap.finance/liquidity/pool/bsc/0x737a7d974a19bafb34c8d74d898188c9b59689b91f291fa6ade69f71fa0f5afa
+// PoolId: 0x737a7d974a19bafb34c8d74d898188c9b59689b91f291fa6ade69f71fa0f5afa
+
+// Query poolKey via CLPoolManager.poolIdToPoolKey(bytes32 poolId)
+PoolKey: 
+[ poolIdToPoolKey(bytes32) method Response ]
+  currency0   address :  0x0000000000000000000000000000000000000000
+  currency1   address :  0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82
+  hooks   address :  0x32C59D556B16DB81DFc32525eFb3CB257f7e493d
+  poolManager   address :  0xa0FfB9c1CE1Fe56963B0321B32E7A0302114058b
+  fee   uint24 :  8388608
+  parameters   bytes32 :  0x00000000000000000000000000000000000000000000000000000000000a00c2
+```
+
+In this example: 
+
+- parameters = `0x00000000000000000000000000000000000000000000000000000000000a00c2`
+- **Hook permission**: `0x00c2 → 0000 0000 1100 0010` (in bits)
+- **Tick spacing**: 0x00000a → decimal 10
+
+
+### Interpreting Hook Permissions
+
+Hook permissions occupy the first 16 bits of `parameters`. These bits determine which lifecycle callbacks are enabled.
+
+For **CL pool types**, refer to [ICLHooks](https://github.com/pancakeswap/infinity-core/blob/main/src/pool-cl/interfaces/ICLHooks.sol)
+- for Bin Pool type, see [IBinHooks](https://github.com/pancakeswap/infinity-core/blob/main/src/pool-bin/interfaces/IBinHooks.sol)
+
+Example interpretation of `0000 0000 1100 0010`:
+- afterInitialize callback enabled
+- beforeSwap callback enabled
+- afterSwap callback enabled
+
+### PoolKey Struct Reference
+
+**PancakeSwap Infinity**
+```solidity
+struct PoolKey {
+    Currency currency0;
+    Currency currency1;
+    IHooks hooks;
+    /// @notice The pool manager of the pool
+    IPoolManager poolManager;
+    uint24 fee;
+    /// @notice Hooks callback and pool specific parameters, i.e. tickSpacing for CL, binStep for bin
+    bytes32 parameters;
+}
+```
+
+**Uniswap v4**
+```solidity
+struct PoolKey {
+    Currency currency0;
+    Currency currency1;
+    uint24 fee;
+    /// @notice Ticks that involve positions must be a multiple of tick spacing
+    int24 tickSpacing;
+    /// @notice The hooks of the pool
+    IHooks hooks;
+}
+```
