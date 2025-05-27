@@ -6,7 +6,7 @@ With the recent PancakeSwap UI update, users may have noticed that they are prom
 
 This approach is designed to enhance user experience by reducing the need to sign a Permit2 approval before every swap.
 
-## How to revoke permt2 approval 
+## How to revoke permit2 approval 
 
 For users concerned about this broad approval, the following guide explains how to revoke it.
 
