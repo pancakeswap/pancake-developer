@@ -193,6 +193,10 @@ export default defineConfig({
                 text: 'Addresses',
                 link: '/contracts/permit2/addresses',
               },
+              {
+                text: 'How to revoke permit2 approval',
+                link: '/contracts/permit2/how-to-revoke-permit2-approval',
+              },
             ],
           },
           {
