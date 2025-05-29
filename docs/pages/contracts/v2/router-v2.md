@@ -5,28 +5,10 @@ PancakeSwap is based on Uniswap v2. Read the [Uniswap v2 documentation](https://
 For more in-depth information on the core contract logic, read the [Uniswap v2 Core whitepaper](https://github.com/Uniswap/docs/blob/main/static/whitepaper.pdf).
 :::
 
-## Contract info
 
 **Contract name:** PancakeRouter
 
-View [PancakeRouter.sol on GitHub](https://github.com/pancakeswap/pancake-smart-contracts/blob/master/projects/exchange-protocol/contracts/PancakeRouter.sol).
-
-Mainnet
-| Chain    | Address                                    |
-| -------- | ------------------------------------------ |
-| BSC      | 0x10ED43C718714eb63d5aA57B78B54704E256024E |
-| ETH      | 0xEfF92A263d31888d860bD50809A8D171709b7b1c |
-| zkEVM    | 0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb |
-| zkSync   | 0x5aEaF2883FBf30f3D62471154eDa3C0c1b05942d |
-| Arbitrum | 0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb |
-| Linea    | 0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb |
-| Base     | 0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb |
-| opBNB    | 0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb |
-
-Testnet
-| Chain       | Address                                    |
-| --------    | ------------------------------------------ |
-| BSC Testnet | 0xD99D1c33F9fC3444f8101754aBC46c52416550D1 |
+[Contract address](/contracts/v2/addresses#periphery)
 
 ## Read functions
 

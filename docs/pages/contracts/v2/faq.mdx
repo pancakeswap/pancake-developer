@@ -1,0 +1,49 @@
+import { Callout } from 'vocs/components'
+
+# FAQ(s)
+
+## Q1: Are rebasing token supported?
+
+Yes, rebasing tokens are supported on PancakeSwap V2.
+
+There are two types of rebases:
+
+1. Positive Rebase: Token supply increases.
+2. Negative Rebase: Token supply decreases.
+
+PancakeSwap V2 pools maintain an internal reserve state, so after each rebase, it's important to manually update the pool's reserves.
+
+### Syncing After a Rebase
+
+- After a rebase, you should call:
+
+```solidity
+pool.sync();
+```
+This ensures the pool’s internal reserves match the actual token balances.
+
+- For a positive rebase, if the protocol prefers to retain the excess tokens, you can call:
+
+```solidity
+pool.skim(address to);
+```
+This transfers the excess tokens (beyond what the reserves account for) to a specified address instead of updating the reserves.
+
+## Q2: Are fee-on-transfer token supported?
+
+Yes, they are.
+
+When interacting with fee-on-transfer tokens, ensure you use the router functions that support them. 
+
+These functions end with `SupportingFeeOnTransferTokens`, such as:
+
+```solidity
+swapExactTokensForTokensSupportingFeeOnTransferTokens
+```
+
+## Q3: Are LP or Protocol Fees Considered Part of V2 Pool Liquidity?
+
+Yes, both LP and protocol fees are considered part of the PancakeSwap V2 pool liquidity.
+
+- LP fees are automatically compounded into the LP position.
+- Protocol fees are minted to the protocol as LP tokens, maintaining them within the pool’s liquidity.

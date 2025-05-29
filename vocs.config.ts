@@ -148,30 +148,37 @@ export default defineConfig({
               },
             ],
           },
+          {
+            text: 'FAQ',
+            link: '/contracts/v3/faq'
+          },
         ],
       },
       {
         text: 'PancakeSwap v2',
-        collapsed: true,
-        items: [
-          {
-            text: 'FactoryV2',
-            link: '/contracts/v2/factory-v2',
-          },
-          {
-            text: 'RouterV2',
-            link: '/contracts/v2/router-v2',
-          },
-        ],
-      },
-      {
-        text: 'PancakeSwap X',
-        collapsed: false,
         items: [
           {
             text: 'Addresses',
-            link: '/contracts/pcsx/addresses',
+            link: '/contracts/v2/addresses',
           },
+          {
+            text: 'Technical Overview',
+            collapsed: true,
+            items: [
+          {
+                text: 'FactoryV2',
+                link: '/contracts/v2/factory-v2',
+              },
+              {
+                text: 'RouterV2',
+                link: '/contracts/v2/router-v2',
+              },
+            ]
+          },
+          {
+            text: 'FAQ',
+            link: '/contracts/v2/faq'
+          }
         ],
       },
       {
@@ -196,6 +203,16 @@ export default defineConfig({
               {
                 text: 'How to revoke permit2 approval',
                 link: '/contracts/permit2/how-to-revoke-permit2-approval',
+              },
+            ],
+          },
+          {
+            text: 'PancakeSwap X',
+            collapsed: true,
+            items: [
+              {
+                text: 'Addresses',
+                link: '/contracts/pcsx/addresses',
               },
             ],
           },
@@ -228,20 +245,8 @@ export default defineConfig({
             ],
           },
           {
-            text: 'veCake and Gauge voting',
-            link: '/contracts/vecake-and-gauge-voting',
-          },
-          {
             text: 'Syrup Pools',
             link: '/contracts/syrup-pools',
-          },
-          {
-            text: 'Farm Booster (bCAKE)',
-            link: '/contracts/farm-booster-bcake',
-          },
-          {
-            text: 'IFO Commit Limit',
-            link: '/contracts/ifo-commit-limit-icake',
           },
           {
             text: 'Cake',
@@ -256,10 +261,6 @@ export default defineConfig({
                 link: '/contracts/cake/cross-chain-cake-bridging',
               },
             ]
-          },
-          {
-            text: 'CAKE Syrup Pool (deprecated)',
-            link: '/contracts/fixed-term-staking-cake-pool',
           },
           {
             text: 'IFO',
@@ -280,6 +281,24 @@ export default defineConfig({
               },
             ],
           },
+        ],
+      },
+
+      {
+        text: 'Deprecated',
+        items: [
+          {
+            text: 'veCake and Gauge voting',
+            link: '/contracts/vecake-and-gauge-voting',
+          },
+          {
+            text: 'CAKE Syrup Pool',
+            link: '/contracts/fixed-term-staking-cake-pool',
+          },
+          {
+            text: 'Farm Booster (bCAKE)',
+            link: '/contracts/farm-booster-bcake',
+          },
           {
             text: 'Market Maker Pool',
             link: '/contracts/market-maker-pool',
@@ -292,8 +311,8 @@ export default defineConfig({
             text: 'Affiliate Program',
             link: '/contracts/affiliate-program/overview',
           },
-        ],
-      },
+        ]
+      }
     ],
     '/contracts-aptos': [
       {

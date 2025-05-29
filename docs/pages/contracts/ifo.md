@@ -14,10 +14,10 @@ Alternatively, you may track each IFO using its deployer.
 
 Latest:&#x20;
 
-* [0x7c5a0427242214c1Cf58B2c3fA7dC673b924212e](https://bscscan.com/address/0x7c5a0427242214c1Cf58B2c3fA7dC673b924212e#events)
+* [0x48a7c510797b8f00c0aaae30bf621ec9f2930140](https://bscscan.com/address/0x48a7c510797b8f00c0aaae30bf621ec9f2930140#events)
 
 Previously Used:
-
+* 0x7c5a0427242214c1Cf58B2c3fA7dC673b924212e
 * 0xa5465248b3A8986d86ACA968c0c076250263409F
 * 0x3b3e6b959b842a1634bb96b1d924e98bca38f4e7
 * 0x4684B399607f67e26a21e9F2A73eaE97e28D246d
