@@ -148,20 +148,37 @@ export default defineConfig({
               },
             ],
           },
+          {
+            text: 'FAQ',
+            link: '/contracts/v3/faq'
+          },
         ],
       },
       {
         text: 'PancakeSwap v2',
-        collapsed: true,
         items: [
           {
-            text: 'FactoryV2',
-            link: '/contracts/v2/factory-v2',
+            text: 'Addresses',
+            link: '/contracts/v2/addresses',
           },
           {
-            text: 'RouterV2',
-            link: '/contracts/v2/router-v2',
+            text: 'Technical Overview',
+            collapsed: true,
+            items: [
+          {
+                text: 'FactoryV2',
+                link: '/contracts/v2/factory-v2',
+              },
+              {
+                text: 'RouterV2',
+                link: '/contracts/v2/router-v2',
+              },
+            ]
           },
+          {
+            text: 'FAQ',
+            link: '/contracts/v2/faq'
+          }
         ],
       },
       {
