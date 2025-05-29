@@ -6,7 +6,7 @@ description: Fork of Uniswap v2
 
 ## Core
 
-**Contract name:** [PancakeFactory.sol on GitHub](https://github.com/pancakeswap/pancake-contracts/blob/master/projects/exchange-protocol/contracts/PancakeFactory.sol).
+**Contract name:** [View PancakeFactory.sol on GitHub](https://github.com/pancakeswap/pancake-contracts/blob/master/projects/exchange-protocol/contracts/PancakeFactory.sol).
 
 Mainnet
 | Chain    | Address                                    |
@@ -27,7 +27,7 @@ Testnet
 
 ## Periphery
 
-**Contract name:** [PancakeRouter.sol on GitHub](https://github.com/pancakeswap/pancake-smart-contracts/blob/master/projects/exchange-protocol/contracts/PancakeRouter.sol).
+**Contract name:** [View PancakeRouter.sol on GitHub](https://github.com/pancakeswap/pancake-smart-contracts/blob/master/projects/exchange-protocol/contracts/PancakeRouter.sol).
 
 Mainnet
 | Chain    | Address                                    |
