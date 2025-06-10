@@ -231,6 +231,16 @@ export default defineConfig({
             ],
           },
           {
+            text: 'Crosschain',
+            collapsed: true,
+            items: [
+              {
+                text: 'Addresses',
+                link: '/contracts/crosschain/addresses',
+              },
+            ],
+          },
+          {
             text: 'MasterChef',
             collapsed: true,
             items: [
