@@ -17,8 +17,8 @@ description: Crosschain swap
 | Chain    | Address                                    |
 | -------- | ------------------------------------------ |
 | BSC      | 0xE82e2D3B9DB59f7c7b438239D92E2190a64E26ce |
-| Arbitrum      | 0xE82e2D3B9DB59f7c7b438239D92E2190a64E26ce |
-| Base      | 0xE82e2D3B9DB59f7c7b438239D92E2190a64E26ce |
+| Arbitrum | 0xE82e2D3B9DB59f7c7b438239D92E2190a64E26ce |
+| Base     | 0xE82e2D3B9DB59f7c7b438239D92E2190a64E26ce |
 
 ## BridgeAdaptor Addresses
 
@@ -35,5 +35,6 @@ description: Crosschain swap
 | Base      | 0x60Ac95eC1153aA8199751917edE25D0Ca49a36e2 |
 
 ## Audits
-- [Pashov](./pashov-audit.pdf)
-- [BurraSec](./burrasec-audit.pdf)
+
+- [Pashov](https://developer.pancakeswap.finance/crosschain/pashov-audit.pdf)
+- [BurraSec](https://developer.pancakeswap.finance/crosschain/burrasec-audit.pdf)

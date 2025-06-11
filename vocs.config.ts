@@ -185,6 +185,10 @@ export default defineConfig({
         text: '',
         items: [
           {
+            text: 'Crosschain',
+            link: '/contracts/crosschain/addresses'
+          },
+          {
             text: 'Universal Router',
             link: '/contracts/universal-router/addresses',
           },
@@ -227,16 +231,6 @@ export default defineConfig({
               {
                 text: 'Pool addresses',
                 link: '/contracts/stableswap/stableswap-pools',
-              },
-            ],
-          },
-          {
-            text: 'Crosschain',
-            collapsed: true,
-            items: [
-              {
-                text: 'Addresses',
-                link: '/contracts/crosschain/addresses',
               },
             ],
           },
