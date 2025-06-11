@@ -31,8 +31,8 @@ description: Crosschain swap
 | Chain    | Address                                    |
 | -------- | ------------------------------------------ |
 | BSC      | 0x60Ac95eC1153aA8199751917edE25D0Ca49a36e2 |
-| Arbitrum      | 0x60Ac95eC1153aA8199751917edE25D0Ca49a36e2 |
-| Base      | 0x60Ac95eC1153aA8199751917edE25D0Ca49a36e2 |
+| Arbitrum | 0x60Ac95eC1153aA8199751917edE25D0Ca49a36e2 |
+| Base     | 0x60Ac95eC1153aA8199751917edE25D0Ca49a36e2 |
 
 ## Audits
 
