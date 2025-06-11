@@ -185,6 +185,10 @@ export default defineConfig({
         text: '',
         items: [
           {
+            text: 'Crosschain',
+            link: '/contracts/crosschain/addresses'
+          },
+          {
             text: 'Universal Router',
             link: '/contracts/universal-router/addresses',
           },
