@@ -8,10 +8,9 @@ https://immunefi.com/bounty/pancakeswap
 
 | Level |  |
 | :--- | :--- |
-| Critical | up to USD $1,000,000 |
-| High | USD $40,000 |
-| Medium | USD $5,000 |
-| Low | USD $1,000 |
+| Critical | Up to USD $1,000,000 |
+| High | Up to USD $20,000 |
+| Medium | Up to $2,000 |
 
 \*All bug reports must include a Proof of Concept demonstrating how the vulnerability can be exploited to be eligible for a reward. This may be a smart contract itself or a transaction.
 
