@@ -14,11 +14,12 @@ PancakeSwap uses LayerZero v1 OFT standard to bridge across chains. Bridge via t
 | opBNB | 0x2779106e4F4A8A28d77A24c18283651a2AE22D1C |
 | zkEVM | 0x0D1E753a25eBda689453309112904807625bEFBe |
 | zkSync | 0x3A287a06c66f9E95a56327185cA2BDF5f031cEcD |
-| Aptos | 0x159df6b7689437016108a019fd5bef736bac692b6d4a1f10c941f6fbb9a74ca6::oft::CakeOFT | 
+| Aptos | 0x159df6b7689437016108a019fd5bef736bac692b6d4a1f10c941f6fbb9a74ca6::oft::CakeOFT |
+| Solana | 4qQeZ5LwSz6HuupUu8jCtgXyW1mYQcNbFAW1sWZp89HL |
 
 **Testnet**
 
-| Chain | Address | 
+| Chain | Address |
 | ------------------------------------------ | ------------------------------------------ |
 | BSC testnet | 0x8d008B313C1d6C7fE2982F62d32Da7507cF43551 |
 | ETH Goerli | 0xc2C3eAbE0368a2Ea97f485b03D1098cdD7d0c081 |
@@ -26,4 +27,5 @@ PancakeSwap uses LayerZero v1 OFT standard to bridge across chains. Bridge via t
 | Linea Goerli | 0x2B3C5df29F73dbF028BA82C33e0A5A6e5800F75e |
 | opBNB | 0xa11B290B038C35711eB309268a2460754f730921 |
 | zkEVM | 0x2B3C5df29F73dbF028BA82C33e0A5A6e5800F75e |
+| Solana devnet | FwX9puvdxVAqLY8Cs7cMXPoZcPY8SdxMWkrnP7EPDiSw |
 
