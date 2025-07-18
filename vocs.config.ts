@@ -185,6 +185,10 @@ export default defineConfig({
         text: '',
         items: [
           {
+            text: 'Pancake Gifts',
+            link: '/contracts/pancake-gifts/addresses'
+          },
+          {
             text: 'Crosschain',
             link: '/contracts/crosschain/addresses'
           },
