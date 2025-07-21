@@ -16,7 +16,7 @@ For usage details, refer to the [Perform a Swap guide](/contracts/infinity/guide
 
 | Chain    | Address                                    |
 | -------- | ------------------------------------------ |
-| BSC      | 0xd9c500dff816a1da21a48a732d3498bf09dc9aeb |
+| BSC      | 0xd9C500DfF816a1Da21A48A732d3498Bf09dc9AEB |
 | Base     | 0xd9C500DfF816a1Da21A48A732d3498Bf09dc9AEB |
 
 **Testnet**
