@@ -47,13 +47,15 @@ Your payout is based on **proportional distribution** among winners:
 
 ### Example
 
-**Round 800: BNB Price Prediction**
+**Round 400: BNB Price Prediction**
 
-1. **Place Bet**: You bet **Bull** (price will go up) with **0.1 BNB**
+Assume round starts at 12:00
 
-2. **Lock Phase**: After 5 minutes, BNB price locks at **850 USD per BNB**
+1. [12:00 to 12:05] **Place Bet**: User bet **Bull** (price will go up) with **0.1 BNB**
 
-3. **Close Phase**: After another 5 minutes, BNB price closes at **860 USD per BNB**
+2. [12:05 to 12:10] **Lock Phase**: At 12:05, check with chainlink oracle on BNB price to get lock price. Assume BNB at **850 USD per BNB**
 
-4. **Result**: 860 > 850, so **Bull wins!** 🎉
+3. [12:10] **Close Phase**: At 12:10, check with chainlink oracle on BNB price to get close price. Assume BNB at **860 USD per BNB**
+
+4. **Result**: As close price 860 is larger than lock price 850, so **user's bull bet wins!** 🎉
 
