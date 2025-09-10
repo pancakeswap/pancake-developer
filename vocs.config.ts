@@ -276,7 +276,18 @@ export default defineConfig({
           },
           {
             text: 'Prediction',
-            link: '/contracts/prediction-v2',
+            collapsed: true,
+            items: [
+              { text: 'Overview', link: '/contracts/prediction' },
+              {
+                text: 'Address',
+                link: '/contracts/prediction/addresses',
+              },
+              {
+                text: 'How to bet and claim',
+                link: '/contracts/prediction/how-to-bet-and-claim',
+              },
+            ],
           },
           {
             text: 'Lottery',
