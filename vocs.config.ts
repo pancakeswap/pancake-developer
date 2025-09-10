@@ -287,6 +287,10 @@ export default defineConfig({
                 text: 'How to bet and claim',
                 link: '/contracts/prediction/how-to-bet-and-claim',
               },
+              {
+                text: 'FAQ',
+                link: '/contracts/prediction/faq',
+              },
             ],
           },
           {
