@@ -185,6 +185,25 @@ export default defineConfig({
         text: '',
         items: [
           {
+            text: 'Prediction',
+            collapsed: true,
+            items: [
+              { text: 'Overview', link: '/contracts/prediction' },
+              {
+                text: 'Address',
+                link: '/contracts/prediction/addresses',
+              },
+              {
+                text: 'How to bet and claim',
+                link: '/contracts/prediction/how-to-bet-and-claim',
+              },
+              {
+                text: 'FAQ',
+                link: '/contracts/prediction/faq',
+              },
+            ],
+          },
+          {
             text: 'Pancake Gifts',
             link: '/contracts/pancake-gifts/addresses'
           },
@@ -273,25 +292,6 @@ export default defineConfig({
           {
             text: 'IFO',
             link: '/contracts/ifo',
-          },
-          {
-            text: 'Prediction',
-            collapsed: true,
-            items: [
-              { text: 'Overview', link: '/contracts/prediction' },
-              {
-                text: 'Address',
-                link: '/contracts/prediction/addresses',
-              },
-              {
-                text: 'How to bet and claim',
-                link: '/contracts/prediction/how-to-bet-and-claim',
-              },
-              {
-                text: 'FAQ',
-                link: '/contracts/prediction/faq',
-              },
-            ],
           },
           {
             text: 'Lottery',
