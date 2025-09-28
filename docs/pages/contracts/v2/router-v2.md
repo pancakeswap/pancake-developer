@@ -72,7 +72,7 @@ Adds liquidity to a BEP20⇄BEP20 pool.
 | tokenA         | `address` | The contract address of one token from your liquidity pair.       |
 | tokenB         | `address` | The contract address of the other token from your liquidity pair. |
 | amountADesired | `uint`    | The amount of tokenA you'd like to provide as liquidity.          |
-| amountBDesired | `uint`    | The amount of tokenA you'd like to provide as liquidity.          |
+| amountBDesired | `uint`    | The amount of tokenB you'd like to provide as liquidity.          |
 | amountAMin     | `uint`    | The minimum amount of tokenA to provide (slippage impact).        |
 | amountBMin     | `uint`    | The minimum amount of tokenB to provide (slippage impact).        |
 | to             | `address` | Address of LP Token recipient.                                    |
