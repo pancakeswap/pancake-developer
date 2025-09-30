@@ -199,6 +199,10 @@ export default defineConfig({
         text: "",
         items: [
           {
+            text: "Limit order",
+            link: "/contracts/limit-order/addresses",
+          },
+          {
             text: "Prediction",
             collapsed: true,
             items: [
