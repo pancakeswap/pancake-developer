@@ -29,7 +29,7 @@ Place a limit order
 /// @param liquidity amount of liquidity to place
 /// @return amount0 amount of currency0 the user pays for this order
 /// @return amount1 amount of currency1 the user pays for this order
-function placeOrder(PoolKey calldata key, int24 tick, bool zeroForOne, uint128 liquidity) external;
+function placeOrder(PoolKey calldata key, int24 tick, bool zeroForOne, uint128 liquidity) external returns (uint256, uint256);
 ```
 
 ### 2. **Cancel Orders**
