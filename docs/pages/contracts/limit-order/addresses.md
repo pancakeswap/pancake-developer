@@ -55,7 +55,7 @@ function cancelOrder(OrderIdLibrary.OrderId orderId, address to) external return
 
 ### 3. **Withdraw Filled Orders**
 
-Claim tokens from completed orders after they have been executed. Currently PCS have a bot to help withdraw when they order is filled.
+Claim tokens from completed orders after they have been executed. Currently PCS have a bot to help withdraw when the order is filled.
 
 ```solidity
 /// @notice Withdraws liquidity from a filled order, sending it to address `to`.
