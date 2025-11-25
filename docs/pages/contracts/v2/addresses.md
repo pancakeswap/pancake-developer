@@ -19,6 +19,7 @@ Mainnet
 | Linea    | 0x02a84c1b3BBD7401a5f7fa98a384EBC70bB5749E |
 | Base     | 0x02a84c1b3BBD7401a5f7fa98a384EBC70bB5749E |
 | opBNB    | 0x02a84c1b3BBD7401a5f7fa98a384EBC70bB5749E |
+| Monad    | 0x02a84c1b3BBD7401a5f7fa98a384EBC70bB5749E |
 
 Testnet
 | Chain       | Address                                    |
@@ -40,6 +41,7 @@ Mainnet
 | Linea    | 0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb |
 | Base     | 0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb |
 | opBNB    | 0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb |
+| Monad    | 0xB1Bc24c34e88f7D43D5923034E3a14B24DaACfF9 |
 
 Testnet
 | Chain       | Address                                    |
