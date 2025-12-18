@@ -16,6 +16,7 @@ PancakeSwap uses LayerZero v1 OFT standard to bridge across chains. Bridge via t
 | zkSync | 0x3A287a06c66f9E95a56327185cA2BDF5f031cEcD |
 | Aptos | 0x159df6b7689437016108a019fd5bef736bac692b6d4a1f10c941f6fbb9a74ca6::oft::CakeOFT |
 | Solana | 4qQeZ5LwSz6HuupUu8jCtgXyW1mYQcNbFAW1sWZp89HL |
+| Monad | 0xF59D81cd43f620E722E07f9Cb3f6E41B031017a3 |
 
 **Testnet**
 
