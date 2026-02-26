@@ -203,6 +203,10 @@ export default defineConfig({
             link: "/contracts/limit-order/addresses",
           },
           {
+            text: "Infinity StableSwap",
+            link: "/contracts/infinity-stableswap/addresses",
+          },
+          {
             text: "Prediction",
             collapsed: true,
             items: [
