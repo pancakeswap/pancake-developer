@@ -278,7 +278,7 @@ Starts the Lottery, setting it to `Open` state. Status must be `Claimable`.
 | `priceTicketInCake` | uint256     | Price of a ticket in CAKE.                                 |
 | `discountDivisor`   | uint256     | The divisor to calculate the discount magnitude for bulks. |
 | `rewardsBreakdown`  | uint256\[6] | Breakdown of rewards per bracket (must sum to 10,000).     |
-| `trasuryFee`        | uint256     | Treasury fee (10,000 = 100%, 100 = 1%).                    |
+| `treasuryFee`       | uint256     | Treasury fee (10,000 = 100%, 100 = 1%).                    |
 
 ### recoverWrongTokens
 

@@ -2,7 +2,7 @@
 description: Fork of Uniswap v3
 ---
 
-# Unversal router
+# Universal router
 
 Integrated PancakeSwap self deployed [Permit2](/contracts/permit2/addresses)
 

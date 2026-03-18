@@ -36,7 +36,7 @@ struct SmartChefMetadata has key {
 
 | Name        | Type                        | Description                                    |
 | ----------- | --------------------------- | ---------------------------------------------- |
-| signer_cap  | `account::SignerCapablity`  | The signer capability of the resource account. |
+| signer_cap  | `account::SignerCapability` | The signer capability of the resource account. |
 | admin       | `address`                   | The admin address of the module.               |
 | uid         | `u64`                       | The latest id of the latest pool.              |
 | create_pool_event | `EventHandle`         | The event emit when a new pool is created      |

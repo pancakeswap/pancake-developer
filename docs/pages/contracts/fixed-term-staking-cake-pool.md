@@ -15,6 +15,6 @@ description: >-
 
 ## Audits
 
-[Pecksheild's New CAKE Pool security audit](https://github.com/peckshield/publications/tree/master/audit\_reports/PeckShield-Audit-Report-PancakeSwap-CakePool-v1.0.pdf)
+[PeckShield's New CAKE Pool security audit](https://github.com/peckshield/publications/tree/master/audit\_reports/PeckShield-Audit-Report-PancakeSwap-CakePool-v1.0.pdf)
 
 [Slowmist's New CAKE Pool security audit](https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20Pancakeswap-CakePool\_en-us.pdf)
