@@ -71,7 +71,7 @@ struct TokenPairReserve<phantom X, phantom Y> has key {
 | --------------------- | ----- | ---------------------------------------- |
 | reserve\_x            | `u64` | The total amount of token X in the pool. |
 | reserve\_y            | `u64` | The total amount of token Y in the pool. |
-| block\_timstamp\_last | `u64` | The timestamp when reserves get updated. |
+| block\_timestamp\_last| `u64` | The timestamp when reserves get updated. |
 
 ### SwapInfo
 
@@ -88,7 +88,7 @@ struct SwapInfo has key {
 
 | Name          | Type                      | Description                               |
 | --------------| ------------------------- | ----------------------------------------- |
-| signer_cap    | `account::SignerCapabilty`| The signer capability created when the module is deployed. |
+| signer_cap    |`account::SignerCapability`| The signer capability created when the module is deployed. |
 | fee_to        | `address`                 | The address that the fee will be sent to. |
 | admin         | `address`                 | The admin address of the module.          |
 | pair_created  | `event::EventHandle`      | The event emit when the pool is created.  |

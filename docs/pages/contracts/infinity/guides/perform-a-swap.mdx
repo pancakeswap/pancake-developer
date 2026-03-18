@@ -102,7 +102,7 @@ Perform a exactIn swap with PCS v3 pool
 {
   address recipient; // recipient of output token 
   uint256 amountIn; // amountIn 
-  uint256 amountOutMin; // revert if amout out is lesser than amountOutMin
+  uint256 amountOutMin; // revert if amount out is lesser than amountOutMin
   bytes path; // eg. (token0->token1): bytes memory path = abi.encodePacked(token1(), fee(), token0()); 
   bool payerIsUser; // if true, transfer token from sender, else take token from contract
 }
@@ -187,7 +187,7 @@ Perform a exactIn swap with PCS v2 pool
 {
   address recipient; // recipient of output token 
   uint256 amountIn; // amountIn 
-  uint256 amountOutMin; // revert if amout out is lesser than amountOutMin
+  uint256 amountOutMin; // revert if amount out is lesser than amountOutMin
   address[] path; // eg. (token0->token1): path[0] = token0, path[1] = token1
   bool payerIsUser; // if true, transfer token from sender, else take token from contract
 }
@@ -368,7 +368,7 @@ Perform an exactIn with PCS StableSwap
 {
     address recipient; // recipient of output token
     uint256 amountIn; // amountIn 
-    uint256 amountOutMin; // revert if amout out is lesser than amountOutMin
+    uint256 amountOutMin; // revert if amount out is lesser than amountOutMin
     address[] path; // eg. (token0->token1): path[0] = token0, path[1] = token1
     uint256[] flag; // eg. flag[0] = 2 indicate StableSwapTwoPool, 3 = indicate StableSwapThreePool
     bool payerIsUser; // if true, transfer token from sender, else take token from contract

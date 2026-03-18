@@ -26,6 +26,6 @@ Contract address: `0xa5f8C5Dbd5F286960b9d90548680aE5ebFf07652`
 
 ## Audits
 
-[Pecksheild's New MasterChef security audit](https://github.com/peckshield/publications/tree/master/audit\_reports/PeckShield-Audit-Report-PancakeSwap-MasterChefV2-v1.0.pdf)
+[PeckShield's New MasterChef security audit](https://github.com/peckshield/publications/tree/master/audit\_reports/PeckShield-Audit-Report-PancakeSwap-MasterChefV2-v1.0.pdf)
 
 [Slowmist's New MasterChef security audit](https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20MasterChef%20v2\_en-us.pdf)

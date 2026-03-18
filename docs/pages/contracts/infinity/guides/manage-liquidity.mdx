@@ -2,7 +2,7 @@ import { Callout } from 'vocs/components'
 
 # Manage liquidity for CL and Bin pool
 
-We'll utilize the periphery contracts from [infinity-periphery](https://github.com/pancakeswap/infinity-periphery) to manage liqudity.
+We'll utilize the periphery contracts from [infinity-periphery](https://github.com/pancakeswap/infinity-periphery) to manage liquidity.
 
 The topic would include:
 
@@ -26,10 +26,10 @@ bytes[] memory calls = new bytes[](2);
 
 // signature from user
 calls[0] = abi.encodeWithSelector(IAllowanceTransfer.Permit.selector, owner, PermitSingle permitSIngle, bytes signature);
-// modifyLiquidites call - explained in next section
+// modifyLiquidities call - explained in next section
 calls[1] = abi.encodeWithSelector(IPositionManager.modifyLiquidities.selector, abi.encode(...));
 
-positonManager.multiCall(...)
+positionManager.multiCall(...)
 ```
 
 **Solidity**
@@ -44,7 +44,7 @@ permit2.approve(tokenAddress, address(clPositionManager), type(uint160).max, typ
 
 ## 2. PositionManager execution flow
 
-If you are familar with Universal Router, PositionManager follows the same approach (one method, with actions and params).
+If you are familiar with Universal Router, PositionManager follows the same approach (one method, with actions and params).
 
 ```solidity 
 // @notice Unlocks Vault and batches actions for modifying liquidity
@@ -118,7 +118,7 @@ When providing liquidity using a native token (e.g., BNB), ensure that you inclu
   uint256 liquidity; // the amount of liquidity to increase
   uint128 amount0Max; // max amount0, revert if amount0 exceeds amount0Max
   uint128 amount1Max; // max amount1, revert if amount1 exceeds amount1Max
-  address owner; // owner to recieve the minted NFT  
+  address owner; // owner to receive the minted NFT  
   bytes hookData: // hook data to pass to hook, or empty bytes if nothing to pass
 }
 ```
@@ -197,7 +197,7 @@ IBinPositionManager.BinRemoveLiquidityParams {
   uint128 amount0Min; // min amount of token0 to receive, revert if required token is lesser
   uint128 amount1Min; // min amount of token1 to receive, revert if required token is lesser
   uint256[] ids; // list of bin ids
-  uint256[] amounts; // list of lquidity to remove for each bin
+  uint256[] amounts; // list of liquidity to remove for each bin
   address from; // Address of holder who owns the 1155 token
 }
 ```
@@ -216,7 +216,7 @@ Pay and settle currency pair. User's token0 and token1 will be transferred from 
 ```
 
 ### TAKE_PAIR
-Take all amount owed from currency pair. Owed token0 and token1 will be transfered to `to`. This is commonly used for decrease liquidity or burn action.
+Take all amount owed from currency pair. Owed token0 and token1 will be transferred to `to`. This is commonly used for decrease liquidity or burn action.
 ```solidity
 {
   Currency currency0; // address of currency0
@@ -308,6 +308,6 @@ Unwrap `amount`
 {
   // set to ActionConstants.CONTRACT_BALANCE to wrap contract balance. 
   // set to ActionConstants.OPEN_DELTA to wrap delta balance
-  uint256 aount; 
+  uint256 amount; 
 }
 ```
