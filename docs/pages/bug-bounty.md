@@ -24,5 +24,5 @@ https://immunefi.com/bounty/pancakeswap
 
 \*XSS reports are restricted to those that have an impact of prompting a user to sign a transaction or a redirect.
 
-All payouts are done by the **PancakeSwap** team and are pegged to the **USD** values set here and are payable in **CAKE** or **BUSD**.
+All payouts are done by the **PancakeSwap** team and are pegged to the **USD** values set here and are payable in **CAKE** or **USDT**.
 

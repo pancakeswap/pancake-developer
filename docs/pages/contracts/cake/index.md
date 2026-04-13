@@ -23,10 +23,6 @@ PancakeSwap uses LayerZero v1 OFT standard to bridge across chains. Bridge via t
 | Chain | Address |
 | ------------------------------------------ | ------------------------------------------ |
 | BSC testnet | 0x8d008B313C1d6C7fE2982F62d32Da7507cF43551 |
-| ETH Goerli | 0xc2C3eAbE0368a2Ea97f485b03D1098cdD7d0c081 |
-| Base Goerli | 0x052a99849Ef2e13a5CB28275862991671D4b6fF5 |
-| Linea Goerli | 0x2B3C5df29F73dbF028BA82C33e0A5A6e5800F75e |
-| opBNB | 0xa11B290B038C35711eB309268a2460754f730921 |
-| zkEVM | 0x2B3C5df29F73dbF028BA82C33e0A5A6e5800F75e |
+| opBNB testnet | 0xa11B290B038C35711eB309268a2460754f730921 |
 | Solana devnet | FwX9puvdxVAqLY8Cs7cMXPoZcPY8SdxMWkrnP7EPDiSw |
 

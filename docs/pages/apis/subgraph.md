@@ -13,8 +13,7 @@ Code: [https://github.com/pancakeswap/pancake-subgraph](https://github.com/panca
    - BSC https://nodereal.io/meganode/api-marketplace/pancakeswap-graphql
    - ETH https://thegraph.com/explorer/subgraphs/9opY17WnEPD4REcC43yHycQthSeUMQE26wyoeMjZTLEx?view=Query&chain=arbitrum-one
    - ARB https://thegraph.com/explorer/subgraphs/EsL7geTRcA3LaLLM9EcMFzYbUgnvf8RixoEEGErrodB3?view=Query&chain=arbitrum-one
-   - ARB GRO https://api.thegraph.com/subgraphs/name/chef-jojo/exchange-v2-arb-goerli
-   - Polygon zkEVM https://thegraph.com/explorer/subgraphs/37WmH5kBu6QQytRpMwLJMGPRbXvHgpuZsWqswW4Finc2?view=Query&chain=arbitrum-one
+   <!--  Polygon zkEVM and Arbitrum Goerli subgraphs have been deprecated -->
    - zkSync https://thegraph.com/explorer/subgraphs/6dU6WwEz22YacyzbTbSa3CECCmaD8G7oQ8aw6MYd5VKU?view=Query&chain=arbitrum-one
    - Linea https://thegraph.com/explorer/subgraphs/Eti2Z5zVEdARnuUzjCbv4qcimTLysAizsqH3s6cBfPjB?view=Query&chain=arbitrum-one
    - Base https://thegraph.com/explorer/subgraphs/2NjL7L4CmQaGJSacM43ofmH6ARf6gJoBeBaJtz9eWAQ9?view=Query&chain=arbitrum-one
@@ -49,7 +48,6 @@ Code: [https://github.com/pancakeswap/pancake-subgraph](https://github.com/panca
 15. **MasterChef (v3)**: Tracks data for MasterChefV3.
     - BSC https://thegraph.com/explorer/subgraphs/QProcZexB8KYHueG55aoLhBmwnLXExxopq7CUnFkjMv?view=Query&chain=arbitrum-one
     - ETH https://thegraph.com/explorer/subgraphs/9psTWtnVVQwSHUVRtCuR8985UfzotdtdZwVt8K9kJGeg?view=Query&chain=arbitrum-one
-    - Polygon zkEVM https://thegraph.com/explorer/subgraphs/GY319RL3CwRYq4LvTcGnE2ftVtWfM7D7FLzsy21GFYUb?view=Query&chain=arbitrum-one
     - ARB https://thegraph.com/explorer/subgraphs/2fq9U1dYX1bxuu6D3HuZcfyZSBxPHd8yWduJnVoxNjSP?view=Query&chain=arbitrum-one
     - zkSync https://thegraph.com/explorer/subgraphs/BnTM866GHTEyhxzrSmqnCdDAEixc34R87SnZaxH4BChy?view=Query&chain=arbitrum-one
     - Base https://thegraph.com/explorer/subgraphs/3oYoAoCJMV2ZyZSTpg6cUS1gKTzcc2cjmCVfpNyWZVmr?view=Query&chain=arbitrum-one
@@ -58,10 +56,9 @@ Code: [https://github.com/pancakeswap/pancake-subgraph](https://github.com/panca
     - BSC https://thegraph.com/explorer/subgraphs/Hv1GncLY5docZoGtXjo4kwbTvxm3MAhVZqBZE4sUT9eZ?view=Query&chain=arbitrum-one
     - ETH https://thegraph.com/explorer/subgraphs/CJYGNhb7RvnhfBDjqpRnD3oxgyhibzc7fkAMa38YV3oS?view=Query&chain=arbitrum-one
     - ARB https://thegraph.com/explorer/subgraphs/251MHFNN1rwjErXD2efWMpNS73SANZN8Ua192zw6iXve?view=Query&chain=arbitrum-one
-    - Polygon zkEVM https://thegraph.com/explorer/subgraphs/7HroSeAFxfJtYqpbgcfAnNSgkzzcZXZi6c75qLPheKzQ?view=Query&chain=arbitrum-one
     - zkSync https://thegraph.com/explorer/subgraphs/3dKr3tYxTuwiRLkU9vPj3MvZeUmeuGgWURbFC72ZBpYY?view=Query&chain=arbitrum-one
     - Linea https://thegraph.com/explorer/subgraphs/6gCTVX98K3A9Hf9zjvgEKwjz7rtD4C1V173RYEdbeMFX?view=Query&chain=arbitrum-one
-    - Base https://thegraph.com/explorer/subgraphs/BHWNsedAHtmTCzXxCCDfhPmm6iN9rxUhoRHdHKyujic3?view=Query&chain=arbitrum-one
+    - Base https://thegraph.com/explorer/subgraphs/5YYKGBcRkJs6tmDfB3RpHdbK2R5KBACHQebXVgbUcYQp?view=Query&chain=arbitrum-one
     - opBNB https://opbnb-mainnet-graph.nodereal.io/subgraphs/name/pancakeswap/exchange-v3
 
 17. **Exchange (StableSwap)**: Tracks all PancakeSwap Stableswap Exchange data with price, volume, liquidity
