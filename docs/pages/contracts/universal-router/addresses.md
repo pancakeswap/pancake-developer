@@ -37,22 +37,19 @@ For usage details, refer to the [Perform a Swap guide](/contracts/infinity/guide
 | Base     | 0xFE6508f0015C778Bdcc1fB5465bA5ebE224C9912 |
 | Linea    | 0xFE6508f0015C778Bdcc1fB5465bA5ebE224C9912 |
 | opBNB    | 0xB89a6778D1efE7a5b7096757A21b810CC2886fa1 |
-| zkEVM    | 0xB89a6778D1efE7a5b7096757A21b810CC2886fa1 |
 | zkSync   | 0xdAee41E335322C85ff2c5a6745c98e1351806e98 |
+| Monad    | 0x23682a588CF2601ACa977dF200938634c9F7d552 |
 
 **Testnet**
 
 | Chain            | Address                                    |
 | ---------------- | ------------------------------------------ |
 | BSC testnet      | 0x9A082015c919AD0E47861e5Db9A1c7070E81A2C7 |
-| Sepolia          | 0x55D32fa7Da7290838347bc97cb7fAD4992672255 |
-| Goerli           | 0xC46abF8B66Df4B9Eb0cC0cf6eba24226AC6E6285 |
+| Sepolia          | 0x6A3d58cc25a92d90Fa3a8f0f5d5e75AD01ccd7a6 |
 | Arbitrum Sepolia | 0xFE6508f0015C778Bdcc1fB5465bA5ebE224C9912 |
-| Arbitrum Goerli  | 0xa8EEA7aa6620712524d18D742821848e55E773B5 |
 | Base Sepolia     | 0xFE6508f0015C778Bdcc1fB5465bA5ebE224C9912 |
-| Base testnet     | 0xa8EEA7aa6620712524d18D742821848e55E773B5 |
 | Linea            | 0x9f3Cb8251492a069dBF0634C24e9De305d6946B8 |
 | opBNB            | 0xa8EEA7aa6620712524d18D742821848e55E773B5 |
-| zkEVM            | 0xa8EEA7aa6620712524d18D742821848e55E773B5 |
 | Scroll Sepolia   | 0xB89a6778D1efE7a5b7096757A21b810CC2886fa1 |
 | zkSync           | 0xCa97D1FAFCEa54EFc68d66eA914AB2F8Fbfe93c5 |
+| Monad testnet    | 0x94D220C58A23AE0c2eE29344b00A30D1c2d9F1bc |

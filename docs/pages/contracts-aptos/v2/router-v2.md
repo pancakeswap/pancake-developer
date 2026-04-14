@@ -200,7 +200,7 @@ public entry fun swap_exact_output_triplehop<X, Y, Z, A>(
 
 ### Swap Exact Input Quadruple Hop
 
-Swap exact amount of tokenX to tokenB using 3 pools (Pool XY, Pool YZ, Pool ZA and Pool AB).
+Swap exact amount of tokenX to tokenB using 4 pools (Pool XY, Pool YZ, Pool ZA and Pool AB).
 
 ```rust
 public entry fun swap_exact_input_quadruplehop<X, Y, Z, A, B>(
@@ -218,7 +218,7 @@ public entry fun swap_exact_input_quadruplehop<X, Y, Z, A, B>(
 
 ### Swap Exact Output Quadruple Hop
 
-Swap tokenX to exact amount of tokenB using 3 pools (Pool XY, Pool YZ, Pool ZA and Pool AB).
+Swap tokenX to exact amount of tokenB using 4 pools (Pool XY, Pool YZ, Pool ZA and Pool AB).
 
 ```rust
 public entry fun swap_exact_output_quadruplehop<X, Y, Z, A, B>(
