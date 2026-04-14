@@ -199,6 +199,12 @@ uint256 dOracle = hook.D_oracle();           // TVL oracle
 | ----- | ------- |
 | BSC   | 0x3669dDD1a9ee009dB9Eb2174C5C760FFfc66cfeF |
 
+**Testnet**
+
+| Chain       | Address |
+| ----------- | ------- |
+| BSC Testnet | 0x41187151170541bE6Ec0F3C235781ED9d7EF9923 |
+
 ### CLStableSwapHookFactory
 
 **Mainnet**
@@ -206,4 +212,10 @@ uint256 dOracle = hook.D_oracle();           // TVL oracle
 | Chain | Address |
 | ----- | ------- |
 | BSC   | 0x44de03599d1088b205D959b09A842448A0a63173 |
+
+**Testnet**
+
+| Chain       | Address |
+| ----------- | ------- |
+| BSC Testnet | 0x9188584835110FB6e0eB3BAE10ef1459Acf99edB |
 
