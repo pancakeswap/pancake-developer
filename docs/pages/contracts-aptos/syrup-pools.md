@@ -156,7 +156,7 @@ public fun get_pool_info<StakeToken, RewardToken, UID>(): (u64, u64, u64, u64, u
 Get the user stake amount in the pool.
 
 ```rust
-public fun get_user_stake_amount<StakeToken, RewardToken, UID>(account: address)
+public fun get_user_stake_amount<StakeToken, RewardToken, UID>(account: address): u64
 ```
 
 #### Input Values

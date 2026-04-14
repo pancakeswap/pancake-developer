@@ -142,7 +142,7 @@ public fun lp_balance<X, Y>(addr: address): u64
 
 | Type   | Description                |
 | ------ | -------------------------- |
-| `u128` | The amount of LP user own. |
+| `u64` | The amount of LP user own. |
 
 ### Total LP Supply
 
