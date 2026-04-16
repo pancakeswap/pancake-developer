@@ -280,7 +280,7 @@ public fun swap_x_to_exact_y_direct_external<X, Y>(x_in: coin::Coin<X>, y_out_am
 
 ### Get Amount In
 
-The amount required in order to the the output amount.
+The amount required in order to get the output amount.
 
 ```rust
 public fun get_amount_in<X, Y>(y_out_amount: u64): u64
