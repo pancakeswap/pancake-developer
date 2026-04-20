@@ -56,7 +56,7 @@ contract CLCounterHook is CLBaseHook {
 
   // 2. For each callback required, overwrite the method
   function _beforeAddLiquidity(address, PoolKey calldata key, ICLPoolManager.ModifyLiquidityParams calldata, bytes calldata)
-    external override poolManagerOnly returns (bytes4) {
+    internal override returns (bytes4) {
       // implement hook logic and then return selector
       return this.beforeAddLiquidity.selector;
   }
@@ -119,10 +119,10 @@ contract VeCakeSwapDiscountHook is CLBaseHook { // [!code focus]
                 afterSwap: false,
                 beforeDonate: false,
                 afterDonate: false,
-                beforeSwapReturnsDelta: false,
-                afterSwapReturnsDelta: false,
-                afterAddLiquidityReturnsDelta: false,
-                afterRemoveLiquidityReturnsDelta: false
+                beforeSwapReturnDelta: false,
+                afterSwapReturnDelta: false,
+                afterAddLiquidityReturnDelta: false,
+                afterRemoveLiquidityReturnDelta: false
             })
         );
     }
@@ -151,8 +151,8 @@ function setLpFee(PoolKey calldata key, uint24 lpFee) external {
 Note the return value need to include `LPFeeLibrary.OVERRIDE_FEE_FLAG` so pool manager knows the intention is to override swap fee.
 
 ```solidity
-function beforeSwap(address, PoolKey calldata key, ICLPoolManager.SwapParams calldata, bytes calldata)
-    external view override poolManagerOnly returns (bytes4, BeforeSwapDelta, uint24)
+function _beforeSwap(address, PoolKey calldata key, ICLPoolManager.SwapParams calldata, bytes calldata)
+    internal view override returns (bytes4, BeforeSwapDelta, uint24)
 {
     uint24 lpFee = poolIdToLpFee[key.toId()];
 
