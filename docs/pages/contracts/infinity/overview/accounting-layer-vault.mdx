@@ -103,7 +103,7 @@ Caller have 2 choices:
 
 ##### Q1. Why are there 3 steps vault.sync(currency), transfer() token to vault and vault.settle() for settlement?
 
-1. `vault.sync()` inform vault to store the the vault's current currency balance in transient storage. 
+1. `vault.sync()` inform vault to store the vault's current currency balance in transient storage. 
 2. After which token transfer to the vault 
 3. `vault.settle()` inform vault to compare the balance of token in vault now and (1) to know how many token are sent to the vault.
 
