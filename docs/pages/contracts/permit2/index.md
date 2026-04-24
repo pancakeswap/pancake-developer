@@ -37,4 +37,4 @@ It might seem like a regression to require the user to grant an explicit allowan
 
 Instead of directly calling transferFrom() on the ERC20 token to perform a transfer, a protocol will call permitTransferFrom() on the canonical Permit2 contract. Permit2 sits between the protocol and the ERC20 token, tracking and validating permit2 messages, then ultimately using its allowance to perform the transferFrom() call directly on the ERC20. This indirection is what allows Permit2 to extend EIP-2612-like benefits to every existing ERC20 token.
 
-Also, like EIP-2612 permit messages, permit2 messages expire to limit the the attack window of an exploit.
+Also, like EIP-2612 permit messages, permit2 messages expire to limit the attack window of an exploit.
