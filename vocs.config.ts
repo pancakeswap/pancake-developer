@@ -238,6 +238,10 @@ export default defineConfig({
             link: "/contracts/universal-router/addresses",
           },
           {
+            text: "Aggregator",
+            link: "/contracts/aggregator",
+          },
+          {
             text: "Permit2",
             collapsed: true,
             items: [
@@ -416,10 +420,6 @@ export default defineConfig({
           {
             text: "Subgraph",
             link: "/apis/subgraph",
-          },
-          {
-            text: "Aggregator API",
-            link: "/apis/aggregator",
           },
         ],
       },
