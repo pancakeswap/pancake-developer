@@ -409,6 +409,21 @@ export default defineConfig({
         link: "/contracts-aptos/utils",
       },
     ],
+    "/apis": [
+      {
+        text: "APIs",
+        items: [
+          {
+            text: "Subgraph",
+            link: "/apis/subgraph",
+          },
+          {
+            text: "Aggregator API",
+            link: "/apis/aggregator",
+          },
+        ],
+      },
+    ],
   },
   theme,
 });
