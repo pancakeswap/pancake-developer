@@ -14,7 +14,7 @@ The Aggregator API helps you:
 - **Get calldata** — Turn that quote into transaction data you can send on-chain.
 - **Execute** — Submit the transaction to the blockchain using the returned `value`, `calldata`, and `to` (router address).
 
-Supported network: **BSC (Binance Smart Chain)** — `chainId: 56`.
+Supported networks: **Ethereum** (`chainId: 1`) and **Base** (`chainId: 8453`).
 
 ---
 
@@ -22,22 +22,21 @@ Supported network: **BSC (Binance Smart Chain)** — `chainId: 56`.
 
 | Environment | Base URL |
 | --- | --- |
-| Production | `https://hub-api.pancakeswap.com/aggregator` |
-| Test | `https://test.hub.pancakeswap.com/aggregator` |
+| Production | `https://hub-gateway.pancakeswap.com` |
 
 ### Required headers
 
 | Header | Value | Description |
 | --- | --- | --- |
-| `Content-Type` | `application/json` | Request body is JSON. |
 | `x-secure-token` | `<your-secret-token>` | Your API token (obtain from PancakeSwap). |
+| `Content-Type` | `application/json` | Required for `POST /v1/calldata` only. |
 
 ---
 
 ## Integration flow
 
 ```
-┌─────────────┐     POST /quote      ┌─────────────┐     POST /calldata     ┌─────────────┐
+┌─────────────┐    GET /v2/quote     ┌─────────────┐    POST /v1/calldata   ┌─────────────┐
 │   Client    │ ──────────────────► │  Aggregator │ ────────────────────► │   Client    │
 │             │  (chainId, src,     │     API     │  (quote + recipient,   │             │
 │             │   dst, amountIn)    │             │   slippageTolerance)   │             │
@@ -50,24 +49,24 @@ Supported network: **BSC (Binance Smart Chain)** — `chainId: 56`.
   Send transaction to chain (to = router, data = calldata, value = value)
 ```
 
-1. Call `POST /quote` with token addresses and amount.
-2. Call `POST /calldata` with the quote response plus `recipient` and `slippageTolerance`.
+1. Call `GET /v2/quote` with token addresses and amount as query parameters.
+2. Call `POST /v1/calldata` with the quote response plus `recipient` and `slippageTolerance`.
 3. Send a transaction to the returned `to` address with `calldata` as `data` and `value` as the native token value (e.g. BNB).
 
 ---
 
 ## Step 1: Get a quote
 
-**Endpoint:** `POST /quote`
+**Endpoint:** `GET /v2/quote`
 
 Get the best swap route and expected output amount for a given input.
 
-### Request body
+### Query parameters
 
-| Field | Type | Required | Description |
+| Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
-| `chainId` | number | Yes | Chain ID. Only **56 (BSC)** is supported. |
-| `src` | string | Yes | Source token contract address. Use `0x0000000000000000000000000000000000000000` for the chain's native token (e.g. BNB). |
+| `chainId` | number | Yes | Chain ID. Supported: **1** (Ethereum), **8453** (Base). |
+| `src` | string | Yes | Source token contract address. Use `0x0000000000000000000000000000000000000000` for the chain's native token (ETH). |
 | `dst` | string | Yes | Destination token contract address. Use the zero address for native token. |
 | `amountIn` | string | Yes | Input amount in **wei** (smallest unit). Example: `"1000000000000000000"` for 1 token with 18 decimals. |
 | `gasPrice` | string | No | Gas price in wei for route optimization. Omit to use current network gas price. |
@@ -77,18 +76,14 @@ Get the best swap route and expected output amount for a given input.
 ### Example request
 
 ```bash
-curl -X POST "https://hub-api.pancakeswap.com/aggregator/quote" \
-  -H "Content-Type: application/json" \
+curl -G "https://hub-gateway.pancakeswap.com/v2/quote" \
   -H "x-secure-token: YOUR_SECRET_TOKEN" \
-  -d '{
-    "chainId": 56,
-    "src": "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
-    "dst": "0x55d398326f99059fF775485246999027B3197955",
-    "amountIn": "1000000000000000000",
-    "gasPrice": "5000000000",
-    "maxHops": "2",
-    "maxSplits": "2"
-  }'
+  --data-urlencode "chainId=1" \
+  --data-urlencode "src=0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" \
+  --data-urlencode "dst=0xdAC17F958D2ee523a2206206994597C13D831ec7" \
+  --data-urlencode "amountIn=1000000000000000000" \
+  --data-urlencode "maxHops=2" \
+  --data-urlencode "maxSplits=2"
 ```
 
 ### Success response (200)
@@ -111,18 +106,18 @@ If the response contains an `error` object, treat it as a failed quote — see [
 ```json
 {
   "srcToken": {
-    "address": "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+    "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     "decimals": 18,
-    "symbol": "ETH",
-    "name": "Ethereum Token",
-    "chainId": 56
+    "symbol": "WETH",
+    "name": "Wrapped Ether",
+    "chainId": 1
   },
   "dstToken": {
-    "address": "0x55d398326f99059fF775485246999027B3197955",
-    "decimals": 18,
+    "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    "decimals": 6,
     "symbol": "USDT",
     "name": "Tether USD",
-    "chainId": 56
+    "chainId": 1
   },
   "fromAmount": "1000000000000000000",
   "dstAmount": "3192936412525193112600",
@@ -152,7 +147,7 @@ Use this entire response as the base for the `/calldata` request in Step 2.
 
 ## Step 2: Get calldata
 
-**Endpoint:** `POST /calldata`
+**Endpoint:** `POST /v1/calldata`
 
 Convert a quote into transaction parameters: `value`, `calldata`, and router address `to`.
 
@@ -169,18 +164,18 @@ Send the full JSON object returned from `/quote`, and add:
 ### Example request
 
 ```bash
-curl -X POST "https://hub-api.pancakeswap.com/aggregator/calldata" \
+curl -X POST "https://hub-gateway.pancakeswap.com/v1/calldata" \
   -H "Content-Type: application/json" \
   -H "x-secure-token: YOUR_SECRET_TOKEN" \
   -d '{
-    "srcToken": { "address": "0x0000...", "decimals": 18, "symbol": "BNB", "name": "BNB", "chainId": 56 },
-    "dstToken": { "address": "0x581F...", "decimals": 18, "symbol": "mCake", "name": "mCake Token", "chainId": 56 },
-    "fromAmount": "280000000000000000",
-    "dstAmount": "131178293243871584359",
+    "srcToken": { "address": "0x0000000000000000000000000000000000000000", "decimals": 18, "symbol": "ETH", "name": "Ether", "chainId": 1 },
+    "dstToken": { "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7", "decimals": 6, "symbol": "USDT", "name": "Tether USD", "chainId": 1 },
+    "fromAmount": "1000000000000000000",
+    "dstAmount": "3192936412525",
     "protocols": ["..."],
     "gas": 248000,
     "recipient": "0x9D24d495F7380BA80dC114D8C2cF1a54a68e25A4",
-    "slippageTolerance": 0.05
+    "slippageTolerance": 0.005
   }'
 ```
 
@@ -188,7 +183,7 @@ curl -X POST "https://hub-api.pancakeswap.com/aggregator/calldata" \
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `value` | string | Amount of **native token (BNB)** to send in hex. Use `"0x0"` or `"0x00"` when swapping ERC-20 only. |
+| `value` | string | Amount of **native token (ETH)** to send in hex. Use `"0x0"` or `"0x00"` when swapping ERC-20 only. |
 | `calldata` | string | Hex-encoded calldata for the router. |
 | `to` | string | **Router contract address** — send the transaction to this address. |
 
@@ -226,7 +221,7 @@ const hash = await wallet.sendTransaction(tx);
 :::note
 **ERC-20 input:** The user must approve the router (`to` address) to spend the source token before sending this transaction.
 
-**Native token (BNB) input:** Ensure `value` matches the intended BNB amount.
+**Native token (ETH) input:** Ensure `value` matches the intended ETH amount.
 :::
 
 ---
