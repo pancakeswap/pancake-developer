@@ -2,7 +2,7 @@
 description: Helpers for the Permit2 standard — allowance-based and signature-based token transfers.
 ---
 
-# @pancakeswap/permit2-sdk
+# Permit2 SDK
 
 Helpers for interacting with Permit2 — the canonical token approval contract used across PancakeSwap. Supports both allowance transfers (approve once, spend many times) and signature transfers (single-use, off-chain signed permits).
 

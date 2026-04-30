@@ -2,7 +2,7 @@
 description: Fetch token prices from the PancakeSwap price API.
 ---
 
-# @pancakeswap/price-api-sdk
+# Price API SDK
 
 Fetch USD and native-currency prices for any token on PancakeSwap supported chains, using the PancakeSwap price API.
 

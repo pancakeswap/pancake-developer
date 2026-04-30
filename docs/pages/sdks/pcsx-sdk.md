@@ -2,7 +2,7 @@
 description: Build Exclusive Dutch Order trades for PancakeSwap X — the intent-based, MEV-protected swap product.
 ---
 
-# @pancakeswap/pcsx-sdk
+# PCSX SDK
 
 Build and sign Exclusive Dutch Order (EDO) trades for PancakeSwap X (PCSX). Dutch orders fill at a decaying price over a short window, guaranteeing MEV protection and price improvement for traders.
 

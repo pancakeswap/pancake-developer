@@ -2,7 +2,7 @@
 description: SDK for PancakeSwap V2 AMM — pair interactions, trade routing, and liquidity management.
 ---
 
-# @pancakeswap/v2-sdk
+# V2 SDK
 
 TypeScript SDK for PancakeSwap V2 AMM. Provides pair math, trade computation, and helpers for building swap and liquidity transactions against V2 pools.
 

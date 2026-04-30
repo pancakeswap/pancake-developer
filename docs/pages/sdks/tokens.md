@@ -2,7 +2,7 @@
 description: Pre-configured token objects for all PancakeSwap supported chains.
 ---
 
-# @pancakeswap/tokens
+# Tokens
 
 Pre-configured `Token` instances for major tokens on every chain PancakeSwap supports. Use these instead of constructing tokens manually to avoid address typos and ensure consistency.
 

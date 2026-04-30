@@ -2,7 +2,7 @@
 description: Find optimal swap routes across PancakeSwap V2, V3, and Infinity pools.
 ---
 
-# @pancakeswap/smart-router
+# Smart Router
 
 Finds the best trade route across all PancakeSwap liquidity sources — V2 pairs, V3 concentrated liquidity pools, and Infinity pools. Handles split routing, multi-hop paths, and on-chain price quoting.
 

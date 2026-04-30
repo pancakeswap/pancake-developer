@@ -2,7 +2,7 @@
 description: SDK for PancakeSwap Infinity — concentrated liquidity (CL) and liquidity book (Bin) pool interactions.
 ---
 
-# @pancakeswap/infinity-sdk
+# Infinity SDK
 
 TypeScript SDK for PancakeSwap Infinity. Supports both concentrated liquidity (CL) pools and Liquidity Book (Bin) pools. Provides pool math, position management, and calldata builders for the Infinity contracts.
 

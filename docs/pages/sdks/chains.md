@@ -2,7 +2,7 @@
 description: Chain IDs, names, and network constants for all PancakeSwap supported chains.
 ---
 
-# @pancakeswap/chains
+# Chains
 
 Single source of truth for PancakeSwap chain identifiers and network metadata. All other PancakeSwap packages import chain IDs from here.
 

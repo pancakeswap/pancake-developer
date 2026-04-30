@@ -2,7 +2,7 @@
 description: SDK for PancakeSwap V3 concentrated liquidity — pool math, position management, and swap routing.
 ---
 
-# @pancakeswap/v3-sdk
+# V3 SDK
 
 TypeScript SDK for PancakeSwap V3 concentrated liquidity. Provides pool math, position management, quote computation, and helpers for building swap and liquidity transactions.
 

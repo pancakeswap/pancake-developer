@@ -2,7 +2,7 @@
 description: Build calldata for the PancakeSwap Universal Router — multi-protocol swaps in a single transaction.
 ---
 
-# @pancakeswap/universal-router-sdk
+# Universal Router SDK
 
 Build transaction calldata for the PancakeSwap Universal Router. Encodes multi-step swap commands across V2, V3, and Infinity pools — including Permit2 transfers — into a single contract call.
 

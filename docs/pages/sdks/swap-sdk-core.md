@@ -2,7 +2,7 @@
 description: Core primitives for PancakeSwap swap SDKs — Token, CurrencyAmount, Fraction, Price, and Percent.
 ---
 
-# @pancakeswap/swap-sdk-core
+# Swap SDK Core
 
 Core primitives used across all PancakeSwap swap SDKs. Provides currency types, fractional arithmetic, and amount/price representations for both EVM and Solana chains.
 
