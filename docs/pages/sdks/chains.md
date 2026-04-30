@@ -70,6 +70,3 @@ if (testnetChainIds.includes(chainId)) {
 | `testnetChainIds` | `ChainId[]` | All testnet chain IDs |
 | `averageChainBlockTimes` | `Record<ChainId, number>` | Block time in milliseconds |
 
-## Source
-
-[github.com/pancakeswap/pancake-frontend — packages/chains](https://github.com/pancakeswap/pancake-frontend/tree/develop/packages/chains)

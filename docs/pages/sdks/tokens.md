@@ -43,6 +43,3 @@ const amount = CurrencyAmount.fromRawAmount(cake, 10n ** 18n) // 1 CAKE
 
 Testnet equivalents are also exported (e.g. `bscTestnetTokens`, `sepoliaTestnetTokens`).
 
-## Source
-
-[github.com/pancakeswap/pancake-frontend — packages/tokens](https://github.com/pancakeswap/pancake-frontend/tree/develop/packages/tokens)

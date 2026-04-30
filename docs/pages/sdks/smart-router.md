@@ -62,38 +62,56 @@ const { value, calldata } = SwapRouter.swapCallParameters(trade, {
 })
 ```
 
-## Key APIs
-
-### SmartRouter
-
-| Function | Description |
-| --- | --- |
-| `SmartRouter.getBestTrade(amount, currency, tradeType, config)` | Find the optimal route for a trade |
-| `SmartRouter.createQuoteProvider(options)` | Create an on-chain quote provider |
-| `SmartRouter.createStaticPoolProvider(pools)` | Wrap a pre-fetched pool list |
-| `SmartRouter.getV2CandidatePools(options)` | Fetch V2 pair candidates |
-| `SmartRouter.getV3CandidatePools(options)` | Fetch V3 pool candidates |
-
-### SwapRouter
-
-| Function | Description |
-| --- | --- |
-| `SwapRouter.swapCallParameters(trade, options)` | Build `{ calldata, value }` for submission |
-
-### Constants
-
-| Export | Description |
-| --- | --- |
-| `SMART_ROUTER_ADDRESSES` | Router contract addresses keyed by `ChainId` |
-
 ## Import path
 
-The EVM router exports are under the `/evm` subpath:
+EVM router exports are under the `/evm` subpath:
 
 ```typescript
-import { SmartRouter } from '@pancakeswap/smart-router/evm'
+import { SmartRouter, SwapRouter } from '@pancakeswap/smart-router/evm'
 ```
 
-## Source
+## SmartRouter
 
-[github.com/pancakeswap/pancake-frontend — packages/smart-router](https://github.com/pancakeswap/pancake-frontend/tree/develop/packages/smart-router)
+| Method | Signature | Description |
+| --- | --- | --- |
+| `getBestTrade` | `(amount, currency, tradeType, config) → Promise<SmartRouterTrade>` | Find the optimal route across all pool types |
+| `createQuoteProvider` | `(options: { onChainProvider }) → QuoteProvider` | Create an on-chain quote provider backed by a viem client |
+| `createStaticPoolProvider` | `(pools: Pool[]) → PoolProvider` | Wrap a pre-fetched pool list as a provider |
+| `getV2CandidatePools` | `(options) → Promise<V2Pool[]>` | Fetch V2 pair candidates for a token pair |
+| `getV3CandidatePools` | `(options) → Promise<V3Pool[]>` | Fetch V3 pool candidates for a token pair |
+| `getStableCandidatePools` | `(options) → Promise<StablePool[]>` | Fetch Stable pool candidates |
+| `getMixedCandidatePools` | `(options) → Promise<Pool[]>` | Fetch candidates across all pool types |
+
+### getBestTrade config
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `gasPriceWei` | `() => Promise<bigint>` | Current gas price for route cost estimation |
+| `poolProvider` | `PoolProvider` | Pool data source |
+| `quoteProvider` | `QuoteProvider` | On-chain or off-chain quoter |
+| `maxHops` | `number` | Maximum route hops (default: 3) |
+| `maxSplits` | `number` | Maximum split paths (default: 4) |
+| `allowedPoolTypes` | `PoolType[]` | Restrict which pool types to consider |
+| `distributionPercent` | `number` | Split granularity (default: 5) |
+
+## SwapRouter
+
+| Method | Signature | Description |
+| --- | --- | --- |
+| `swapCallParameters` | `(trade, options) → { calldata: Hex, value: string }` | Build calldata for the SmartRouter contract |
+
+### swapCallParameters options
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `recipient` | `string` | Address to receive output tokens |
+| `slippageTolerance` | `Percent` | Maximum acceptable slippage |
+| `deadline` | `number` | Unix timestamp after which the tx reverts |
+| `inputTokenPermit` | `object` | Optional Permit2 signature for the input token |
+
+## Constants
+
+| Export | Type | Description |
+| --- | --- | --- |
+| `SMART_ROUTER_ADDRESSES` | `Record<ChainId, Address>` | Deployed SmartRouter addresses per chain |
+| `V2_ROUTER_ADDRESS` | `Record<ChainId, Address>` | V2 router addresses per chain |

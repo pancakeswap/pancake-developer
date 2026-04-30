@@ -35,6 +35,3 @@ Most integrations that execute swaps use these packages together:
 
 For low-level pool math or position management, add `@pancakeswap/v3-sdk` or `@pancakeswap/infinity-sdk`.
 
-## Source
-
-All packages live in the [`pancake-frontend`](https://github.com/pancakeswap/pancake-frontend/tree/develop/packages) monorepo under `packages/`.

@@ -15,33 +15,69 @@ npm install @pancakeswap/universal-router-sdk
 ## Quick start
 
 ```typescript
-import { PancakeSwapUniversalRouter, getUniversalRouterAddress } from '@pancakeswap/universal-router-sdk'
+import { PancakeSwapUniversalRouter, getUniversalRouterAddress, UniversalRouterVersion } from '@pancakeswap/universal-router-sdk'
 import { ChainId } from '@pancakeswap/chains'
-import { TradeType } from '@pancakeswap/swap-sdk-core'
+import { Percent } from '@pancakeswap/swap-sdk-core'
 
 // After getting a trade from SmartRouter:
 const { calldata, value } = PancakeSwapUniversalRouter.swapERC20CallParameters(trade, {
   slippageTolerance: new Percent(50, 10000), // 0.5%
   recipient: '0xYOUR_ADDRESS',
   deadlineOrPreviousBlockhash: Math.floor(Date.now() / 1000) + 60 * 20,
-  inputTokenPermit: permit2Signature, // optional, from @pancakeswap/permit2-sdk
+  inputTokenPermit: permit2Signature, // optional — from @pancakeswap/permit2-sdk
 })
 
-// Router address
 const routerAddress = getUniversalRouterAddress(ChainId.BSC)
 ```
 
-## Key exports
+## PancakeSwapUniversalRouter
+
+Main class for encoding Universal Router command batches.
+
+| Method | Signature | Description |
+| --- | --- | --- |
+| `swapERC20CallParameters` | `(trades, options) → { calldata: Hex, value: string }` | Build calldata for one or more ERC-20 swaps via the Universal Router |
+| `swapNativeCurrencyCallParameters` | `(trades, options) → { calldata: Hex, value: string }` | Build calldata for swaps where the input is native currency (ETH/BNB) |
+
+### swapERC20CallParameters options
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `slippageTolerance` | `Percent` | Maximum acceptable slippage |
+| `recipient` | `string` | Address to receive output tokens |
+| `deadlineOrPreviousBlockhash` | `number \| string` | Deadline (timestamp) or previous blockhash for flash-bot protection |
+| `inputTokenPermit` | `object \| undefined` | Permit2 signature for the input token; skips a separate approval tx |
+| `fee` | `{ feeOptions }` | Optional protocol fee configuration |
+
+### inputTokenPermit shape
+
+```typescript
+// For AllowanceTransfer (EIP-712 signature)
+{
+  v: number
+  r: string
+  s: string
+  amount: bigint
+  expiration: number
+  nonce: number
+  spender: string
+  sigDeadline: bigint
+}
+```
+
+## Functions
+
+| Function | Signature | Description |
+| --- | --- | --- |
+| `getUniversalRouterAddress` | `(chainId: ChainId, version?: UniversalRouterVersion) → string` | Get the deployed Universal Router address for a chain |
+
+## Constants
 
 | Export | Description |
 | --- | --- |
-| `PancakeSwapUniversalRouter` | Main class — builds encoded command batches |
-| `getUniversalRouterAddress(chainId)` | Get the deployed router address for a chain |
+| `UNIVERSAL_ROUTER_ADDRESS` | `Record<ChainId, string>` — addresses for the default router version |
+| `UniversalRouterVersion` | Enum of deployed router versions (`V1`, `V2`) |
 
 ## Universal Router addresses
 
 See [Universal Router addresses](/contracts/universal-router/addresses) for the full list.
-
-## Source
-
-[github.com/pancakeswap/pancake-frontend — packages/universal-router-sdk](https://github.com/pancakeswap/pancake-frontend/tree/develop/packages/universal-router-sdk)

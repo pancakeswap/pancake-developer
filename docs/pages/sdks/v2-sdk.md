@@ -29,7 +29,6 @@ const pair = new Pair(
 )
 
 // Find best trade
-const route = new Route([pair], CAKE, BUSD)
 const [trade] = Trade.bestTradeExactIn(
   [pair],
   CurrencyAmount.fromRawAmount(CAKE, 10n ** 18n),
@@ -44,16 +43,111 @@ const { methodName, args, value } = Router.swapCallParameters(trade, {
 })
 ```
 
-## Key exports
+## Pair
 
-| Export | Description |
-| --- | --- |
-| `Pair` | A V2 liquidity pair |
-| `Route` | A single-path route through pairs |
-| `Trade` | A computed swap against a route |
-| `Router` | Build calldata for the V2 Router contract |
-| `Fetcher` | Fetch pair data from on-chain state |
+Represents a V2 AMM pair and its reserves.
 
-## Source
+```typescript
+new Pair(currencyAmountA, currencyAmountB)
+```
 
-[github.com/pancakeswap/pancake-frontend — packages/v2-sdk](https://github.com/pancakeswap/pancake-frontend/tree/develop/packages/v2-sdk)
+### Properties
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `token0` | `Token` | The lower-sorted token |
+| `token1` | `Token` | The higher-sorted token |
+| `reserve0` | `CurrencyAmount` | Reserve of token0 |
+| `reserve1` | `CurrencyAmount` | Reserve of token1 |
+| `token0Price` | `Price` | Price of token0 in terms of token1 |
+| `token1Price` | `Price` | Price of token1 in terms of token0 |
+| `liquidityToken` | `Token` | The LP token for this pair |
+| `chainId` | `number` | Chain ID (from tokens) |
+
+### Methods
+
+| Method | Signature | Description |
+| --- | --- | --- |
+| `reserveOf` | `(token) → CurrencyAmount` | Reserve of a given token |
+| `getOutputAmount` | `(inputAmount) → [CurrencyAmount, Pair]` | Simulate a swap; returns output and resulting pair |
+| `getInputAmount` | `(outputAmount) → [CurrencyAmount, Pair]` | Compute required input for a desired output |
+| `getLiquidityMinted` | `(totalSupply, tokenAmountA, tokenAmountB) → CurrencyAmount` | LP tokens minted for a deposit |
+| `getLiquidityValue` | `(token, totalSupply, liquidity, feeOn?, kLast?) → CurrencyAmount` | Token amount redeemable for LP tokens |
+| `involvesToken` | `(token) → boolean` | Whether the pair contains a given token |
+| `Pair.getAddress` | `(tokenA, tokenB) → string` | Compute the deterministic pair address |
+
+## Route
+
+A single-path route through one or more pairs.
+
+```typescript
+new Route(pairs, input, output?)
+```
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `pairs` | `Pair[]` | Ordered list of pairs in the route |
+| `path` | `Token[]` | Ordered token path |
+| `input` | `Currency` | Input currency |
+| `output` | `Currency` | Output currency |
+| `midPrice` | `Price` | Geometric mid-price across the route |
+| `chainId` | `number` | Chain ID |
+
+## Trade
+
+A computed swap along a route.
+
+### Static constructors
+
+| Method | Signature | Description |
+| --- | --- | --- |
+| `Trade.exactIn` | `(route, amountIn) → Trade` | Exact-input trade |
+| `Trade.exactOut` | `(route, amountOut) → Trade` | Exact-output trade |
+| `Trade.bestTradeExactIn` | `(pairs, currencyAmountIn, currencyOut, options?) → Trade[]` | Find the best exact-input trades; sorted best-first |
+| `Trade.bestTradeExactOut` | `(pairs, currencyIn, currencyAmountOut, options?) → Trade[]` | Find the best exact-output trades; sorted best-first |
+
+### bestTradeExactIn / bestTradeExactOut options
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `maxNumResults` | `number` | 3 | Maximum number of results to return |
+| `maxHops` | `number` | 3 | Maximum route hops |
+
+### Properties and methods
+
+| Member | Type / Signature | Description |
+| --- | --- | --- |
+| `route` | `Route` | The route this trade follows |
+| `tradeType` | `TradeType` | EXACT_INPUT or EXACT_OUTPUT |
+| `inputAmount` | `CurrencyAmount` | Input amount |
+| `outputAmount` | `CurrencyAmount` | Output amount |
+| `executionPrice` | `Price` | Effective execution price |
+| `priceImpact` | `Percent` | Price impact vs mid-price |
+| `minimumAmountOut` | `(slippageTolerance) → CurrencyAmount` | Minimum output after slippage |
+| `maximumAmountIn` | `(slippageTolerance) → CurrencyAmount` | Maximum input after slippage |
+
+## Router
+
+Static helpers for building V2 Router calldata.
+
+| Method | Signature | Description |
+| --- | --- | --- |
+| `Router.swapCallParameters` | `(trade, tradeOptions) → { methodName, args, value }` | Build swap calldata for the V2 Router |
+
+### tradeOptions
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `allowedSlippage` | `Percent` | Maximum slippage tolerance |
+| `recipient` | `string` | Address to receive output tokens |
+| `ttl` | `number` | Deadline in seconds from now |
+| `deadline` | `number` | Absolute Unix timestamp deadline (alternative to `ttl`) |
+| `feeOnTransfer` | `boolean` | Use `supportingFeeOnTransfer` router methods |
+
+## Fetcher
+
+Fetch pair data from on-chain state.
+
+| Method | Signature | Description |
+| --- | --- | --- |
+| `Fetcher.fetchPairData` | `(tokenA, tokenB, provider?) → Promise<Pair>` | Fetch reserves and construct a Pair |
