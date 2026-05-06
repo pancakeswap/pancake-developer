@@ -18,8 +18,8 @@
 | Chain | Address
 | ------------------------------------------ | ------------------------------------------ |
 | BSC testnet | 0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768 |
-| Sepolia, Goerli | 0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768 |
-| Arbitrum Sepolia, Arbitrum Goerli | 0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768 |
+| Sepolia | 0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768 |
+| Arbitrum Sepolia | 0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768 |
 | Base Sepolia, Base testnet | 0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768 |
 | Linea | 0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768 |
 | opBNB | 0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768 |
