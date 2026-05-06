@@ -16,6 +16,7 @@ export default defineConfig({
     { text: "EVM", link: "/contracts/infinity/overview" },
     { text: "Aptos", link: "/contracts-aptos" },
     { text: "APIs", link: "/apis/subgraph" },
+    { text: "SDKs", link: "/sdks/overview" },
     { text: "Bug Bounty", link: "/bug-bounty" },
   ],
   sidebar: {
@@ -420,6 +421,61 @@ export default defineConfig({
           {
             text: "Subgraph",
             link: "/apis/subgraph",
+          },
+        ],
+      },
+    ],
+    "/sdks": [
+      {
+        text: "SDKs",
+        items: [
+          {
+            text: "Overview",
+            link: "/sdks/overview",
+          },
+          {
+            text: "smart-router",
+            link: "/sdks/smart-router",
+          },
+          {
+            text: "v3-sdk",
+            link: "/sdks/v3-sdk",
+          },
+          {
+            text: "v2-sdk",
+            link: "/sdks/v2-sdk",
+          },
+          {
+            text: "infinity-sdk",
+            link: "/sdks/infinity-sdk",
+          },
+          {
+            text: "swap-sdk-core",
+            link: "/sdks/swap-sdk-core",
+          },
+          {
+            text: "chains",
+            link: "/sdks/chains",
+          },
+          {
+            text: "tokens",
+            link: "/sdks/tokens",
+          },
+          {
+            text: "universal-router-sdk",
+            link: "/sdks/universal-router-sdk",
+          },
+          {
+            text: "permit2-sdk",
+            link: "/sdks/permit2-sdk",
+          },
+          {
+            text: "price-api-sdk",
+            link: "/sdks/price-api-sdk",
+          },
+          {
+            text: "pcsx-sdk",
+            link: "/sdks/pcsx-sdk",
           },
         ],
       },
