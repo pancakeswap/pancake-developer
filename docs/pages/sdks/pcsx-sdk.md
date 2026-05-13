@@ -17,49 +17,47 @@ npm install @pancakeswap/pcsx-sdk
 ```typescript
 import {
   createExclusiveDutchOrderTrade,
-  ExclusiveDutchOrderTrade,
 } from '@pancakeswap/pcsx-sdk'
-import { CurrencyAmount, TradeType } from '@pancakeswap/swap-sdk-core'
+import { parseQuoteResponse } from '@pancakeswap/price-api-sdk'
+import { TradeType } from '@pancakeswap/swap-sdk-core'
 import { ChainId } from '@pancakeswap/chains'
 import { bscTokens } from '@pancakeswap/tokens'
 
-const trade = createExclusiveDutchOrderTrade({
+// 1. Fetch a quote from the PCSX price API
+const res = await fetch('/api/price-quote', { ... })
+const quoteResponse = await res.json()
+
+// 2. Parse the quote — encodedOrder and permitData come from the API
+const result = parseQuoteResponse(quoteResponse, {
   chainId: ChainId.BSC,
   currencyIn: bscTokens.cake,
   currencyOut: bscTokens.usdt,
-  inputAmount: CurrencyAmount.fromRawAmount(bscTokens.cake, 10n ** 18n),
-  outputStartAmount: CurrencyAmount.fromRawAmount(bscTokens.usdt, 3_900_000n), // best price
-  outputEndAmount: CurrencyAmount.fromRawAmount(bscTokens.usdt, 3_800_000n),   // floor price
   tradeType: TradeType.EXACT_INPUT,
-  orderInfo: {
-    deadline: Math.floor(Date.now() / 1000) + 60,
-    exclusiveFiller: '0xFILLER_ADDRESS',
-    exclusivityOverrideBps: 0n,
-    nonce: 1n,
-  },
 })
 
-// Sign with Permit2 and submit to the PCSX order API
-const { permitData } = trade.permitData()
-const signature = await walletClient.signTypedData(permitData)
+const trade = result.trade  // ExclusiveDutchOrderTrade
+
+// 3. Sign with Permit2 using the permitData from the trade
+const signature = await walletClient.signTypedData(trade.permitData)
+
+// 4. Submit the encoded order + signature to the filler network
+await submitOrder({ encodedOrder: trade.encodedOrder, signature })
 ```
 
 ## createExclusiveDutchOrderTrade
 
 ```typescript
 createExclusiveDutchOrderTrade(options: {
-  chainId: ChainId
   currencyIn: Currency
-  currencyOut: Currency
-  inputAmount: CurrencyAmount
-  outputStartAmount: CurrencyAmount   // output at time 0 (best price)
-  outputEndAmount: CurrencyAmount     // output at deadline (floor price)
-  tradeType: TradeType
+  currenciesOut: [Currency, ...Currency[]]
   orderInfo: ExclusiveDutchOrderInfo
+  tradeType: TradeType
+  encodedOrder: Hex
+  permitData: PermitWitnessTransferFromData
 }) → ExclusiveDutchOrderTrade
 ```
 
-Constructs an `ExclusiveDutchOrderTrade` ready for signing and submission.
+Constructs an `ExclusiveDutchOrderTrade` from a PCSX API quote response. `encodedOrder` and `permitData` are provided by the API (typically via `parseQuoteResponse` from `@pancakeswap/price-api-sdk`).
 
 ### ExclusiveDutchOrderInfo
 
@@ -72,27 +70,24 @@ Constructs an `ExclusiveDutchOrderTrade` ready for signing and submission.
 
 ## ExclusiveDutchOrderTrade
 
-Encapsulates an EDO trade with encoding and signing helpers.
+Plain object encapsulating an EDO trade returned by `createExclusiveDutchOrderTrade` or `parseQuoteResponse`.
 
 ### Properties
 
 | Property | Type | Description |
 | --- | --- | --- |
-| `chainId` | `ChainId` | Target chain |
-| `currencyIn` | `Currency` | Input currency |
-| `currencyOut` | `Currency` | Output currency |
-| `inputAmount` | `CurrencyAmount` | Input amount |
-| `outputStartAmount` | `CurrencyAmount` | Best-case output (at fill time 0) |
-| `outputEndAmount` | `CurrencyAmount` | Worst-case output (at deadline) |
 | `tradeType` | `TradeType` | EXACT_INPUT or EXACT_OUTPUT |
+| `inputAmount` | `CurrencyAmount` | Input amount |
+| `outputAmount` | `CurrencyAmount` | Best-case output (start amount) |
+| `minimumAmountOut` | `CurrencyAmount` | Worst-case output (end amount, at deadline) |
+| `maximumAmountIn` | `CurrencyAmount` | Maximum input (end amount) |
+| `executionPrice` | `Price` | Price at fill time 0 |
+| `worstExecutionPrice` | `Price` | Price at deadline |
+| `priceImpact` | `null` | Always null for EDO trades |
 | `orderInfo` | `ExclusiveDutchOrderInfo` | Order parameters |
-
-### Methods
-
-| Method | Signature | Description |
-| --- | --- | --- |
-| `permitData` | `() → { permitData: TypedData, permit2Address: string }` | Return EIP-712 typed data for Permit2 signing |
-| `encode` | `() → { calldata: string, value: string }` | ABI-encode the signed order for on-chain submission |
+| `encodedOrder` | `Hex` | ABI-encoded order ready for on-chain submission |
+| `permitData` | `PermitWitnessTransferFromData` | EIP-712 typed data for Permit2 signing |
+| `quoteQueryHash` | `string \| undefined` | Quote identifier from the API |
 
 ## ExclusiveDutchOrder
 
