@@ -10,24 +10,42 @@ PancakeSwapX integrates permit2, see addresses [here](/contracts/permit2/address
 
 ## ExclusiveDutchOrderReactor
 
-`ExclusiveDutchOrderReactor` facilitates the execution of exclusive Dutch orders, which are a type of order where the execution price decays linearly over time, similar to a Dutch auction. 
+`ExclusiveDutchOrderReactor` facilitates the execution of exclusive Dutch orders, which are a type of order where the execution price decays linearly over time, similar to a Dutch auction.
 
 This reactor introduces a period of exclusivity before the price decay begins, granting a specific filler exclusive rights to fulfill the order within this timeframe.
 
 ------
 **Mainnet**
 
-| Network | Address  | 
-| ------ | ------ |
-| BSC  | 0xDB9D365b50E62fce747A90515D2bd1254A16EbB9 | 
-| Ethereum | 0x35db01D1425685789dCc9228d47C7A5C049388d8 | 
-| Arbitrum | 0x35db01D1425685789dCc9228d47C7A5C049388d8 | 
-| Base | 0x6b9906d7106e5890852Bf98eF13ba5D8761712b9 | 
+| Network  | Address                                    |
+| -------- | ------------------------------------------ |
+| BSC      | 0x45CBe66536519D2cc9BAF594b502118eFdb291d1 |
+| Ethereum | 0x35db01D1425685789dCc9228d47C7A5C049388d8 |
+| Arbitrum | 0x35db01D1425685789dCc9228d47C7A5C049388d8 |
+| Base     | 0x6b9906d7106e5890852Bf98eF13ba5D8761712b9 |
 
 ------
 **Testnet**
 
-| Network | Address  | 
-| ------ | ------ |
-| BSC Testnet | 0xCfe2a565072f85381775Eb12644d297bf0F66773 | 
-| Sepolia | 0xbfCC755375250C1EA9722EB1B8d97076f681627C | 
+| Network     | Address                                    |
+| ----------- | ------------------------------------------ |
+| BSC Testnet | 0x45CBe66536519D2cc9BAF594b502118eFdb291d1 |
+| Sepolia     | 0xbfCC755375250C1EA9722EB1B8d97076f681627C |
+
+## V3DutchOrderReactor
+
+`V3DutchOrderReactor` executes V3 Dutch orders, an iteration of the Dutch order design used by PancakeSwapX for more flexible, gas-efficient price decay curves.
+
+------
+**Mainnet**
+
+| Network | Address                                    |
+| ------- | ------------------------------------------ |
+| BSC     | 0xb75bb4c7aaacfa400758bf024c2ffefe17c9cbe3 |
+
+------
+**Testnet**
+
+| Network     | Address                                    |
+| ----------- | ------------------------------------------ |
+| BSC Testnet | 0xb75bb4c7aaacfa400758bf024c2ffefe17c9cbe3 |
