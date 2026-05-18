@@ -8,7 +8,7 @@ description: >-
 
 ## Features
 
-PancakesSwap on Aptos! We have landed on Aptos and will continuously deploy more features.&#x20;
+PancakeSwap on Aptos! We have landed on Aptos and will continuously deploy more features.&#x20;
 
 [pancakeswap-v2](v2/overview.mdx)
 
