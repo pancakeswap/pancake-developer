@@ -58,6 +58,7 @@ if (testnetChainIds.includes(chainId)) {
 | Name | Value | Note |
 | --- | --- | --- |
 | `POLYGON_ZKEVM` | 1101 | Deprecated — do not use in new code |
+| `POLYGON_ZKEVM_TESTNET` | 1442 | Deprecated — do not use in new code |
 
 ## Key exports
 
