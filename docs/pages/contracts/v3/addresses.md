@@ -22,9 +22,9 @@ description: Fork of Uniswap v3
 | TickLens                   | 0x9a489505a00cE272eAa5e07Dba6491314CaE3796    | 0x7b08978FA77910f77d273c353C62b5BFB9E6D17B | 0xac1cE734566f390A94b00eb9bf561c2625BF44ea |
 | PancakeInterfaceMulticall  | 0xac1cE734566f390A94b00eb9bf561c2625BF44ea    | 0x2a76b93B9Cd441AE8aDA529e0e95826e00556351 | 0x3D00CdB4785F0ef20C903A13596e0b9B2c652227 |
 
-| Contract           | BSC, ETH, Linea                            | Linea, Base, opBNB                         | Arbitrum                                   | zkSync                                     | Monad | BSC TESTNET                                |
-| ------------------ | ------------------------------------------ | ------------------------------------------ | ------------------------------------------ | ------------------------------------------ | ------------------------------------------ | ------------------------------------------ |
-| MixedRouteQuoterV1 | 0x678Aa4bF4E210cf2166753e054d5b7c31cc7fa86 | 0x4c650FB471fe4e0f476fD3437C3411B1122c4e3B | 0x3652Fc6EDcbD76161b8554388867d3dAb65eCA93 | 0x9B1edFB3848660402E4f1DC25733764e80aA627A | 0x77b482D9A4E391d682C857C630B8d869FdeE5c44 | 0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997 |
+| Contract           | BSC, ETH, Monad                            | Linea, Base, opBNB                         | Arbitrum                                   | zkSync                                     | BSC TESTNET                                |
+| ------------------ | ------------------------------------------ | ------------------------------------------ | ------------------------------------------ | ------------------------------------------ | ------------------------------------------ |
+| MixedRouteQuoterV1 | 0x678Aa4bF4E210cf2166753e054d5b7c31cc7fa86 | 0x4c650FB471fe4e0f476fD3437C3411B1122c4e3B | 0x5457fa0318753E9eaC2d17DFfdb6383da207d705 | 0x9B1edFB3848660402E4f1DC25733764e80aA627A | 0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997 |
 | TokenValidator     | 0x864ED564875BdDD6F421e226494a0E7c071C06f8 | 0x556B9306565093C855AEA9AE92A594704c2Cd59e | 0x8be9EA9C6015985AB2F5A216093305A9AaEb8164 | 0x08529A4be615746ef31CdbeD46Ce556406787E2F | 0xfcB76dfDf9c79AE5d334C0E1901449c8A893DF22 | 0x678Aa4bF4E210cf2166753e054d5b7c31cc7fa86 |
 
 ## Smart Router 
