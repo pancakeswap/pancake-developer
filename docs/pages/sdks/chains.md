@@ -45,6 +45,7 @@ if (testnetChainIds.includes(chainId)) {
 | `LINEA` | 59144 |
 | `OPBNB` | 204 |
 | `MONAD_MAINNET` | 143 |
+| `ROBINHOOD` | 4663 |
 
 ### Non-EVM chains (`NonEVMChainId`)
 
