@@ -38,6 +38,7 @@ For usage details, refer to the [Perform a Swap guide](/contracts/infinity/guide
 | Linea    | 0xFE6508f0015C778Bdcc1fB5465bA5ebE224C9912 |
 | opBNB    | 0xB89a6778D1efE7a5b7096757A21b810CC2886fa1 |
 | zkSync   | 0xdAee41E335322C85ff2c5a6745c98e1351806e98 |
+| Robinhood | 0xE28c0e44F4016b073db20cF28971CAc6ce3664D3 |
 
 **Testnet**
 
