@@ -45,7 +45,7 @@ For usage details, refer to the [Perform a Swap guide](/contracts/infinity/guide
 | Chain            | Address                                    |
 | ---------------- | ------------------------------------------ |
 | BSC testnet      | 0x9A082015c919AD0E47861e5Db9A1c7070E81A2C7 |
-| Sepolia          | 0x55D32fa7Da7290838347bc97cb7fAD4992672255 |
+| Sepolia          | 0x6A3d58cc25a92d90Fa3a8f0f5d5e75AD01ccd7a6 |
 | Arbitrum Sepolia | 0xFE6508f0015C778Bdcc1fB5465bA5ebE224C9912 |
 | Base Sepolia     | 0xFE6508f0015C778Bdcc1fB5465bA5ebE224C9912 |
 | Base testnet     | 0xa8EEA7aa6620712524d18D742821848e55E773B5 |

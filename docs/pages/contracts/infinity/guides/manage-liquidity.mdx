@@ -25,7 +25,7 @@ Example:
 bytes[] memory calls = new bytes[](2);
 
 // signature from user
-calls[0] = abi.encodeWithSelector(IAllowanceTransfer.Permit.selector, owner, PermitSingle permitSIngle, bytes signature);
+calls[0] = abi.encodeWithSelector(IAllowanceTransfer.Permit.selector, owner, PermitSingle permitSingle, bytes signature);
 // modifyLiquidities call - explained in next section
 calls[1] = abi.encodeWithSelector(IPositionManager.modifyLiquidities.selector, abi.encode(...));
 
