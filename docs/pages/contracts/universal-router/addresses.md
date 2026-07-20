@@ -39,6 +39,7 @@ For usage details, refer to the [Perform a Swap guide](/contracts/infinity/guide
 | opBNB    | 0xB89a6778D1efE7a5b7096757A21b810CC2886fa1 |
 | zkSync   | 0xdAee41E335322C85ff2c5a6745c98e1351806e98 |
 | Robinhood | 0xE28c0e44F4016b073db20cF28971CAc6ce3664D3 |
+| Monad    | 0x23682a588CF2601ACa977dF200938634c9F7d552 |
 
 **Testnet**
 
@@ -53,3 +54,4 @@ For usage details, refer to the [Perform a Swap guide](/contracts/infinity/guide
 | opBNB            | 0xa8EEA7aa6620712524d18D742821848e55E773B5 |
 | Scroll Sepolia   | 0xB89a6778D1efE7a5b7096757A21b810CC2886fa1 |
 | zkSync           | 0xCa97D1FAFCEa54EFc68d66eA914AB2F8Fbfe93c5 |
+| Monad testnet    | 0x94D220C58A23AE0c2eE29344b00A30D1c2d9F1bc |
