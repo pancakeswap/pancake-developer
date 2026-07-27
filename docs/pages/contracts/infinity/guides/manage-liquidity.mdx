@@ -64,8 +64,8 @@ The `bytes calldata payload` in `modifyLiquidities` is `abi.encode(actions, para
 Given `actions = 0x021212`, it would mean 3 actions processed in order:
 
 1. `0x02`: `CL_MINT_POSITION`
-2. `0x17`: `CLOSE_CURRENCY`
-3. `0x17`: `CLOSE_CURRENCY`
+2. `0x12`: `CLOSE_CURRENCY`
+3. `0x12`: `CLOSE_CURRENCY`
 
 With 3 actions, it would mean `bytes[] params` of length = 3.
 

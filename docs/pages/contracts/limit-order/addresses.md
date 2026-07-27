@@ -92,3 +92,9 @@ Orders progress through three states:
 | ----- | ------------------------------------------ |
 | BSC   | 0x6AdC560aF85377f9a73d17c658D798c9B39186e8 |
 
+**Testnet**
+
+| Chain       | Address                                    |
+| ----------- | ------------------------------------------ |
+| BSC Testnet | 0x5F1076A98a1b9AA8584DaC02F38C616C3A431794 |
+

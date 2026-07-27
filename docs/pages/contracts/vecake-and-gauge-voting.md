@@ -2,7 +2,9 @@
 description: CAKE locked staking and its benefits
 ---
 
-# veCAKE and Gauge Voting
+# veCAKE and Gauge Voting (deprecated)
+
+veCAKE and gauge voting were retired starting April 23, 2025. See the [veCAKE Redemption Guide](https://docs.pancakeswap.finance/welcome-to-pancakeswap/vecake-sunset) for the current CAKE staking flow. Addresses below are kept for historical reference.
 
 ## Contract info
 
