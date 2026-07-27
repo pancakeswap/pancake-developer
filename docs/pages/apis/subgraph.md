@@ -16,7 +16,7 @@ Code: [https://github.com/pancakeswap/pancake-subgraph](https://github.com/panca
    - zkSync https://thegraph.com/explorer/subgraphs/6dU6WwEz22YacyzbTbSa3CECCmaD8G7oQ8aw6MYd5VKU?view=Query&chain=arbitrum-one
    - Linea https://thegraph.com/explorer/subgraphs/Eti2Z5zVEdARnuUzjCbv4qcimTLysAizsqH3s6cBfPjB?view=Query&chain=arbitrum-one
    - Base https://thegraph.com/explorer/subgraphs/2NjL7L4CmQaGJSacM43ofmH6ARf6gJoBeBaJtz9eWAQ9?view=Query&chain=arbitrum-one
-   - opBNB https://opbnb-mainnet-graph.nodereal.io/subgraphs/name/pancakeswap/exchange-v2
+   - opBNB https://open-platform-ap.nodereal.io/&lt;NODEREAL_API_KEY&gt;/opbnb-mainnet-graph-query/subgraphs/name/pancakeswap/exchange-v2
 
 2. **[Lottery](https://thegraph.com/explorer/subgraphs/8wcykciFiBhVwnHbMeKoN5QNFGCJwBvFy5bWTUgDEgBq?view=Query&chain=arbitrum-one)**: Tracks all PancakeSwap Lottery with rounds, draws and tickets.
 
@@ -58,7 +58,7 @@ Code: [https://github.com/pancakeswap/pancake-subgraph](https://github.com/panca
     - zkSync https://thegraph.com/explorer/subgraphs/3dKr3tYxTuwiRLkU9vPj3MvZeUmeuGgWURbFC72ZBpYY?view=Query&chain=arbitrum-one
     - Linea https://thegraph.com/explorer/subgraphs/6gCTVX98K3A9Hf9zjvgEKwjz7rtD4C1V173RYEdbeMFX?view=Query&chain=arbitrum-one
     - Base https://thegraph.com/explorer/subgraphs/5YYKGBcRkJs6tmDfB3RpHdbK2R5KBACHQebXVgbUcYQp?view=Query&chain=arbitrum-one
-    - opBNB https://opbnb-mainnet-graph.nodereal.io/subgraphs/name/pancakeswap/exchange-v3
+    - opBNB https://open-platform-ap.nodereal.io/&lt;NODEREAL_API_KEY&gt;/opbnb-mainnet-graph-query/subgraphs/name/pancakeswap/exchange-v3
 
 17. **Exchange (StableSwap)**: Tracks all PancakeSwap Stableswap Exchange data with price, volume, liquidity
     - BSC https://thegraph.com/explorer/subgraphs/C5EuiZwWkCge7edveeMcvDmdr7jjc1zG4vgn8uucLdfz?view=Query&chain=arbitrum-one
