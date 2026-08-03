@@ -1,5 +1,5 @@
 # PancakeSwap Exchange
 
-[v2-contracts](v2/)
+[v2-contracts](../v2/)
 
-[stableswap](stableswap/)
+[stableswap](../stableswap/)
