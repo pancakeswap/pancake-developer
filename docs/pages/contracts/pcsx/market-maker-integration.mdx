@@ -405,14 +405,14 @@ The response field is `encodeOrder` (no "d") — it mirrors the database column 
 | outputs                | array           | `{ token, startAmount, endAmount, takingAmount?, recipient }` per output  |
 | reactor                | string          | Reactor contract address                                                  |
 | deadline               | string          | Order deadline (ISO-8601)                                                 |
-| decayStartTime         | string \\| null  | Dutch decay start (ISO-8601)                                              |
-| decayEndTime           | string \\| null  | Dutch decay end (ISO-8601)                                                |
-| filler                 | string \\| null  | Actual filler address once filled                                         |
-| exclusiveFiller        | string \\| null  | MM address with the exclusivity window                                    |
-| exclusivityOverrideBps | string \\| null  | Override surcharge in bps (stringified)                                   |
-| quoteId                | string \\| null  | RFQ quote ID, if the order came from a quote                              |
-| transactionHash        | string \\| null  | Fill transaction hash once filled                                         |
-| blockNumber            | string \\| null  | Fill block number once filled                                             |
+| decayStartTime         | string or null  | Dutch decay start (ISO-8601)                                              |
+| decayEndTime           | string or null  | Dutch decay end (ISO-8601)                                                |
+| filler                 | string or null  | Actual filler address once filled                                         |
+| exclusiveFiller        | string or null  | MM address with the exclusivity window                                    |
+| exclusivityOverrideBps | string or null  | Override surcharge in bps (stringified)                                   |
+| quoteId                | string or null  | RFQ quote ID, if the order came from a quote                              |
+| transactionHash        | string or null  | Fill transaction hash once filled                                         |
+| blockNumber            | string or null  | Fill block number once filled                                             |
 | createdAt              | string          | Creation timestamp (ISO-8601)                                             |
 | updatedAt              | string          | Last-update timestamp (ISO-8601)                                          |
 
