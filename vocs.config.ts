@@ -265,6 +265,18 @@ export default defineConfig({
             collapsed: true,
             items: [
               {
+                text: "Overview",
+                link: "/contracts/pcsx/overview",
+              },
+              {
+                text: "Swap Integration (Distributors)",
+                link: "/contracts/pcsx/swap-integration",
+              },
+              {
+                text: "Market Maker Integration",
+                link: "/contracts/pcsx/market-maker-integration",
+              },
+              {
                 text: "Addresses",
                 link: "/contracts/pcsx/addresses",
               },
