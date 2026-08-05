@@ -160,8 +160,8 @@ Request body:
 | orderInfo.exclusiveFiller      | string | MM address with exclusive fill rights                         |
 | orderInfo.input.startAmount    | string | Input amount at auction start                                 |
 | orderInfo.input.endAmount      | string | Input amount at auction end                                   |
-| orderInfo.outputs\\[\\].startAmount | string | Output amount at auction start (best price)                |
-| orderInfo.outputs\\[\\].endAmount   | string | Output amount at auction end (floor price)                 |
+| orderInfo.outputs[].startAmount | string | Output amount at auction start (best price)                |
+| orderInfo.outputs[].endAmount   | string | Output amount at auction end (floor price)                 |
 
 </details>
 
@@ -322,7 +322,7 @@ Otherwise `approval` carries the calldata for an `ERC20.approve(permit2, amount)
 
 | Field            | Type            | Description                                                                     |
 | ---------------- | --------------- | --------------------------------------------------------------------------------- |
-| approval         | object \\| null  | `null` when the existing allowance already covers `amount`; otherwise the approval transaction to submit |
+| approval         | object or null  | `null` when the existing allowance already covers `amount`; otherwise the approval transaction to submit |
 | approval.to      | string          | Transaction target — the ERC20 token contract (`tokenAddress`)                    |
 | approval.data    | string          | Encoded `approve(spender, amount)` calldata                                       |
 | approval.value   | string          | Native value to send — always `"0"`                                               |
@@ -353,7 +353,7 @@ Parameters:
 
 | Name               | Values                     | Description                                                                                        |
 | ------------------ | -------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `strictFirmQuote`  | `true` \\| `false` (default `false`) | If `true`, the firm quote is used more strictly and can result in a `QUOTE_EXPIRED` error if the firm quote is outside the order slippage. If `false`, the best possible order for the user is sent to market makers. Use `true` if you wish to exit early and try again, or `false` to hope it fills. |
+| `strictFirmQuote`  | `true` or `false` (default `false`) | If `true`, the firm quote is used more strictly and can result in a `QUOTE_EXPIRED` error if the firm quote is outside the order slippage. If `false`, the best possible order for the user is sent to market makers. Use `true` if you wish to exit early and try again, or `false` to hope it fills. |
 
 Request body:
 
