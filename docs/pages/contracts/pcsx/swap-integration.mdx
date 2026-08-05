@@ -1,0 +1,472 @@
+import { Callout } from 'vocs/components'
+
+# Swap Integration (for Distributors)
+
+This section is for apps, frontends, and aggregators that consume PCSX as a swap liquidity source — get a quote, sign, submit, and confirm the order.
+
+<Callout type="info">
+**MultiReactor Router — nothing changes for distributors.** `/get-price` returns a ready-to-sign `encodedOrder` + `permitData` for every version (including V4Dutch); sign and submit as usual. Post-cutover the order's `reactor` field is simply the Router address for that chain / family. Use `@pancakeswap/pcsx-sdk@1.5.0`, which parses V4Dutch and can `decodeOrder` router orders.
+</Callout>
+
+The examples below use the test host `sgp1.test.x.pancakeswap.com`. The production host is `x.pancakeswap.com`; the paths are identical.
+
+## Quote order price
+
+### Get order price
+
+```
+POST https://sgp1.test.x.pancakeswap.com/order-price/get-price?filler=0x..
+```
+
+Request body:
+
+```json
+{
+  "tokenInChainId": 56,
+  "tokenIn": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
+  "tokenOutChainId": 56,
+  "tokenOut": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
+  "amount": "1000000000000000000",
+  "type": "EXACT_INPUT",
+  "slippageTolerance": "0.01",
+  "configs": [
+    {
+      "routingType": "DUTCH_LIMIT",
+      "swapper": "0x1111111111111111111111111111111111111111",
+      "exclusivityOverrideBps": 100,
+      "startTimeBufferSecs": 60,
+      "auctionPeriodSecs": 3600,
+      "deadlineBufferSecs": 120,
+      "outputStartAmount": "1000000000000000000",
+      "outputEndAmount": "1000000000000000000"
+    }
+  ]
+}
+```
+
+<details>
+<summary>Request fields</summary>
+
+| Field           | Type   | Required | Description                                                                     |
+| --------------- | ------ | -------- | ------------------------------------------------------------------------------- |
+| tokenInChainId  | number | ✅        | Chain ID of the input token. Supported: 1 (Ethereum), 56 (BSC), 42161 (Arbitrum) |
+| tokenIn         | string | ✅        | Input token address. Use `0x000...000` or `"BNB"` / `"ETH"` for native tokens    |
+| tokenOutChainId | number | ✅        | Chain ID of the output token. Must match `tokenInChainId`                        |
+| tokenOut        | string | ✅        | Output token address                                                             |
+| amount          | string | ✅        | Trade amount in wei. Must be a string to handle large numbers                    |
+| type            | string | ✅        | `"EXACT_INPUT"` or `"EXACT_OUTPUT"`                                              |
+| slippageTolerance | string | ❌      | Slippage as a percentage (0–100). Default: `"0.5"`                               |
+| configs         | array  | ❌        | Array of routing configurations (1–2 items). If omitted, defaults are used       |
+
+</details>
+
+<details>
+<summary>Config object: <code>DUTCH_LIMIT</code></summary>
+
+| Field                  | Type    | Required | Default      | Description                                                                       |
+| ---------------------- | ------- | -------- | ------------ | --------------------------------------------------------------------------------- |
+| routingType            | string  | ✅        | -            | Must be `"DUTCH_LIMIT"`                                                            |
+| useSyntheticQuotes     | boolean | ❌        | false        | Generate quotes from AMM when no MM quote exists                                   |
+| swapper                | string  | ❌        | Zero address | User wallet address                                                                |
+| recipient              | string  | ❌        | -            | Recipient of the output tokens                                                     |
+| exclusivityOverrideBps | number  | ❌        | 100          | Penalty (bps) for non-exclusive fillers                                            |
+| startTimeBufferSecs    | number  | ❌        | 60           | Seconds before auction price decay starts                                          |
+| auctionPeriodSecs      | number  | ❌        | 120          | Duration of the Dutch auction in seconds                                           |
+| deadlineBufferSecs     | number  | ❌        | 12           | Buffer seconds after the auction ends before the order expires                     |
+| outputStartAmount      | string  | ❌        | -            | Override output start amount. Must be used with `outputEndAmount` and `EXACT_INPUT` |
+| outputEndAmount        | string  | ❌        | -            | Override output end amount. Must be used with `outputStartAmount` and `EXACT_INPUT` |
+
+</details>
+
+<details>
+<summary>Config object: <code>PCS_CLASSIC</code></summary>
+
+| Field       | Type   | Required | Default                  | Description                        |
+| ----------- | ------ | -------- | ------------------------ | ---------------------------------- |
+| routingType | string | ✅        | -                        | Must be `"PCS_CLASSIC"`             |
+| protocols   | array  | ❌        | `["V2","V3","STABLE"]`   | Pool types to use                   |
+| gasPriceWei | string | ❌        | Current gas price        | Gas price in wei for cost estimation |
+| maxHops     | number | ❌        | 3                        | Maximum intermediate tokens in route (1–3) |
+| maxSplits   | number | ❌        | 4                        | Maximum route splits (1–4)          |
+
+</details>
+
+#### Response
+
+```json
+{
+  "messageType": "PRICE_RESPONSE",
+  "message": {
+    "bestOrder": {
+      "type": "DUTCH_LIMIT",
+      "order": {
+        "quoteId": "uniqueQuoteId123",
+        "requestId": "7b19d45d-590d-4d8d-b314-8bd22d449cdd",
+        "startTimeBufferSecs": 60,
+        "auctionPeriodSecs": 3600,
+        "deadlineBufferSecs": 120,
+        "slippageTolerance": "0.5",
+        "permitData": {
+          "domain": {
+            "name": "Permit2",
+            "chainId": 97,
+            "verifyingContract": "0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768"
+          }
+        },
+        "orderInfo": {
+          "reactor": "0xCfe2a565072f85381775Eb12644d297bf0F66773",
+          "swapper": "0x1111111111111111111111111111111111111111",
+          "nonce": "778651969...",
+          "deadline": "1712069517",
+          "decayStartTime": "1712065797",
+          "decayEndTime": "1712069397",
+          "exclusiveFiller": "0x3541a2456E40324Be9c3488755f61e984dECEDf6",
+          "exclusivityOverrideBps": "100",
+          "input": {
+            "token": "0x9f063C8ED6cF9c454993677fd53b2AF572c91d6F",
+            "startAmount": "5000000000000000000",
+            "endAmount": "10000000000000000000"
+          },
+          "outputs": [
+            {
+              "token": "0x1F3dAD92459B65f98a206D55dbE9F21673C2815A",
+              "startAmount": "5000000000000000000",
+              "endAmount": "5000000000000000000",
+              "recipient": "0xfa4E489A8bB0F7D3a13Ab5352f72981a24c7Cb84"
+            }
+          ]
+        },
+        "encodedOrder": "0x0000..."
+      }
+    },
+    "allPossibleOrders": []
+  }
+}
+```
+
+<details>
+<summary>Response fields</summary>
+
+| Field                          | Type   | Description                                                  |
+| ------------------------------ | ------ | ------------------------------------------------------------ |
+| messageType                    | string | `"PRICE_RESPONSE"` or `"ERROR"`                               |
+| bestOrder.type                 | string | `"DUTCH_LIMIT"` or `"PCS_CLASSIC"`                            |
+| order.quoteId                  | string | Unique quote ID — pass this when submitting the order         |
+| order.permitData               | object | EIP-712 typed data for the user signature                     |
+| order.encodedOrder             | string | ABI-encoded order to submit to `POST /order-handler/order`    |
+| order.orderHash                | string | Hash of the encoded order                                     |
+| orderInfo.decayStartTime       | string | Unix timestamp when price decay starts                        |
+| orderInfo.decayEndTime         | string | Unix timestamp when price decay ends                          |
+| orderInfo.exclusiveFiller      | string | MM address with exclusive fill rights                         |
+| orderInfo.input.startAmount    | string | Input amount at auction start                                 |
+| orderInfo.input.endAmount      | string | Input amount at auction end                                   |
+| orderInfo.outputs\\[\\].startAmount | string | Output amount at auction start (best price)                |
+| orderInfo.outputs\\[\\].endAmount   | string | Output amount at auction end (floor price)                 |
+
+</details>
+
+### Error responses
+
+| Error                                              | Cause                                                                          |
+| -------------------------------------------------- | ------------------------------------------------------------------------------ |
+| No OrderBook Found                                 | No market maker quotes available. Add a `PCS_CLASSIC` config as fallback if preferred |
+| tokenInChainId and tokenOutChainId must be the same | Cross-chain swaps not supported                                                 |
+| Invalid percentage format or value                 | `slippageTolerance` must be 0–100 with max 5 decimals                           |
+
+## Submit order
+
+### Install
+
+```bash
+yarn add @pancakeswap/permit2-sdk @pancakeswap/pcsx-sdk
+```
+
+### Construct and sign the order
+
+The `/get-price` response already contains a fully formed `encodedOrder` ready for the user to sign — there is no need to construct the order from scratch. Parse it with the SDK to extract the Permit2 typed data, sign, and submit the **same `encodedOrder` bytes** back to `/order-handler/order` together with the signature.
+
+```typescript
+import { ExclusiveDutchOrder, ExclusiveDutchOrderV3 } from '@pancakeswap/pcsx-sdk'
+
+// `encodedOrder` is `message.bestOrder.order.encodedOrder` from /get-price.
+const order = ExclusiveDutchOrder.parse(encodedOrder, chainId)
+// OR for V3 orders:
+// const order = ExclusiveDutchOrderV3.parse(encodedOrder, chainId)
+// OR resolve any router order (incl. V4Dutch) with pcsx-sdk@1.5.0:
+// const { reactor, type } = decodeOrder(encodedOrder)
+
+const permitData = order.permitData()
+
+const signature = await swapper.signTypedData({
+  domain: { ...permitData.domain, chainId },
+  types: permitData.types,
+  primaryType: 'PermitWitnessTransferFrom',
+  message: { ...permitData.values },
+})
+
+// Submit `encodedOrder` (unchanged) and `signature` to /order-handler/order.
+```
+
+The parsed `order` exposes the full decoded structure (`order.info.*`) — useful for displaying decay timing, exclusive filler, and expected output amounts to the user before they sign.
+
+#### Manual construction (reference)
+
+If you need to build an order from scratch — for testing, custom flows, or to inspect the full input shape — construct `orderInfo` directly:
+
+```typescript
+import { REACTOR_ADDRESS_MAPPING, ExclusiveDutchOrder, ExclusiveDutchOrderV3 } from '@pancakeswap/pcsx-sdk'
+
+const orderInfo = {
+  reactor: REACTOR_ADDRESS_MAPPING[chainId],
+  swapper: '0x0...',
+  nonce: 1,
+  deadline: 1712042224,
+  additionalValidationContract: '0x0000000000000000000000000000000000000000',
+  additionalValidationData: '0x00',
+  decayStartTime: 1712042164,
+  decayEndTime: 1712042224,
+  exclusiveFiller: '0x...',
+  exclusivityOverrideBps: 100,
+  input: {
+    token: '0x...',
+    startAmount: 10000000000000000,
+    endAmount: 50000000000000000,
+  },
+  outputs: [{
+    token: '0x...',
+    startAmount: 10000000000000000n,
+    endAmount: 10000000000000000n,
+    recipient: '0x...',
+  }],
+}
+
+const order = ExclusiveDutchOrder.fromJSON(orderInfo, chainId)
+// OR for V3 orders:
+// const order = ExclusiveDutchOrderV3.fromJSON(orderInfo, chainId)
+
+const permitData = order.permitData()
+const signature = await swapper.signTypedData({
+  domain: { ...permitData.domain, chainId },
+  types: permitData.types,
+  primaryType: 'PermitWitnessTransferFrom',
+  message: { ...permitData.values },
+})
+
+const encodedOrder = order.encode()
+```
+
+### Approve Permit2
+
+```solidity
+ERC20(tokenAddress).forceApprove(
+  swapperAddress,
+  0x31c2f6fcff4f8759b3bd5bf0e1084a055615c768, // Permit2
+  type(uint256).max
+);
+```
+
+### Check Permit2 approval
+
+Approving `type(uint256).max` once per token is the simplest path, but if you'd rather not prompt the user for an approval they don't need, query this endpoint first. It reads the token's current Permit2 allowance for the user and tells you whether it already covers the trade — and if not, returns ready-to-submit `approve` calldata.
+
+```
+POST https://sgp1.test.x.pancakeswap.com/order-handler/permit2/approval
+```
+
+Request body:
+
+```json
+{
+  "tokenAddress": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
+  "userAddress": "0x1111111111111111111111111111111111111111",
+  "amount": "1000000000000000000",
+  "chainId": 56
+}
+```
+
+<details>
+<summary>Request fields</summary>
+
+| Field        | Type   | Required | Description                                                                                             |
+| ------------ | ------ | -------- | -------------------------------------------------------------------------------------------------------- |
+| tokenAddress | string | ✅        | Input (sell) token to check. Must be a valid address. The native/zero address is rejected — it cannot be approved to Permit2 |
+| userAddress  | string | ✅        | Swapper wallet whose allowance is checked                                                                 |
+| amount       | string | ✅        | Amount to cover, in wei. Digits only, uint256 range (≤ 78 chars), must be > 0. Use the order's input `startAmount` |
+| chainId      | number | ✅        | Supported chain ID (e.g. 1, 56, 42161)                                                                    |
+
+</details>
+
+#### Response
+
+Returns `200`. When the current allowance already covers `amount`, `approval` is `null` and you can go straight to signing:
+
+```json
+{ "approval": null }
+```
+
+Otherwise `approval` carries the calldata for an `ERC20.approve(permit2, amount)` transaction to submit from the user's wallet before continuing:
+
+```json
+{
+  "approval": {
+    "to": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
+    "data": "0x095ea7b3...",
+    "value": "0",
+    "spender": "0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768"
+  }
+}
+```
+
+<details>
+<summary>Response fields</summary>
+
+| Field            | Type            | Description                                                                     |
+| ---------------- | --------------- | --------------------------------------------------------------------------------- |
+| approval         | object \\| null  | `null` when the existing allowance already covers `amount`; otherwise the approval transaction to submit |
+| approval.to      | string          | Transaction target — the ERC20 token contract (`tokenAddress`)                    |
+| approval.data    | string          | Encoded `approve(spender, amount)` calldata                                       |
+| approval.value   | string          | Native value to send — always `"0"`                                               |
+| approval.spender | string          | The Permit2 contract being approved (canonical PCS Permit2)                       |
+
+</details>
+
+<Callout type="info">
+**Scope:** only the canonical PCS Permit2 (`0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768`) is checked — the Binance Wallet Permit2 override is out of scope, since the request carries no order/reactor type to disambiguate. The returned `amount` here approves exactly the requested amount; if you prefer a one-time unlimited approval, use the `type(uint256).max` `forceApprove` above instead.
+</Callout>
+
+#### Error responses
+
+Errors return a JSON body of shape `{ "errorCode": "<CODE>", "detail"?: "<message>" }`.
+
+| errorCode            | HTTP | Cause                                                                                                          |
+| -------------------- | ---- | ---------------------------------------------------------------------------------------------------------------- |
+| (Zod `issues` array) | 400  | Body validation failed — invalid `tokenAddress` / `userAddress`, native (zero) address, non-digit or non-positive `amount`, or unsupported `chainId` |
+| `INTERNAL_ERROR`     | 500  | No Permit2 or RPC client configured for `chainId`, or the on-chain `allowance` read failed. `detail` carries the message |
+
+### Submit order
+
+```
+POST https://sgp1.test.x.pancakeswap.com/order-handler/order
+```
+
+Parameters:
+
+| Name               | Values                     | Description                                                                                        |
+| ------------------ | -------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `strictFirmQuote`  | `true` \\| `false` (default `false`) | If `true`, the firm quote is used more strictly and can result in a `QUOTE_EXPIRED` error if the firm quote is outside the order slippage. If `false`, the best possible order for the user is sent to market makers. Use `true` if you wish to exit early and try again, or `false` to hope it fills. |
+
+Request body:
+
+```json
+{
+  "encodedOrder": "0x0...",
+  "signature": "0x0...",
+  "chainId": 56,
+  "quoteId": "uniqueQuoteId123"
+}
+```
+
+<details>
+<summary>Request fields</summary>
+
+| Field        | Type   | Required | Description                                                                                     |
+| ------------ | ------ | -------- | ------------------------------------------------------------------------------------------------- |
+| encodedOrder | string | ✅        | ABI-encoded order bytes from the `/get-price` response. Hex, up to 8000 chars                     |
+| signature    | string | ✅        | EIP-712 Permit2 signature over the order digest. Hex, 130–400 chars                               |
+| chainId      | number | ✅        | Network ID. Must be a supported chain (e.g. 1, 56, 42161)                                         |
+| quoteId      | string | ❌        | Quote identifier from the `/get-price` response. Required when the order was sourced from an RFQ quote; optional otherwise. 1–50 chars |
+
+</details>
+
+#### Response
+
+```json
+{ "hash": "0x..." }
+```
+
+Returns HTTP `201 Created` on success. The hash is the unique order ID per chain, included in the on-chain `Fill` event and usable with `GET /order/:chainId/:hash` to check status.
+
+<details>
+<summary>Response fields</summary>
+
+| Field | Type   | Description                                                                       |
+| ----- | ------ | ----------------------------------------------------------------------------------- |
+| hash  | string | 0x-prefixed 32-byte order hash (Keccak-256 digest). Unique identifier for the order on this chain |
+
+</details>
+
+### Error responses
+
+Errors return a JSON body of shape `{ "errorCode": "<CODE>", "detail"?: "<message>" }`.
+
+| errorCode               | HTTP | Cause                                                                                                       |
+| ----------------------- | ---- | ------------------------------------------------------------------------------------------------------------- |
+| `ORDER_PARSE_FAIL`      | 400  | `encodedOrder` could not be decoded — corrupted bytes or wrong shape                                          |
+| `INVALID_ORDER`         | 400  | Order failed validation. `detail` carries the specific reason. Common causes: structural check failed, Permit2/EIP-712 signature does not match the swapper, on-chain reactor pre-flight rejected the order (nonce already consumed, deadline expired, additional-validation contract reverted), cached quote no longer matches the order, missing `quoteId` when the order references one, or RFQ market maker returned an unusable non-network response |
+| `QUOTE_EXPIRED`         | 400  | Firm RFQ response from the market maker fell outside the user-signed slippage envelope — decay cannot reach the firm price. The order is rejected and the swapper must request a fresh quote from `/get-price` |
+| `TOO_MANY_OPEN_ORDERS`  | 403  | Swapper already has 100 unfilled orders. Settle or cancel some before submitting more                        |
+| `CHAIN_NOT_SUPPORTED`   | 500  | Server has no on-chain validation configuration for the requested `chainId`                                  |
+| `INTERNAL_ERROR`        | 500  | Server-side fault: per-swapper lock acquisition failed, market maker filler address missing, cosigner-data build failed, or persistence threw. `detail` carries the message |
+
+## Confirm order
+
+The reactor emits an event once the order is filled:
+
+```solidity
+event Fill(bytes32 indexed orderHash, address indexed filler, address indexed swapper, uint256 nonce);
+```
+
+Check the order status:
+
+```
+GET https://sgp1.test.x.pancakeswap.com/order-handler/order/:chainId/:hash
+```
+
+Response:
+
+```json
+{
+  "order": {
+    "type": "EXCLUSIVE_DUTCH_ORDER",
+    "encodeOrder": "0x0000...",
+    "signature": "0x...",
+    "nonce": "1",
+    "hash": "0x...",
+    "chainId": 56,
+    "status": "FILLED",
+    "offerer": "0x...",
+    "input": {
+      "token": "0x...",
+      "startAmount": "10000000000000000",
+      "endAmount": "50000000000000000"
+    },
+    "outputs": [
+      {
+        "token": "0x...",
+        "startAmount": "10000000000000000",
+        "endAmount": "10000000000000000",
+        "takingAmount": null,
+        "recipient": "0x..."
+      }
+    ],
+    "reactor": "0xcfe2a565072f85381775eb12644d297bf0f66773",
+    "deadline": "2026-06-22T15:30:00.000Z",
+    "decayStartTime": "2026-06-22T14:30:00.000Z",
+    "decayEndTime": "2026-06-22T15:00:00.000Z",
+    "filler": "0x...",
+    "exclusiveFiller": "0x...",
+    "exclusivityOverrideBps": "100",
+    "quoteId": null,
+    "transactionHash": "0x...",
+    "blockNumber": "12345678",
+    "createdAt": "2026-06-22T14:00:00.000Z",
+    "updatedAt": "2026-06-22T14:05:00.000Z"
+  }
+}
+```
+
+Status values: `OPEN`, `FILLED`, `EXPIRED`, `CANCELLED`.
+
+## Frontend SDK
+
+[@pancakeswap/pcsx-sdk on npm](https://www.npmjs.com/package/@pancakeswap/pcsx-sdk) — see also the [pcsx-sdk reference](/sdks/pcsx-sdk).
