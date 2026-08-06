@@ -1,0 +1,97 @@
+import { Callout } from 'vocs/components'
+
+# Overview
+
+PancakeSwap X (PCSX) is an intent-based swap protocol. Users sign an off-chain order, and market makers (fillers) compete to execute it on-chain through a Dutch auction.
+
+Pick the path that matches your integration:
+
+- **Distributor** (wallets, DEX aggregators, frontends) → [Swap Integration](/contracts/pcsx/swap-integration)
+- **Market maker** (RFQ, executor contract) → [Market Maker Integration](/contracts/pcsx/market-maker-integration)
+- **General reference** (contract addresses) → [Addresses](/contracts/pcsx/addresses)
+
+## Simple flow of PCSX
+
+1. The Filler responds to RFQ requests from the PCSX Order Price API.
+2. The PCSX Order Price API replies to the Swapper with the best order quote.
+3. The Swapper approves Permit2 to move their funds.
+4. The Swapper signs the order, including the Permit2 signature, and submits it to the PCSX Order Handler API.
+5. The Filler receives the order over the RFQ interface, checks that the order is correct and profitable, and submits it to the Filler contract (Executor).
+6. The Executor calls the Router's typed by-type entry point `executeByTypeWithCallback(reactorType, order, callbackData)` (selector-stable) with the order info.
+7. The Router checks the order info and the signature, and transfers the input token from the Swapper to the Executor. (PCSX does not accept native token as input.)
+8. The Router then calls the Executor's `reactorCallback` and the Executor performs its swap logic.
+9. The Executor should allow the Router to transfer the output token from the Executor to the Router (or transfer the native token to the Router at the end of the swap logic).
+10. The Router transfers the output tokens from the Executor to itself, checks that the output amount is correct, and transfers the output token to the corresponding recipients.
+
+## Exclusivity
+
+| Order Time                                     | Person eligible to fill                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| User signs the order → `decayStartTime`        | Exclusive filler only (or a filler willing to pay the `exclusivityOverrideBps` penalty) |
+| `decayStartTime` → `decayEndTime` (decay starts) | Anyone can fill                                                                    |
+| `decayEndTime` → `deadline` (decay stops)      | Anyone can fill                                                                     |
+
+## Native token support
+
+PCSX only supports the wrapped native token as input. When a user swaps from a native token to any token, the PancakeSwap frontend wraps the native token, gets a quote on the wrapped native token, and sends the token to the PCSX contracts.
+
+To maximise the gain, we suggest **all market makers support both native token and wrapped native token pairs**.
+
+## What's new: MultiReactor Router + V4Dutch
+
+**One Router address per wallet family now fills every order type.** PCSX is migrating from per-version reactor addresses (a separate address for each of ExclusiveDutch / V3Dutch / V4Dutch) to a single stable **MultiReactor Router** per family. The Router fills all current and future order types, and its address never changes across upgrades or when new types are added.
+
+Because one address serves several order types, **the address no longer tells you the order type**. Resolve the type by decoding the order, and select the on-chain function for that type.
+
+### How fillers call the Router
+
+- **Preferred — by type:** `executeByType(reactorType, order)` (plus `…WithCallback` / `executeBatchByType` / `…BatchWithCallback`). The function **selector is identical for every order type** (`executeByType` = `0xe65a593b`), so a contract that pins a selector reaches future order types with no redeploy.
+- **Alternative — type-prefixed:** `executeExclusiveDutch` / `executeV3Dutch` / `executeV4Dutch` (+ callback / batch variants).
+- Plain `execute` / `quote` are **disabled** and revert `UseTypedExecute()`. Quoting stays typed (there is no by-type quote) via the `MultiReactorOrderQuoter`.
+
+`reactorType` is append-only: `0` = ExclusiveDutch, `1` = V3Dutch, `2` = V4Dutch.
+
+### New order type — V4Dutch (`reactorType` 2)
+
+V4Dutch is a superset of V3Dutch: the Dutch auction / pricing model, cosigner flow, and Permit2 usage are identical. The only structural difference is that the packed decay-curve block fields widen from **16 to 32 bits**, enabling much longer-expiry orders (decay over days or weeks — for example, 30-day limit orders). Its EIP-712 witness is `V4DutchOrder`.
+
+### Rollout
+
+All chains, phased. Legacy standalone reactors keep working for orders already signed against them, so **in-flight orders are unaffected**. New orders carry the Router address once each chain cuts over.
+
+### What changes for you
+
+- **Distributors — nothing.** `/get-price` returns a ready-to-sign `encodedOrder` + `permitData` for every version; sign and submit as usual. Use `@pancakeswap/pcsx-sdk@1.5.0`, which parses V4Dutch and decodes router orders.
+- **Market makers — resolve type + fill by-type.** Decode the order to get `(router, type)`, approve output tokens to the Router once per family, and fill with `executeByType`. See [Market Maker Integration](/contracts/pcsx/market-maker-integration). One Router approval covers all order types.
+
+Two rules for handling types safely:
+
+1. **Identify the order type by decoding the order** (`decodeOrder` from `@pancakeswap/pcsx-sdk`), never by the reactor address (one address now serves all types) and never by the order's shape. Treat an unknown type as unsupported and fail closed.
+2. **Type mix-ups fail safely.** Because each type has a distinct EIP-712 witness, a V3-signed order can never fill as V4 (or vice versa) — it reverts at signature verification. An unknown `reactorType` reverts `UnknownReactorType(uint16)`.
+
+## Contract addresses
+
+See [Addresses](/contracts/pcsx/addresses) for the MultiReactor Router, Quoter, and Permit2 addresses per chain and family, plus the legacy standalone reactors.
+
+## Rate limits & API keys
+
+Requests to the PCSX HTTP APIs (Order Price and Order Handler) are rate-limited at the gateway, on both the test host (`sgp1.test.x.pancakeswap.com`) and the production host (`x.pancakeswap.com`).
+
+| Tier                    | Limit                            | Bucketed by |
+| ----------------------- | -------------------------------- | ----------- |
+| Anonymous (no API key)  | 15 req/s (short bursts up to 30) | Client IP   |
+| Integrator API key      | 10,000 req/s                     | Integrator  |
+
+Anonymous traffic is limited **per client IP**, so integrators behind a shared egress IP share the same budget. Exceeding the limit returns **HTTP `429 Too Many Requests`** — back off and retry (a short exponential backoff is recommended).
+
+### Getting an API key
+
+If your integration needs more than the anonymous limit, request an integrator API key from the PancakeSwap X team. Send it on every request in the `X-API-Key` header:
+
+```
+X-API-Key: <your-integrator-key>
+```
+
+<Callout type="info">
+The key is a **quota token**, not an authentication credential — it raises your rate limit but does not grant access to any additional endpoint or data. Keep it confidential like any API key, and contact the PancakeSwap X team to rotate it if it leaks.
+</Callout>

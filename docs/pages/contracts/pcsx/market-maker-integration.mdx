@@ -1,0 +1,428 @@
+import { Callout } from 'vocs/components'
+
+# Market Maker Integration
+
+PCSX uses an RFQ (request-for-quote) flow for market makers to provide liquidity. PancakeSwap calls your endpoint on demand and you respond with a quote or a decline — no persistent connection is required.
+
+<Callout type="info">
+**Upgrading from V3 → V4?** The migration is: decode → resolve router + type → approve once per family → fill by-type. See [Fill via the MultiReactor Router](#fill-via-the-multireactor-router) below.
+</Callout>
+
+## RFQ integration
+
+The RFQ flow is a stateless HTTP integration and has three phases:
+
+1. **Indicative quote** — PancakeSwap broadcasts quote requests to all MMs in parallel (~500 ms deadline).
+2. **Firm fill** — When a user accepts a quote, PancakeSwap notifies the winning MM with signed order details; that MM has an exclusivity window to fill.
+3. **Dutch auction** — Once the exclusivity window expires, the order becomes open to all MMs at a decaying price.
+
+### Onboarding
+
+Contact the PancakeSwap X team to register your MM. You'll need to provide:
+
+| Field                          | Description                                                                       |
+| ------------------------------ | ----------------------------------------------------------------------------------- |
+| `httpUrl`                      | Your JSON-RPC 2.0 endpoint URL (e.g. `https://api.yourmm.com/rfq`, any route)        |
+| `httpApiKey`                   | Optional shared secret for request authentication, set via the `x-mm-secret` header  |
+| Source IP (PCS RFQ requester)  | If you firewall / IP-allowlist inbound requests, ask the PancakeSwap X team for the current requester IP list and allowlist them |
+| `address` (per chain)          | Your on-chain filler wallet address                                                  |
+| `supportedTokens` (per chain)  | Token addresses you're willing to quote                                              |
+
+### Implement a JSON-RPC 2.0 endpoint
+
+Your endpoint must speak **JSON-RPC 2.0** and handle three methods. You can host this at any route — the URL is whatever you register as `httpUrl` during onboarding.
+
+#### `rfq_requestQuote` — quote request
+
+PancakeSwap sends this when a user requests a price. You have **500 ms** to respond. No response is treated as a decline — respond explicitly to keep latency low for the end user.
+
+**Incoming request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "uuid",
+  "method": "rfq_requestQuote",
+  "params": [{
+    "tokenInChainId": 42161,
+    "tokenIn": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+    "tokenOut": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+    "tokenInAmount": "1000000",
+    "swapper": "0x...",
+    "requestId": "uuid"
+  }]
+}
+```
+
+**Request params** (`params[0]`):
+
+| Field          | Type         | Required    | Description                                                                     |
+| -------------- | ------------ | ----------- | --------------------------------------------------------------------------------- |
+| tokenInChainId | number       | ✅           | Chain of the input token (e.g. 1, 56, 42161). Cross-chain not yet supported.      |
+| tokenIn        | string       | ✅           | Address of the token being sold.                                                  |
+| tokenOut       | string       | ✅           | Address of the token being bought.                                                |
+| tokenInAmount  | string (wei) | conditional | Set for **EXACT_INPUT**. Mutually exclusive with `tokenOutAmount` — exactly one must be present. |
+| tokenOutAmount | string (wei) | conditional | Set for **EXACT_OUTPUT**. Mutually exclusive with `tokenInAmount` — exactly one must be present. |
+| swapper        | string       | ❌           | Swapper wallet address. Schema-optional; may be absent.                           |
+| requestId      | string       | ✅           | Correlates the request with the response (non-empty).                             |
+
+A request that sets both `tokenInAmount` and `tokenOutAmount`, or neither, is rejected before it reaches the MM.
+
+**Response — accept:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "uuid",
+  "result": {
+    "quoteId": "your-unique-quote-id",
+    "tokenInAmount": "1000000",
+    "tokenOutAmount": "998500",
+    "expiry": 1743000000
+  }
+}
+```
+
+**Response — decline:**
+
+Return a decline when you are unwilling or unable to fill. Common reasons: unsupported token pair, amount out of range, insufficient inventory, risk limits reached, token/counterparty restrictions.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "uuid",
+  "result": {
+    "declined": true,
+    "reason": "unsupported pair"
+  }
+}
+```
+
+#### `rfq_quoteAccepted` — firm fill notification
+
+Fired when a user signs and submits the order. You must execute the fill on-chain.
+
+**Incoming request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "uuid",
+  "method": "rfq_quoteAccepted",
+  "params": [{
+    "quoteId": "your-unique-quote-id",
+    "orderHash": "0x...",
+    "encodedOrder": "0x...",
+    "signature": "0x...",
+    "chainId": 42161,
+    "offerer": "0x...",
+    "rfqVersion": "v4"
+  }]
+}
+```
+
+For V3 **and V4** orders, `encodedOrder` is the full post-cosigned `V3DutchOrder` / `V4DutchOrder` ABI encoding (cosignature embedded); `signature` remains the user's Permit2 signature. The `rfqVersion` field (`v1` / `v3` / `v4`) states the order version directly — `v1` = ExclusiveDutch (`reactorType` 0), `v3` = V3Dutch (1), `v4` = V4Dutch (2).
+
+Respond with `accepted: true` to acknowledge receipt. The fill itself happens asynchronously. If you miss the exclusivity window, the order decays and becomes open to all MMs.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "uuid",
+  "result": { "accepted": true }
+}
+```
+
+#### `rfq_orderOpen` — Dutch auction notification
+
+Fired at order creation to all registered MMs **except** the exclusive filler, for the tokens and chain of the order. Gives non-exclusive MMs advance notice to prepare.
+
+**Incoming request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "uuid",
+  "method": "rfq_orderOpen",
+  "params": [{
+    "orderHash": "0x...",
+    "encodedOrder": "0x...",
+    "signature": "0x...",
+    "chainId": 42161,
+    "rfqVersion": "v4",
+    "offerer": "0x...",
+    "exclusiveFiller": "0x...",
+    "decayStartTime": 1743000000
+  }]
+}
+```
+
+**Request params** (`params[0]`):
+
+| Field           | Type   | Required    | Description                                                                     |
+| --------------- | ------ | ----------- | --------------------------------------------------------------------------------- |
+| orderHash       | string | ✅           | Order hash (non-empty).                                                           |
+| encodedOrder    | string | ✅           | ABI-encoded order bytes. V3 / V4: full `V3DutchOrder` / `V4DutchOrder` encoding incl. `cosignerData` + cosignature. |
+| signature       | string | ✅           | User's Permit2 signature.                                                         |
+| chainId         | number | ✅           | Chain ID (positive integer).                                                      |
+| rfqVersion      | string | ✅           | Order version: `v1` (ExclusiveDutch), `v3` (V3Dutch), or `v4` (V4Dutch) — maps to `reactorType` 0 / 1 / 2. |
+| offerer         | string | ✅           | Swapper address.                                                                  |
+| exclusiveFiller | string | ✅           | Filler with exclusive rights until the window ends.                               |
+| decayStartTime  | number | conditional | **V1 only** — unix seconds when exclusivity ends.                                 |
+| decayStartBlock | number | conditional | **V3 / V4** — block number when exclusivity ends.                                 |
+
+`decayStartTime` (v1, unix seconds) or `decayStartBlock` (v3 and v4, block number) tells you when the order becomes open. The `rfqVersion` field states the version directly — v3 and v4 are both block-based and structurally similar, so read `rfqVersion` (or decode the order) rather than inferring the type from field presence or the reactor address.
+
+Respond with `received: true`. Do **not** attempt to fill before `decayStartTime` — the on-chain reactor will reject the transaction or apply an override surcharge.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "uuid",
+  "result": { "received": true }
+}
+```
+
+<Callout type="warning">
+This notification is fire-and-forget with a 1 s timeout. Use `GET /orders?orderStatus=OPEN&chainId=<id>` as a fallback to catch any missed orders.
+</Callout>
+
+### Two strategies for handling an open order
+
+#### Option 1 — Wait for the Dutch auction (normal path)
+
+After `decayStartTime`, the output amount walks down from the exclusive filler's quoted price toward the AMM floor over the period `decayStartTime → decayEndTime`. Decide when to fill based on inventory and edge:
+
+- **Fill early in the decay window** → better output price for the user, but you're racing every other non-exclusive MM watching the same order.
+- **Wait further into the decay** → less competition, worse price (closer to the AMM floor), higher chance of winning the fill but thinner margin.
+
+You can model this exactly like a Dutch auction: pick the timestamp where your expected `cost-to-fill < decayed-output-amount`, and submit then.
+
+#### Option 2 — Snipe before `decayStartTime` by paying the override
+
+You're **not blocked** from filling during the exclusivity window — the order encodes an `exclusivityOverrideBps` surcharge that's added to the required output if a non-exclusive filler executes early. If you can absorb the surcharge and still be profitable, you can take the fill from the exclusive MM before they execute.
+
+Useful when:
+
+- The exclusive filler is slow or offline and you spot the order first.
+- The market has moved in your favour since the quote was issued, and the override bps is less than the move.
+
+Compute `requiredOutput = baseOutput * (1 + exclusivityOverrideBps / 10_000)` before submitting and make sure your fill still clears that bar.
+
+### Key constraints
+
+| Parameter                  | Value                                                                          |
+| -------------------------- | -------------------------------------------------------------------------------- |
+| Quote timeout              | 500 ms                                                                           |
+| Quote expiry (recommended) | ~30 s from time of quote                                                         |
+| Auth header (if configured)| `x-mm-secret: <api-key>`                                                         |
+| Order type                 | `ExclusiveDutchOrder` / `V3DutchOrder` / `V4DutchOrder` (EIP-712 signed)         |
+| Fill exclusivity           | Only your registered `address` can fill your quoted orders during the exclusivity window |
+| Exclusivity window         | Ends at `decayStartTime` encoded in the order                                    |
+| Override surcharge         | `exclusivityOverrideBps` applied to non-exclusive fillers before `decayStartTime` |
+| Dutch auction period       | `decayStartTime` → `decayEndTime` — output decays to the AMM floor price          |
+| Open fill                  | Any registered MM may fill after `decayStartTime` via `rfq_orderOpen` or polling `GET /orders` |
+| Connection keep-alive      | To reduce request latency the service attempts to keep the connection alive. Default 55 s, overridable with the `keep-alive` response header |
+
+## Fill via the MultiReactor Router
+
+On chains where the Router is live, orders you receive carry the **Router address** as their reactor, and one Router per family fills every order type. Filling is a three-step flow.
+
+### 1. Resolve router + type
+
+Decode the `encodedOrder` (delivered in `rfq_quoteAccepted` / `rfq_orderOpen`) to get both the Router address (→ which family / Permit2) and the order type (→ which function to call). A decode util is available in `@pancakeswap/pcsx-sdk@1.5.0`:
+
+```typescript
+const { reactor, type } = decodeOrder(encodedOrder)
+// reactor -> the Router address (BN / PCS / Robinhood family)
+// type    -> "exclusiveDutch" | "v3Dutch" | "v4Dutch"
+```
+
+Fail closed: if the type is unknown, do **not** fill.
+
+### 2. Approve once per family
+
+Approve your output tokens to the **Router address** once — that single approval covers all order types on that Router (previously one approval per reactor).
+
+### 3. Fill by type (preferred)
+
+Call the by-type entry point with the order's `reactorType`. The selector is **identical for every order type** (`executeByType` = `0xe65a593b`, `executeByTypeWithCallback` = `0x2c089ef5`), so an executor that pins a selector reaches future order types with no redeploy.
+
+| `reactorType` | Order type      | By-type (preferred)         | Type-prefixed (alternative) |
+| ------------- | --------------- | --------------------------- | --------------------------- |
+| `0`           | ExclusiveDutch  | `executeByType(0, order)`   | `executeExclusiveDutch`     |
+| `1`           | V3Dutch         | `executeByType(1, order)`   | `executeV3Dutch`            |
+| `2`           | V4Dutch         | `executeByType(2, order)`   | `executeV4Dutch`            |
+
+Callback / batch variants: `executeByTypeWithCallback`, `executeBatchByType`, `executeBatchByTypeWithCallback` (each batch is single-type). All are `payable`.
+
+- **Quoting** stays typed via the `MultiReactorOrderQuoter` (`quoteExclusiveDutch` / `quoteV3Dutch` / `quoteV4Dutch`); there is no by-type quote.
+- **Cancellation** is unchanged from today's flow (the by-type entry points do not affect it).
+- Plain `execute` / `quote` are **disabled** and revert `UseTypedExecute()`. Wrong type → safe signature-mismatch revert; unknown `reactorType` → `UnknownReactorType(uint16)`.
+
+## Executor contract
+
+Deploy your own executor contract implementing `IReactorCallback`. With the Router, the executor targets a **single Router address per family** instead of many per-version reactors.
+
+### New path — target the Router (preferred)
+
+- Bind / whitelist the **Router address** (one per family) and call its typed by-type entry point from your executor: `Router.executeByTypeWithCallback(reactorType, signedOrder, callbackData)` (or the type-prefixed `execute{Type}WithCallback`).
+- In `reactorCallback(resolvedOrders, callbackData)`, `msg.sender` is the **Router** — approve **`msg.sender`** for output tokens (never a hardcoded address). One approval covers all order types.
+
+### Legacy path — per-reactor whitelist (in-flight orders only)
+
+For orders already signed against the old standalone reactors, the previous model still applies: the executor maintains a **reactor whitelist**; `execute(reactor, signedOrder, callbackData)` / `executeBatch` take the target `reactor` as the first argument and call `reactor.executeWithCallback`; the owner must call `setReactorWhitelisted(reactor, true)` first (else `ReactorNotWhitelisted`). New orders route through the Router path above.
+
+Reference implementations:
+
+- Legacy single-reactor: [SwapRouter02Executor.sol](https://github.com/pancakeswap/pancake-x-contracts/blob/master/src/sample-executors/SwapRouter02Executor.sol)
+- Multi-reactor refactor (legacy whitelist): [SwapRouter02ExecutorMultiRefactor.sol](https://github.com/pancakeswap/pancake-x-contracts/blob/master/src/sample-executors/SwapRouter02ExecutorMultiRefactor.sol)
+
+## Query open orders
+
+List orders for a chain, filler, or swapper. Market makers poll this to discover fillable orders (e.g. open orders during the Dutch-auction window) and to reconcile fills. Results are cursor-paginated.
+
+```
+GET https://sgp1.test.x.pancakeswap.com/order-handler/orders
+```
+
+### Examples
+
+Query open orders exclusive to a filler:
+
+```
+GET https://sgp1.test.x.pancakeswap.com/order-handler/orders?chainId={chainId}&exclusiveFiller={contractAddress}&orderStatus=OPEN&limit=10&cursor={hash}
+```
+
+Query all open orders on a chain:
+
+```
+GET https://sgp1.test.x.pancakeswap.com/order-handler/orders?chainId={chainId}&orderStatus=OPEN&limit=10
+```
+
+### Query parameters
+
+All parameters are optional individually, but they must form one of the valid combinations below.
+
+| Param             | Type    | Default | Description                                                                     |
+| ----------------- | ------- | ------- | --------------------------------------------------------------------------------- |
+| `limit`           | number  | `5`     | Page size. Positive integer, 1–20 (max 20)                                        |
+| `orderStatus`     | string  | -       | One of `OPEN`, `PENDING`, `FILLED`, `EXPIRED`, `CANCELLED`                        |
+| `chainId`         | number  | -       | Supported chain ID (e.g. 1, 56, 42161)                                            |
+| `offerer`         | string  | -       | Swapper address. Combine with `chainId` or `orderStatus`                          |
+| `filler`          | string  | -       | Filler address (who filled / will fill). Combine with `chainId` or `orderStatus`  |
+| `exclusiveFiller` | string  | -       | MM address with exclusive rights. Combine with `chainId` or `orderStatus`         |
+| `orderHash`       | string  | -       | Single 0x order hash (66 chars). Returns just that order; other filters ignored   |
+| `orderHashes`     | string  | -       | Comma-separated list of 0x order hashes. Returns those orders; other filters ignored |
+| `cursor`          | string  | -       | Pagination cursor — the `hash` of the last order from the previous page. That order is skipped; results continue after it |
+| `desc`            | boolean | `false` | Sort by `createdAt`. `false` = oldest first; `true` = newest first                |
+
+### Valid filter combinations
+
+Pass one of these, or the request fails with `500 INTERNAL_ERROR` and detail `Invalid query params on orders`:
+
+- `orderHashes` (alone)
+- `orderHash` (alone)
+- `offerer` + (`chainId` or `orderStatus`)
+- `filler` + (`chainId` or `orderStatus`)
+- `exclusiveFiller` + (`chainId` or `orderStatus`)
+- `chainId` + `orderStatus`
+
+You may add further filters to narrow a query (e.g. `exclusiveFiller` + `chainId` + `orderStatus`). When `orderHash` or `orderHashes` is present it takes precedence and the other filters are ignored.
+
+### Pagination
+
+- Default page size is `5`, maximum `20` (`limit`).
+- Orders are sorted by `createdAt` — ascending by default, descending when `desc=true`.
+- To fetch the next page, take the `hash` of the last order in the current response and pass it as `cursor`. The cursor order itself is skipped, so the next page starts with the following order.
+- There is no `nextCursor` field in the response; when fewer than `limit` orders are returned you have reached the end.
+
+### Response
+
+Returns `200` with an `orders` array. Each order is the stored order minus internal fields.
+
+```json
+{
+  "orders": [
+    {
+      "type": "EXCLUSIVE_DUTCH_ORDER",
+      "encodeOrder": "0x0000...",
+      "signature": "0x...",
+      "nonce": "1",
+      "hash": "0x...",
+      "chainId": 56,
+      "status": "OPEN",
+      "offerer": "0x...",
+      "input": {
+        "token": "0x...",
+        "startAmount": "10000000000000000",
+        "endAmount": "50000000000000000"
+      },
+      "outputs": [
+        {
+          "token": "0x...",
+          "startAmount": "10000000000000000",
+          "endAmount": "10000000000000000",
+          "takingAmount": null,
+          "recipient": "0x..."
+        }
+      ],
+      "reactor": "0xcfe2a565072f85381775eb12644d297bf0f66773",
+      "deadline": "2026-06-22T15:30:00.000Z",
+      "decayStartTime": "2026-06-22T14:30:00.000Z",
+      "decayEndTime": "2026-06-22T15:00:00.000Z",
+      "filler": null,
+      "exclusiveFiller": "0x...",
+      "exclusivityOverrideBps": "100",
+      "quoteId": null,
+      "transactionHash": null,
+      "blockNumber": null,
+      "createdAt": "2026-06-22T14:00:00.000Z",
+      "updatedAt": "2026-06-22T14:00:00.000Z"
+    }
+  ]
+}
+```
+
+<Callout type="info">
+The response field is `encodeOrder` (no "d") — it mirrors the database column name. The internal `id`, `cosig`, and `cosignerData` fields are stripped from responses.
+</Callout>
+
+<details>
+<summary>Response fields</summary>
+
+| Field                  | Type            | Description                                                             |
+| ---------------------- | --------------- | ------------------------------------------------------------------------- |
+| type                   | string          | `EXCLUSIVE_DUTCH_ORDER`, `EXCLUSIVE_DUTCH_ORDER_V3`, `DUTCH_ORDER`, or `LIMIT_ORDER` |
+| encodeOrder            | string          | ABI-encoded order bytes (note the field name — no "d")                    |
+| signature              | string          | User (or cosigned) order signature                                        |
+| nonce                  | string          | Swapper nonce                                                             |
+| hash                   | string          | Unique order hash. Use as the `cursor` value and for status lookup        |
+| chainId                | number          | Chain ID                                                                  |
+| status                 | string          | `OPEN`, `PENDING`, `FILLED`, `EXPIRED`, or `CANCELLED`                    |
+| offerer                | string          | Swapper address                                                           |
+| input                  | object          | `{ token, startAmount, endAmount }` — amounts are stringified uint256     |
+| outputs                | array           | `{ token, startAmount, endAmount, takingAmount?, recipient }` per output  |
+| reactor                | string          | Reactor contract address                                                  |
+| deadline               | string          | Order deadline (ISO-8601)                                                 |
+| decayStartTime         | string or null  | Dutch decay start (ISO-8601)                                              |
+| decayEndTime           | string or null  | Dutch decay end (ISO-8601)                                                |
+| filler                 | string or null  | Actual filler address once filled                                         |
+| exclusiveFiller        | string or null  | MM address with the exclusivity window                                    |
+| exclusivityOverrideBps | string or null  | Override surcharge in bps (stringified)                                   |
+| quoteId                | string or null  | RFQ quote ID, if the order came from a quote                              |
+| transactionHash        | string or null  | Fill transaction hash once filled                                         |
+| blockNumber            | string or null  | Fill block number once filled                                             |
+| createdAt              | string          | Creation timestamp (ISO-8601)                                             |
+| updatedAt              | string          | Last-update timestamp (ISO-8601)                                          |
+
+</details>
+
+### Error responses
+
+| HTTP  | Body                                                | Cause                                                                     |
+| ----- | --------------------------------------------------- | --------------------------------------------------------------------------- |
+| `400` | Zod `issues` array                                  | Query validation failed — malformed address, hash, or `cursor`; unsupported `chainId`; invalid `orderStatus`; or `limit` outside 1–20 |
+| `500` | `{ "errorCode": "INTERNAL_ERROR", "detail": "..." }` | Invalid filter combination (`detail` = `Invalid query params on orders`) or a server/database fault |
+
+To confirm a fill on-chain, see [Confirm order](/contracts/pcsx/swap-integration#confirm-order) — it documents the reactor's `Fill` event and the `GET /order/:chainId/:hash` status endpoint.
