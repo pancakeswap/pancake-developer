@@ -24,9 +24,22 @@ Contact the PancakeSwap X team to register your MM. You'll need to provide:
 | ------------------------------ | ----------------------------------------------------------------------------------- |
 | `httpUrl`                      | Your JSON-RPC 2.0 endpoint URL (e.g. `https://api.yourmm.com/rfq`, any route)        |
 | `httpApiKey`                   | Optional shared secret for request authentication, set via the `x-mm-secret` header  |
-| Source IP (PCS RFQ requester)  | If you firewall / IP-allowlist inbound requests, ask the PancakeSwap X team for the current requester IP list and allowlist them |
+| Source IP (PCS RFQ requester)  | If you firewall / IP-allowlist inbound requests, allowlist the requester IPs listed below           |
 | `address` (per chain)          | Your on-chain filler wallet address                                                  |
 | `supportedTokens` (per chain)  | Token addresses you're willing to quote                                              |
+
+#### RFQ requester source IPs
+
+PancakeSwap calls your RFQ endpoint from the addresses below. If you IP-allowlist inbound traffic, allow every address for the environment you are integrating against — requests arrive from any of them.
+
+| Environment | Requester IPs                                    |
+| ----------- | ------------------------------------------------ |
+| Test        | `137.184.249.154`                                |
+| Production  | `54.249.247.169`, `16.76.48.16`, `35.73.155.229` |
+
+:::warning
+Confirm the current list with the PancakeSwap X team before you go live. Requester IPs change from time to time, and an outdated allowlist drops quote requests silently — you simply stop receiving RFQs rather than seeing an error.
+:::
 
 ### Implement a JSON-RPC 2.0 endpoint
 
