@@ -470,7 +470,7 @@ Response:
 | Status      | Meaning                                                                                                                       |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `OPEN`      | The order is live and fillable. No fill transaction has been submitted yet.                                                     |
-| `PENDING`   | A fill transaction has been submitted on-chain, but is not yet finalized.                                                       |
+| `PENDING`   | A fill transaction has been submitted on-chain, but is not yet finalized. One-way: an order never returns to `OPEN` once it is `PENDING`.  |
 | `FILLED`    | The fill is confirmed on-chain. `transactionHash` and `blockNumber` are populated, and the reactor has emitted the `Fill` event. |
 | `EXPIRED`   | The order's `deadline` passed without a fill.                                                                                   |
 | `CANCELLED` | The order was cancelled and can no longer be filled.                                                                            |

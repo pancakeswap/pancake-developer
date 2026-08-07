@@ -295,6 +295,10 @@ Reference implementations:
 
 List orders for a chain, filler, or swapper. Market makers poll this to discover fillable orders (e.g. open orders during the Dutch-auction window) and to reconcile fills. Results are cursor-paginated.
 
+:::warning
+**Only `OPEN` orders are contestable.** Treat `PENDING` as off-limits and do not attempt to fill — a fill transaction from another filler is already on-chain for that order. An order never returns to `OPEN` once it is `PENDING`, so it will not become contestable again. Filter on `orderStatus=OPEN` when polling for work; see [Order status values](/contracts/pcsx/swap-integration#order-status-values).
+:::
+
 ```
 GET https://sgp1.test.x.pancakeswap.com/order-handler/orders
 ```
