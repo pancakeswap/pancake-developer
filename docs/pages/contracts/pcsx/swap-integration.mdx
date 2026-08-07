@@ -465,7 +465,19 @@ Response:
 }
 ```
 
-Status values: `OPEN`, `FILLED`, `EXPIRED`, `CANCELLED`.
+### Order status values
+
+| Status      | Meaning                                                                                                                       |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `OPEN`      | The order is live and fillable. No fill transaction has been submitted yet.                                                     |
+| `PENDING`   | A fill transaction has been submitted on-chain, but is not yet finalized. One-way: an order never returns to `OPEN` once it is `PENDING`.  |
+| `FILLED`    | The fill is confirmed on-chain. `transactionHash` and `blockNumber` are populated, and the reactor has emitted the `Fill` event. |
+| `EXPIRED`   | The order's `deadline` passed without a fill.                                                                                   |
+| `CANCELLED` | The order was cancelled and can no longer be filled.                                                                            |
+
+:::warning
+`PENDING` is **not** a terminal state and **not** a confirmation that the swap succeeded — it only means a fill transaction is in flight. Keep polling until the order reaches `FILLED`, and only then treat the swap as complete (or credit the user).
+:::
 
 ## Frontend SDK
 

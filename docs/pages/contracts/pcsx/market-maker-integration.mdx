@@ -295,6 +295,10 @@ Reference implementations:
 
 List orders for a chain, filler, or swapper. Market makers poll this to discover fillable orders (e.g. open orders during the Dutch-auction window) and to reconcile fills. Results are cursor-paginated.
 
+:::warning
+**Only `OPEN` orders are contestable.** Treat `PENDING` as off-limits and do not attempt to fill — a fill transaction from another filler is already on-chain for that order. An order never returns to `OPEN` once it is `PENDING`, so it will not become contestable again. Filter on `orderStatus=OPEN` when polling for work; see [Order status values](/contracts/pcsx/swap-integration#order-status-values).
+:::
+
 ```
 GET https://sgp1.test.x.pancakeswap.com/order-handler/orders
 ```
@@ -320,7 +324,7 @@ All parameters are optional individually, but they must form one of the valid co
 | Param             | Type    | Default | Description                                                                     |
 | ----------------- | ------- | ------- | --------------------------------------------------------------------------------- |
 | `limit`           | number  | `5`     | Page size. Positive integer, 1–20 (max 20)                                        |
-| `orderStatus`     | string  | -       | One of `OPEN`, `PENDING`, `FILLED`, `EXPIRED`, `CANCELLED`                        |
+| `orderStatus`     | string  | -       | One of `OPEN`, `PENDING`, `FILLED`, `EXPIRED`, `CANCELLED` — see [Order status values](/contracts/pcsx/swap-integration#order-status-values) |
 | `chainId`         | number  | -       | Supported chain ID (e.g. 1, 56, 42161)                                            |
 | `offerer`         | string  | -       | Swapper address. Combine with `chainId` or `orderStatus`                          |
 | `filler`          | string  | -       | Filler address (who filled / will fill). Combine with `chainId` or `orderStatus`  |
@@ -412,7 +416,7 @@ The response field is `encodeOrder` (no "d") — it mirrors the database column 
 | nonce                  | string          | Swapper nonce                                                             |
 | hash                   | string          | Unique order hash. Use as the `cursor` value and for status lookup        |
 | chainId                | number          | Chain ID                                                                  |
-| status                 | string          | `OPEN`, `PENDING`, `FILLED`, `EXPIRED`, or `CANCELLED`                    |
+| status                 | string          | `OPEN`, `PENDING`, `FILLED`, `EXPIRED`, or `CANCELLED` — see [Order status values](/contracts/pcsx/swap-integration#order-status-values). `PENDING` means a fill transaction is on-chain but not yet finalized |
 | offerer                | string          | Swapper address                                                           |
 | input                  | object          | `{ token, startAmount, endAmount }` — amounts are stringified uint256     |
 | outputs                | array           | `{ token, startAmount, endAmount, takingAmount?, recipient }` per output  |
