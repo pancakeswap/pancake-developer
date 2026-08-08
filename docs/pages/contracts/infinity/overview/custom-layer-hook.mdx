@@ -33,10 +33,10 @@ function getHooksRegistrationBitmap() external pure override returns (uint16) {
       afterDonate: false,
 
       // Hook return delta (documented below)
-      beforeSwapReturnsDelta: false,
-      afterSwapReturnsDelta: false,
-      afterAddLiquidityReturnsDelta: false,
-      afterRemoveLiquidityReturnsDelta: false
+      beforeSwapReturnDelta: false,
+      afterSwapReturnDelta: false,
+      afterAddLiquidityReturnDelta: false,
+      afterRemoveLiquidityReturnDelta: false
     })
   );
 }
@@ -72,10 +72,10 @@ function getHooksRegistrationBitmap() external pure override returns (uint16) {
     Permissions({
 
       // The 4 permissions around modifying return delta
-      beforeSwapReturnsDelta: false, // during beforeSwap 
-      afterSwapReturnsDelta: false, // during afterSwap 
-      afterAddLiquidityReturnsDelta: false, // during afterAddLiquidity 
-      afterRemoveLiquidityReturnsDelta: false // during afterRemoveLiquidity
+      beforeSwapReturnDelta: false, // during beforeSwap 
+      afterSwapReturnDelta: false, // during afterSwap 
+      afterAddLiquidityReturnDelta: false, // during afterAddLiquidity 
+      afterRemoveLiquidityReturnDelta: false // during afterRemoveLiquidity
     })
   );
 }
