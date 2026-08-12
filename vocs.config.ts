@@ -436,6 +436,31 @@ export default defineConfig({
           },
         ],
       },
+      {
+        text: "Unified Swap API",
+        items: [
+          {
+            text: "Overview",
+            link: "/apis/unified-swap-api/overview",
+          },
+          {
+            text: "Endpoints",
+            link: "/apis/unified-swap-api/endpoints",
+          },
+          {
+            text: "Errors",
+            link: "/apis/unified-swap-api/errors",
+          },
+          {
+            text: "Response payloads",
+            link: "/apis/unified-swap-api/payloads",
+          },
+          {
+            text: "TypeScript examples",
+            link: "/apis/unified-swap-api/typescript",
+          },
+        ],
+      },
     ],
     "/sdks": [
       {
