@@ -205,23 +205,23 @@ export default defineConfig({
             items: [
               {
                 text: "Overview",
-                link: "/apis/unified-swap-api/overview",
+                link: "/contracts/unified-swap-api/overview",
               },
               {
                 text: "Endpoints",
-                link: "/apis/unified-swap-api/endpoints",
+                link: "/contracts/unified-swap-api/endpoints",
               },
               {
                 text: "Errors",
-                link: "/apis/unified-swap-api/errors",
+                link: "/contracts/unified-swap-api/errors",
               },
               {
                 text: "Response payloads",
-                link: "/apis/unified-swap-api/payloads",
+                link: "/contracts/unified-swap-api/payloads",
               },
               {
                 text: "TypeScript examples",
-                link: "/apis/unified-swap-api/typescript",
+                link: "/contracts/unified-swap-api/typescript",
               },
             ],
           },
@@ -459,31 +459,6 @@ export default defineConfig({
           {
             text: "Subgraph",
             link: "/apis/subgraph",
-          },
-        ],
-      },
-      {
-        text: "Unified Swap API",
-        items: [
-          {
-            text: "Overview",
-            link: "/apis/unified-swap-api/overview",
-          },
-          {
-            text: "Endpoints",
-            link: "/apis/unified-swap-api/endpoints",
-          },
-          {
-            text: "Errors",
-            link: "/apis/unified-swap-api/errors",
-          },
-          {
-            text: "Response payloads",
-            link: "/apis/unified-swap-api/payloads",
-          },
-          {
-            text: "TypeScript examples",
-            link: "/apis/unified-swap-api/typescript",
           },
         ],
       },

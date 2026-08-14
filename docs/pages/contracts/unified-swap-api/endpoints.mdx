@@ -1,0 +1,285 @@
+---
+description: The four Unified Swap API endpoints — quote, calldata, submit and status
+---
+
+# Endpoints
+
+## `GET /v1/quote`
+
+### Parameters
+
+| Parameter | Type | Required | Default | Notes |
+| --- | --- | --- | --- | --- |
+| `chainId` | integer | yes | n/a | Chain to price on |
+| `tokenIn` | address | yes | n/a | Token sold; zero address for native |
+| `tokenOut` | address | yes | n/a | Token bought; zero address for native |
+| `amount` | decimal string | yes | n/a | Smallest unit of `tokenIn` for `exactIn`, of `tokenOut` for `exactOut` |
+| `tradeType` | `exactIn` or `exactOut` | no | `exactIn` | Direction the `amount` applies to |
+| `sources` | `auto`, `agg`, `pcsx` or `agg,pcsx` | no | `auto` | Engines to consult |
+| `recipient` | address | conditional | n/a | Required unless `sources=agg`; also required with `includeCalldata` |
+| `slippageTolerance` | number | no | `0.005` | Fraction, strictly greater than 0 and strictly less than 0.5 |
+| `includeCalldata` | boolean | no | `false` | Return the encoded transaction inline |
+| `maxWaitMs` | integer | no | full budget | Upper bound on how long to wait for engines |
+
+Rejections are returned as `400 INVALID_REQUEST` with a message naming the offending field:
+
+- `amount` that is empty, non-digit, zero, or wider than 256 bits.
+- `tokenIn` or `tokenOut` that is not a 20-byte address, or the two being equal.
+- `tradeType` spelled anything other than `exactIn` or `exactOut`. The `EXACT_INPUT` / `EXACT_OUTPUT` spelling used inside PancakeSwap X is not accepted here.
+- `sources` naming an unknown engine. Only `agg` and `pcsx` are engine names; `aggregator`, `x`, and `amm` are rejected.
+- `slippageTolerance` at or outside the open interval `(0, 0.5)`. Both `0` and `0.5` are refused.
+- `recipient` absent while the selection can reach PancakeSwap X, or absent with `includeCalldata=true`.
+- `tradeType=exactOut` combined with `sources=agg`.
+
+**Why `recipient` is conditional.** A PancakeSwap X quote is a signed order owned by an address, so the engine cannot price one without knowing whose intent it is. The gateway therefore requires `recipient` for any selection that could reach PancakeSwap X, which includes the default `auto`. Under `sources=agg` the parameter is optional, because the aggregator needs a destination only at encoding time which means that you can supply it then, or ask for it up front with `includeCalldata=true`. The value is used as both the order's signer and its output recipient, so it must be the wallet you will sign with. Paying out to a third address is not expressible through this API.
+
+**Why `exactOut` excludes the aggregator.** The aggregator prices `exactIn` only. Requesting `exactOut` with `sources=agg` leaves no engine able to answer, so it is refused at the edge rather than producing an empty race. With `auto`, `pcsx`, or `agg,pcsx`, an `exactOut` request is accepted and the aggregator leg is skipped.
+
+`maxWaitMs` narrows the wait. The gateway clamps the value to its own configured ceiling, so a large number is silently reduced rather than honoured.
+
+### Source selection
+
+| `sources` | Engines consulted | Waiting policy |
+| --- | --- | --- |
+| `auto` (default) | every available engine | optimises for latency |
+| `agg` | aggregator only | full budget |
+| `pcsx` | PancakeSwap X only | full budget |
+| `agg,pcsx` | both | full budget; waits for both |
+
+Naming a single engine is a hard constraint, never a preference. If `sources=pcsx` and PancakeSwap X is unavailable, the response is `503 NO_ENGINE_AVAILABLE`; the aggregator is not substituted.
+
+### Response
+
+```
+GET /v1/quote?chainId=56
+  &tokenIn=0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82
+  &tokenOut=0x55d398326f99059fF775485246999027B3197955
+  &amount=5000000000000000000
+  &recipient=0x1111111111111111111111111111111111111111
+  &slippageTolerance=0.005
+  &sources=agg,pcsx
+```
+
+```json
+{
+  "candidates": [ { "...": "one entry per engine that answered" } ],
+  "best": { "...": "a 1:1 copy of the winning entry" }
+}
+```
+
+The top level carries exactly these two keys. `quoteId` and `expiresAt` live on each candidate rather than being restated at the top, and `best` is a byte-for-byte copy of one element of `candidates`, not a reference and not a reduced projection. Post `best` onward without reaching back into `candidates`.
+
+### Candidate fields
+
+| Field | Type | Presence | Meaning |
+| --- | --- | --- | --- |
+| `chainId` | number | always | Chain this quote was priced on |
+| `quoteId` | string | always | Gateway identifier, prefixed `usq_`; shared by every candidate of one request |
+| `expiresAt` | number | always | Unix seconds after which the gateway refuses this quote |
+| `inputAmount` | string | always | Amount sold, smallest unit of `tokenIn` |
+| `outputAmount` | string | always | Amount bought, smallest unit of `tokenOut` |
+| `recipient` | string | when supplied | A read back of the request parameter; omitted if none was given |
+| `slippageTolerance` | number | always | Fraction this quote was priced with |
+| `gasUseEstimate` | string | aggregator only | Estimated gas units |
+| `gasUseEstimateUsd` | string | aggregator only | Estimated gas cost in USD, scaled by 1e18 |
+| `priceImpactBps` | number | aggregator only | Price impact in basis points |
+| `agg` | object | aggregator only | The aggregator's own quote, verbatim |
+| `pcsx` | object | PancakeSwap X only | The signable order, verbatim |
+| `calldata` | object | when requested | Encoded transaction, aggregator candidates only |
+
+Optional fields are omitted rather than emitted as `null`.
+
+`inputAmount`, `outputAmount`, and the three gas and impact fields are the gateway's normalisation of the underlying payload, and they exist so that two engines with incompatible response shapes can be compared on one axis. They are derived rather than authoritative, i.e. the artefact you sign or send is the `agg` or `pcsx` object.
+
+For a PancakeSwap X candidate, `outputAmount` is the sum of the order's outputs. Gas and price-impact fields are absent because settlement gas is borne by the filler, not the swapper, and the engine does not report an impact figure (it is an RFQ model).
+
+`quoteId` is shared across every candidate of a single request, which ties the legs of one fan-out together. It also means the identifier you send to `/v1/submit` is the one the gateway minted, never the engine's internal identifier, which is visible at `pcsx.quoteId` and is a different string.
+
+### Winner selection
+
+The winner is the quote with the best gross amount for the trade direction:
+
+- `exactIn`: the largest `outputAmount`.
+- `exactOut`: the smallest `inputAmount`.
+
+### Validity window
+
+`expiresAt` is the gateway's own deadline, and it is the one that governs whether `/v1/calldata` and `/v1/submit` accept the quote. Presenting an expired candidate to either endpoint yields `409 QUOTE_EXPIRED` before any upstream call is made.
+
+PancakeSwap X candidates carry a shorter window than aggregator ones, because a signed order has its own on-chain deadline that the gateway will not outlive. That deadline is separate and lives at `pcsx.orderInfo.deadline`. Both must hold: `expiresAt` gates admission to the gateway, `orderInfo.deadline` gates settlement on chain. In practice the order's deadline is the tighter of the two, often by minutes.
+
+There is no renewal endpoint, so expect to re-quote after expiry.
+
+### Inline calldata
+
+`includeCalldata=true` folds the `/v1/calldata` round trip into the quote. It is honoured only when the winner is an aggregator candidate; a PancakeSwap X winner is never encoded, because such an order is signed and submitted rather than sent. When `includeCalldata` is used the parameter `recipient` must be used too.
+
+When honoured, the `calldata` object is attached to `best` and to every aggregator entry in `candidates`, so `best` remains a true copy. When encoding fails, the quote is still served with `calldata` absent: a failure to encode does not become a failure to quote. Callers must therefore treat `best.calldata` as optional even when they asked for it, and fall back to an explicit `POST /v1/calldata`.
+
+## `POST /v1/calldata`
+
+Encodes an aggregator candidate into sendable transaction calldata.
+
+### Request
+
+The body is the candidate itself. Simply post `best` from a quote response directly (assuming agg field is populated).
+
+Four fields are read:
+
+| Field | Required | Role |
+| --- | --- | --- |
+| `agg` | yes | The route to encode |
+| `expiresAt` | yes | Checked against the current time |
+| `recipient` | yes | Destination of the output tokens |
+| `slippageTolerance` | yes | Fraction applied to the minimum received |
+
+The informational keys a quote emits (`chainId`, `quoteId`, `inputAmount`, `outputAmount`, `gasUseEstimate`, `gasUseEstimateUsd`, `priceImpactBps`, and `calldata`) are accepted and discarded. A candidate pastes in unmodified; nothing needs stripping. Naturally stripping the unread fields will yield a lower byte size in your transmission.
+
+Two of the four fields are meant to be edited between the quote and the encode. Rewriting `recipient` redirects the swap's output. Rewriting `slippageTolerance` changes the minimum-received the transaction enforces without re-quoting. Both are honoured as given but still subject to validation.
+
+### Integrity guards
+
+The body is validated before anything is encoded, and each refusal names its cause:
+
+- `agg.tradeType` must be `exactIn`. An `exactOut` payload, or an unrecognised spelling such as `EXACT_INPUT`, is refused at this stage.
+- The `inputAmount` values of `agg.routes` must sum exactly to `agg.inputAmount`. This catches an edited split, a duplicated route, and an edited total, all of which would otherwise encode a transaction that does not match the quoted price.
+- `recipient` must be present and parse as an address.
+- `slippageTolerance` must lie in `(0, 0.5)`.
+- `expiresAt` must be strictly in the future, else `409 QUOTE_EXPIRED`.
+
+### Response
+
+```json
+{
+  "value": "0xde0b6b3a7640000",
+  "calldata": "0x2c57e884000000000000000000000000000000000000000000000000068155a43676e000",
+  "to": "0x40A1Fe393A7F566F27dF6acE18e6773be844dAfc"
+}
+```
+
+The response carries exactly three keys. `calldata` is ABI-encoded call data for the router at `to`, and `value` is the native amount to attach as a hex quantity (`"0x0"` for an ERC-20 sale). Build the transaction as `{ to, data: calldata, value }`, set gas from `gasUseEstimate` plus your own headroom, and send it through your own RPC.
+
+`to` is normally the same address as `agg.aggregatorAddress`. Treat `to` as authoritative.
+
+Before sending, ensure the swapper has approved `to` to spend `agg.inputAmount` of `agg.srcToken`. The API performs no allowance check, and an unapproved sale will likely revert on chain.
+
+## `POST /v1/submit`
+
+Submits a signed PancakeSwap X order.
+
+### Request
+
+The body is the PancakeSwap X candidate with a `signature` field set on it:
+
+```json
+{
+  "chainId": 56,
+  "quoteId": "usq_723faa05a80d4fc9a75bb8efdb94db34",
+  "pcsx": { "...": "the candidate's pcsx payload, unmodified" },
+  "signature": "0xabab…"
+}
+```
+
+Three fields are read: `chainId`, `quoteId`, and `pcsx` (specifically `pcsx.encodedOrder`). `expiresAt`, `inputAmount`, `outputAmount`, `recipient`, and `slippageTolerance` are accepted and discarded, so a served candidate pastes in as-is.
+
+`quoteId` is mandatory here even though the underlying engine treats its own equivalent as optional. It must be the `usq_`-prefixed identifier from the quote response; absent, null, or empty yields `400 INVALID_REQUEST` naming the field.
+
+`signature` is a 65-byte secp256k1 signature in hex. The `0x` prefix is optional and is normalised on the way through. Malformed hex (odd length, non-hex characters, a doubled prefix) is `400 INVALID_REQUEST` before any upstream call; a well-formed hex string of the wrong length passes that check and is refused during submission as `INVALID_ORDER_BODY`.
+
+`pcsx.encodedOrder` is relayed byte-exact. Do not re-encode or reorder the payload: the order hash, and therefore the validity of your signature, depends on those exact bytes.
+
+### Query parameters
+
+| Parameter | Type | Default | Effect |
+| --- | --- | --- | --- |
+| `strictFirmQuote` | boolean | false | Enforce strict firm-quote binding on cosigned orders |
+
+`strictFirmQuote` applies to cosigned (`v3`, `v4`) orders only, and `v1` orders ignore it. When absent or `false`, a firm quote that comes back worse than the indicative price falls back to the amounts you signed. When `true`, a worse-but-within-envelope quote binds at the firm price, and one outside the signed slippage envelope is rejected as `QUOTE_EXPIRED` rather than silently filled at the indicative price. Set it when you would rather re-quote than accept a price you did not see.
+
+### Response
+
+```json
+{ "hash": "0x0d00cf2ac94a0f8a51de7005d0ff49739a4b3e7d89b600939b86946b2fa963ff" }
+```
+
+The single key is the order hash, which is the handle for `/v1/status`. It equals `pcsx.orderHash` from the quote, so it can be predicted before submission and used to reconcile a submission whose response was lost.
+
+A successful submit means the order is persisted and advertised to fillers. It does not mean the swap has happened. Poll `/v1/status` until the order reaches a terminal state.
+
+### Submission-specific failures
+
+| Code | HTTP | Cause |
+| --- | --- | --- |
+| `QUOTE_NOT_FOUND` | 404 | No quote is held for that `quoteId` |
+| `QUOTE_EXPIRED` | 409 | The quote's own window closed before submission |
+| `NOT_A_PCSX_QUOTE` | 400 | The `quoteId` belongs to an aggregator quote, which cannot become an order |
+| `STORE_UNAVAILABLE` | 503 | The gateway's quote store is unreachable, so the identifier cannot be resolved |
+
+`QUOTE_NOT_FOUND` and `QUOTE_EXPIRED` describe different states. The first means the identifier was never recorded or has already aged out of the store; the second means the record exists and has lapsed. Both are resolved by re-quoting, and neither is retryable as-is.
+
+## `GET /v1/status/{chainId}/{orderHash}`
+
+Reads the state of a submitted PancakeSwap X order. Aggregator swaps are ordinary transactions and are tracked through your own RPC, not here.
+
+`orderHash` must be 64 hex digits, `0x` prefix optional. Anything else is `400 INVALID_REQUEST` and is refused.
+
+### Response
+
+```json
+{
+  "status": "FILLED",
+  "orderHash": "0x0d00cf2ac94a0f8a51de7005d0ff49739a4b3e7d89b600939b86946b2fa963ff",
+  "chainId": 42161,
+  "offerer": "0x45f2a9b4c55dd94ec601746b7ea187d81b91215d",
+  "input": {
+    "token": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+    "startAmount": "9328194992407255580000",
+    "endAmount": "9328194992407255580000"
+  },
+  "outputs": [
+    {
+      "token": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "startAmount": "727412056",
+      "endAmount": "723774995",
+      "takingAmount": "727381748",
+      "recipient": "0x45f2a9b4c55dd94ec601746b7ea187d81b91215d"
+    }
+  ],
+  "deadline": 1785330199,
+  "decayStartTime": 1785330067,
+  "decayEndTime": 1785330187,
+  "filler": "0xf00000003d31d4ab730a8e269ae547f8f76996ba",
+  "transactionHash": "0x450908eaacb747e5fc08dea3aca596a682a1a6433549166ebfb2b3442cda30d4",
+  "blockNumber": 488954021,
+  "createdAt": 1785330014,
+  "updatedAt": 1785331040
+}
+```
+
+| Field | Presence | Meaning |
+| --- | --- | --- |
+| `status` | always | See the state table below |
+| `orderHash` | always | Read-back of the path parameter, lower-case |
+| `chainId` | always | Chain the order was submitted on |
+| `offerer` | always | Address that signed the order |
+| `input` | always | Token sold with its decay bounds |
+| `outputs` | always | One entry per output; `takingAmount` is the amount actually taken, present once known |
+| `deadline` | always | Unix seconds after which the order can no longer be filled |
+| `decayStartTime`, `decayEndTime` | time-anchored orders | Bounds of the Dutch decay window; absent on block-anchored (`v3`, `v4`) orders |
+| `filler` | once known | Address that filled or is filling |
+| `transactionHash`, `blockNumber` | once filled | Settlement transaction |
+| `createdAt`, `updatedAt` | always | Unix seconds |
+
+### States
+
+| `status` | Terminal | Meaning |
+| --- | --- | --- |
+| `OPEN` | no | Fillable; no fill in flight |
+| `PENDING` | no | A fill is in flight |
+| `FILLED` | yes | Settled; `transactionHash` and `blockNumber` are populated |
+| `EXPIRED` | yes | The deadline passed unfilled |
+| `CANCELLED` | yes | Cancelled before fill |
+
+Stop polling on any terminal state. A reasonable cadence is one request every one to two seconds from submission until `deadline` plus a small margin; an order that is still `OPEN` past its deadline will transition to `EXPIRED` shortly after.
+
+`404 ORDER_NOT_FOUND` is returned for a well-formed hash with no matching order. Immediately after a submit this is normally a propagation race rather than a lost order; retry briefly before treating it as final.
