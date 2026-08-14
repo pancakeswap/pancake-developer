@@ -1,0 +1,179 @@
+---
+description: Quickstart, authentication, scope, conventions and lifecycle for the Unified Swap API
+---
+
+# Unified Swap API
+
+The Unified Swap API is one HTTP surface over the PancakeSwap aggregator and PancakeSwap X.
+
+- [Endpoints](/contracts/unified-swap-api/endpoints)
+- [Errors](/contracts/unified-swap-api/errors)
+- [Response payloads](/contracts/unified-swap-api/payloads)
+- [TypeScript examples](/contracts/unified-swap-api/typescript)
+
+## Quickstart
+
+Base URL: `https://swap.pancakeswap.com`.
+
+Note: **If your integration contact issued you an API key, send it as `X-API-KEY` on every request (see [Authentication](#authentication-access-and-rate-limits)).**
+
+A swap is one request followed by one of two branches:
+
+1. `GET /v1/quote` computes a quote for the requested swap and returns `best`, the winning quote.
+2. If `best` carries an `agg` key, post it to `/v1/calldata` and send the transaction that is returned.
+3. If `best` carries a `pcsx` key, sign `best.pcsx.permitData`, post the signed candidate to `/v1/submit`, then poll `/v1/status` until the order settles.
+
+**Example:** Selling 5 CAKE for USDT on BNB Chain:
+
+```bash
+curl -G 'https://swap.pancakeswap.com/v1/quote' \
+  -d chainId=56 \
+  -d tokenIn=0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82 \
+  -d tokenOut=0x55d398326f99059fF775485246999027B3197955 \
+  -d amount=5000000000000000000 \
+  -d recipient=0x1111111111111111111111111111111111111111 \
+  -d slippageTolerance=0.005
+```
+
+```json
+{
+  "candidates": [ { "…": "one entry per engine" } ],
+  "best": {
+    "chainId": 56,
+    "quoteId": "usq_bd1c270470c74d0abd7e98cac7a05ac7",
+    "expiresAt": 1786092637,
+    "inputAmount": "5000000000000000000",
+    "outputAmount": "6971806345008198576",
+    "recipient": "0x1111111111111111111111111111111111111111",
+    "slippageTolerance": 0.005,
+    "gasUseEstimate": "624000",
+    "priceImpactBps": 8,
+    "agg": { "srcToken": "…", "dstToken": "…", "routes": [ "…" ], "…": "…" }
+  }
+}
+```
+
+```typescript
+const BASE = 'https://swap.pancakeswap.com'
+const auth = process.env.PCS_API_KEY ? { 'X-API-KEY': process.env.PCS_API_KEY } : {}
+
+const params = new URLSearchParams({
+  chainId: '56',
+  tokenIn: '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82',
+  tokenOut: '0x55d398326f99059fF775485246999027B3197955',
+  amount: '5000000000000000000',
+  recipient: account.address,
+  slippageTolerance: '0.005',
+})
+
+const { best } = await fetch(`${BASE}/v1/quote?${params}`, { headers: auth }).then((r) => r.json())
+
+const post = (path: string, body: unknown) =>
+  fetch(`${BASE}${path}`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', ...auth },
+    body: JSON.stringify(body),
+  }).then((r) => r.json())
+
+if (best.agg) {
+  const tx = await post('/v1/calldata', best)
+  const txHash = await walletClient.sendTransaction({
+    account,
+    to: tx.to,
+    data: tx.calldata,
+    value: BigInt(tx.value),
+  })
+} else {
+  const { permitData } = best.pcsx
+  const signature = await walletClient.signTypedData({
+    account,
+    domain: permitData.domain,
+    types: permitData.types,
+    primaryType: permitData.primaryType,
+    message: permitData.values,
+  })
+  const { hash } = await post('/v1/submit', { ...best, signature })
+  const order = await fetch(`${BASE}/v1/status/${best.chainId}/${hash}`, { headers: auth }).then((r) => r.json())
+}
+```
+
+## Authentication, access and rate limits
+
+API key authentication is used to achieve higher rate limits. The default rate limit is 10 RPS per IP. If you require a higher rate limit, please contact your integration contact and request for an API key. If you have an API key, specify it as a single header:
+
+```
+X-API-KEY: <your key>
+```
+
+## Scope
+
+The Unified Swap API is a single HTTP surface for pricing and executing token swaps against two independent PancakeSwap execution engines:
+
+- **`agg`**: the PancakeSwap aggregator, which routes across on-chain liquidity and returns a route that the caller executes as an ordinary transaction.
+- **`pcsx`**: PancakeSwap X, a request-for-quote system in which a market maker prices a signed intent (a Dutch-decay limit order) that a filler settles on the caller's behalf.
+
+The two engines produce economically comparable quotes and entirely different execution artefacts. One yields calldata to send; the other yields an order to sign. A single quote request may return both, and the API marks which of them priced better.
+
+This document specifies the request and response contract, the semantics of each field, the error model, and the two execution paths end to end. It assumes familiarity with EVM transactions, ERC-20 approvals, and EIP-712 typed-data signing. Engine-internal behaviour such as routing algorithms, market-maker selection, and settlement mechanics is out of scope except where it is observable in a response the caller must interpret.
+
+## Transport and conventions
+
+All endpoints are versioned under `/v1` and speak JSON. Request and response field names are `camelCase` throughout, including inside engine payloads.
+
+| Endpoint | Method | Purpose |
+| --- | --- | --- |
+| `/v1/quote` | GET | Price a swap across the selected engines |
+| `/v1/calldata` | POST | Encode an aggregator quote into a transaction |
+| `/v1/submit` | POST | Submit a signed PancakeSwap X order |
+| `/v1/status/{chainId}/{orderHash}` | GET | Read the state of a submitted order |
+
+### Amounts
+
+Every token amount on the wire is a decimal string in the token's smallest unit. `"423186000000000000"` is 0.423186 of an 18-decimal token. Values are validated as one or more ASCII digits that fit in 256 bits; `"1e18"`, `"-1"`, `"1.5"`, `"0x1"`, and `" 1"` are all rejected.
+
+The single exception is the `value` field of the calldata response, which is a hex quantity (`"0x0"`, `"0xde0b6b3a7640000"`) because it is consumed directly as a transaction field.
+
+### Addresses
+
+Addresses are `0x`-prefixed 20-byte hex. Mixed-case checksummed input is accepted and responses emit checksummed form for addresses the gateway normalises. Payload fields passed through from an engine retain that engine's casing, so compare addresses case-insensitively.
+
+The zero address `0x0000000000000000000000000000000000000000` in `tokenIn` or `tokenOut` denotes the chain's native asset. Each engine has its own convention for representing native value internally but the translation is handled for you. When a PancakeSwap X order is returned, read the token actually being sold from `pcsx.orderInfo.input.token` rather than assuming it matches the request.
+
+### Timestamps
+
+Unified fields (`expiresAt`, and every timestamp in the status response) are unix seconds as JSON numbers. Inside the `pcsx` payload, timestamps are unix seconds as decimal strings, because that payload is reproduced as-is from the engine that signed it. A typed parser therefore needs an integer field for `expiresAt` and a string field for `orderInfo.deadline`.
+
+### Numeric types on the wire
+
+| Location | String-typed | Number-typed |
+| --- | --- | --- |
+| Unified candidate | `inputAmount`, `outputAmount`, `gasUseEstimate`, `gasUseEstimateUsd`, `quoteId` | `chainId`, `expiresAt`, `slippageTolerance`, `priceImpactBps` |
+| `agg` payload | all amounts, `srcToken`, `dstToken`, `aggregatorAddress` | `chainId`, `priceImpactBps`, `percent`, `decimals`, `fee`, `resolvedFee`, `tickSpacing` |
+| `pcsx` payload | `orderInfo.nonce`, `orderInfo.deadline`, `decayStartTime`, `decayEndTime`, `exclusivityOverrideBps`, all amounts, `portionAmount` | `auctionPeriodSecs`, `startTimeBufferSecs`, `deadlineBufferSecs`, `portionBips` |
+| Status response | all amounts | `chainId`, `deadline`, `decayStartTime`, `decayEndTime`, `blockNumber`, `createdAt`, `updatedAt` |
+
+### Chain coverage
+
+The aggregator engine is defined for chain IDs `1`, `56`, `8453`, and `4663`. PancakeSwap X is defined for `1`, `56`, `97`, `8453`, `11155111`, `42161`, and `4663`. Which of those a given deployment actually serves depends on its configuration, and an engine may be withdrawn while an incident is in progress. A chain with no engine behind it, or a `sources` selection whose engines are all unavailable, answers `503 NO_ENGINE_AVAILABLE`.
+
+## Lifecycle
+
+Two paths diverge after the quote and never rejoin.
+
+```
+                 GET /v1/quote
+                       |
+        best carries   |   best carries
+          "agg"        |      "pcsx"
+             +---------+---------+
+             |                   |
+   POST /v1/calldata      sign pcsx.permitData
+             |                   |
+   send tx via your RPC   POST /v1/submit
+             |                   |
+   wait for receipt       GET /v1/status/...
+                                 |
+                          poll to FILLED
+```
+
+`POST /v1/calldata` accepts an aggregator candidate and will not deserialize a PancakeSwap X one. `POST /v1/submit` accepts a PancakeSwap X candidate and will not deserialize an aggregator one. Sending the wrong artefact to either fails at the request-body boundary with `422`.

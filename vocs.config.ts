@@ -200,6 +200,32 @@ export default defineConfig({
         text: "",
         items: [
           {
+            text: "Unified Swap API",
+            collapsed: true,
+            items: [
+              {
+                text: "Overview",
+                link: "/contracts/unified-swap-api/overview",
+              },
+              {
+                text: "Endpoints",
+                link: "/contracts/unified-swap-api/endpoints",
+              },
+              {
+                text: "Errors",
+                link: "/contracts/unified-swap-api/errors",
+              },
+              {
+                text: "Response payloads",
+                link: "/contracts/unified-swap-api/payloads",
+              },
+              {
+                text: "TypeScript examples",
+                link: "/contracts/unified-swap-api/typescript",
+              },
+            ],
+          },
+          {
             text: "Limit order",
             link: "/contracts/limit-order/addresses",
           },
