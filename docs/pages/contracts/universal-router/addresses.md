@@ -24,6 +24,7 @@ For usage details, refer to the [Perform a Swap guide](/contracts/infinity/guide
 | Chain            | Address                                    |
 | ---------------- | ------------------------------------------ |
 | BSC testnet      | 0x87FD5305E6a40F378da124864B2D479c2028BD86 |
+| Ethereum Sepolia | 0x19Dbcfc815166633A393953B91115BF6D20E5c5a |
 
 ## PancakeSwap v3 Universal Router Addresses
 
