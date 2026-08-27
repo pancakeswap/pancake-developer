@@ -23,6 +23,8 @@ The `agg` object is the aggregator's own quote, reproduced 1:1. It is the input 
 | `priceImpactBps` | number | Price impact across the route, basis points |
 | `aggregatorAddress` | string | Router contract the encoded call targets |
 | `routes` | array | Split legs, see below |
+| `swapFeeBps` | number | Swap fee charged on this trade, in basis points; echoes the request parameter. Defaults to `0` if no `swapFeeBps` was requested |
+| `swapFee` | string | Swap fee amount for this trade, in the same units as `outputAmount`. All amounts are rounded down; an amount below 1 unit rounds down to `0`. Defaults to `0` if no `swapFeeBps` was requested |
 
 `gasUseEstimateUsd` is fixed-point: `"9493065552309952"` is 0.009493 USD. Divide by 1e18 before display.
 
