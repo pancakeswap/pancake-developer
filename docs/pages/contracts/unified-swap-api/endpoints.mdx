@@ -20,6 +20,7 @@ description: The four Unified Swap API endpoints — quote, calldata, submit and
 | `slippageTolerance` | number | no | `0.005` | Fraction, strictly greater than 0 and strictly less than 0.5 |
 | `includeCalldata` | boolean | no | `false` | Return the encoded transaction inline |
 | `maxWaitMs` | integer | no | full budget | Upper bound on how long to wait for engines |
+| `swapFeeBps` | number | no | `0` | Swap fee to charge on the trade, in basis points, `0`–`500` |
 
 Rejections are returned as `400 INVALID_REQUEST` with a message naming the offending field:
 
@@ -30,10 +31,13 @@ Rejections are returned as `400 INVALID_REQUEST` with a message naming the offen
 - `slippageTolerance` at or outside the open interval `(0, 0.5)`. Both `0` and `0.5` are refused.
 - `recipient` absent while the selection can reach PancakeSwap X, or absent with `includeCalldata=true`.
 - `tradeType=exactOut` combined with `sources=agg`.
+- `swapFeeBps` outside the closed interval `[0, 500]`.
 
 **Why `recipient` is conditional.** A PancakeSwap X quote is a signed order owned by an address, so the engine cannot price one without knowing whose intent it is. The gateway therefore requires `recipient` for any selection that could reach PancakeSwap X, which includes the default `auto`. Under `sources=agg` the parameter is optional, because the aggregator needs a destination only at encoding time which means that you can supply it then, or ask for it up front with `includeCalldata=true`. The value is used as both the order's signer and its output recipient, so it must be the wallet you will sign with. Paying out to a third address is not expressible through this API.
 
 **Why `exactOut` excludes the aggregator.** The aggregator prices `exactIn` only. Requesting `exactOut` with `sources=agg` leaves no engine able to answer, so it is refused at the edge rather than producing an empty race. With `auto`, `pcsx`, or `agg,pcsx`, an `exactOut` request is accepted and the aggregator leg is skipped.
+
+**Why `swapFeeBps` excludes PancakeSwap X.** PancakeSwap X does not support charging a swap fee yet. Supplying `swapFeeBps > 0` narrows the effective engine selection to `agg` regardless of the requested `sources`, so a fee-bearing quote never returns a `pcsx` candidate. Charging an API-disbursed swap fee also requires an API key, since the fee is disbursed to the wallet address associated with your key.
 
 `maxWaitMs` narrows the wait. The gateway clamps the value to its own configured ceiling, so a large number is silently reduced rather than honoured.
 
@@ -86,12 +90,14 @@ The top level carries exactly these two keys. `quoteId` and `expiresAt` live on 
 | `agg` | object | aggregator only | The aggregator's own quote, verbatim |
 | `pcsx` | object | PancakeSwap X only | The signable order, verbatim |
 | `calldata` | object | when requested | Encoded transaction, aggregator candidates only |
+| `swapFeeBps` | number | aggregator only, when requested | Swap fee charged on this trade, in basis points; echoes the request parameter |
+| `swapFee` | string | aggregator only, when requested | Swap fee amount for this trade, in the same units as `outputAmount` |
 
 Optional fields are omitted rather than emitted as `null`.
 
 `inputAmount`, `outputAmount`, and the three gas and impact fields are the gateway's normalisation of the underlying payload, and they exist so that two engines with incompatible response shapes can be compared on one axis. They are derived rather than authoritative, i.e. the artefact you sign or send is the `agg` or `pcsx` object.
 
-For a PancakeSwap X candidate, `outputAmount` is the sum of the order's outputs. Gas and price-impact fields are absent because settlement gas is borne by the filler, not the swapper, and the engine does not report an impact figure (it is an RFQ model).
+For a PancakeSwap X candidate, `outputAmount` is the sum of the order's outputs. Gas, price-impact, and swap-fee fields are absent because settlement gas is borne by the filler rather than the swapper, the engine does not report an impact figure (it is an RFQ model), and PancakeSwap X does not support a swap fee yet.
 
 `quoteId` is shared across every candidate of a single request, which ties the legs of one fan-out together. It also means the identifier you send to `/v1/submit` is the one the gateway minted, never the engine's internal identifier, which is visible at `pcsx.quoteId` and is a different string.
 

@@ -72,6 +72,7 @@ Get the best swap route and expected output amount for a given input.
 | `gasPrice` | string | No | Gas price in wei for route optimization. Omit to use current network gas price. |
 | `maxHops` | string | No | Max hops in a route. Default: `"2"`. Min: 1, Max: 4. |
 | `maxSplits` | string | No | Max route splits. Default: `"2"`. Min: 1, Max: 4. |
+| `swapFeeBps` | number | No | Swap fee to charge on the trade, in basis points, `0`–`500`. Requires an API token so the fee can be disbursed to the wallet address associated with your token. |
 
 ### Example request
 
@@ -100,6 +101,8 @@ If the response contains an `error` object, treat it as a failed quote — see [
 | `dstAmount` | string | Expected output amount in wei. |
 | `protocols` | array | Route(s) with path, pools, and per-route amounts. |
 | `gas` | number | Estimated gas (gas units). Multiply by gas price in wei for cost. |
+| `swapFeeBps` | number | Swap fee charged on this trade, in basis points; echoes the request parameter. Present only when `swapFeeBps` was requested. |
+| `swapFee` | string | Swap fee amount for this trade, in wei. Present only when `swapFeeBps` was requested. |
 
 ### Example response
 
