@@ -90,8 +90,8 @@ The top level carries exactly these two keys. `quoteId` and `expiresAt` live on 
 | `agg` | object | aggregator only | The aggregator's own quote, verbatim |
 | `pcsx` | object | PancakeSwap X only | The signable order, verbatim |
 | `calldata` | object | when requested | Encoded transaction, aggregator candidates only |
-| `swapFeeBps` | number | aggregator only, when requested | Swap fee charged on this trade, in basis points; echoes the request parameter |
-| `swapFee` | string | aggregator only, when requested | Swap fee amount for this trade, in the same units as `outputAmount` |
+| `swapFeeBps` | number | aggregator only | Swap fee charged on this trade, in basis points; echoes the request parameter. Defaults to `0` if no `swapFeeBps` was requested |
+| `swapFee` | string | aggregator only | Swap fee amount for this trade, in the same units as `outputAmount`. All amounts are rounded down; an amount below 1 unit rounds down to `0`. Defaults to `0` if no `swapFeeBps` was requested |
 
 Optional fields are omitted rather than emitted as `null`.
 

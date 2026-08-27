@@ -101,8 +101,8 @@ If the response contains an `error` object, treat it as a failed quote — see [
 | `dstAmount` | string | Expected output amount in wei. |
 | `protocols` | array | Route(s) with path, pools, and per-route amounts. |
 | `gas` | number | Estimated gas (gas units). Multiply by gas price in wei for cost. |
-| `swapFeeBps` | number | Swap fee charged on this trade, in basis points; echoes the request parameter. Present only when `swapFeeBps` was requested. |
-| `swapFee` | string | Swap fee amount for this trade, in wei. Present only when `swapFeeBps` was requested. |
+| `swapFeeBps` | number | Swap fee charged on this trade, in basis points; echoes the request parameter. Defaults to 0 if no swapFeeBps was requested |
+| `swapFee` | string | Swap fee amount for this trade, in wei. All amounts are rounded down, if an output token swapFee is <1wei it will be rounded down to 0. Defaults to 0 if no swapFeeBps was requested |
 
 ### Example response
 
