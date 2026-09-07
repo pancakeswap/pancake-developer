@@ -74,7 +74,7 @@ public entry fun remove_liquidity<X, Y>(
 #### Params
 
 | Name           | Type     | Description                                               |
-| -------------- | -------- | --------------------------------------------------------- |
+| -------------- | -------- | ----------------------------------------------------------- |
 | sender         | `signer` | The sender's signer when calling the function.            |
 | liquidity      | `u64`    | The amount of LP Tokens to remove.                        |
 | amount\_x\_min | `u64`    | The minimum amount of tokenX to remove (slippage impact). |
@@ -200,7 +200,7 @@ public entry fun swap_exact_output_triplehop<X, Y, Z, A>(
 
 ### Swap Exact Input Quadruple Hop
 
-Swap exact amount of tokenX to tokenB using 3 pools (Pool XY, Pool YZ, Pool ZA and Pool AB).
+Swap exact amount of tokenX to tokenB using 4 pools (Pool XY, Pool YZ, Pool ZA and Pool AB).
 
 ```rust
 public entry fun swap_exact_input_quadruplehop<X, Y, Z, A, B>(
@@ -218,7 +218,7 @@ public entry fun swap_exact_input_quadruplehop<X, Y, Z, A, B>(
 
 ### Swap Exact Output Quadruple Hop
 
-Swap tokenX to exact amount of tokenB using 3 pools (Pool XY, Pool YZ, Pool ZA and Pool AB).
+Swap tokenX to exact amount of tokenB using 4 pools (Pool XY, Pool YZ, Pool ZA and Pool AB).
 
 ```rust
 public entry fun swap_exact_output_quadruplehop<X, Y, Z, A, B>(
@@ -253,7 +253,7 @@ public fun swap_exact_x_to_y_direct_external<X, Y>(x_in: coin::Coin<X>): coin::C
 #### Return Values
 
 | Type         | Description                                             |
-| ------------ | ------------------------------------------------------- |
+| ------------ | --------------------------------------------------------- |
 | `coin::Coin` | The coin resource of tokenY that the user will receive. |
 
 #### Swap X to Exact Y
@@ -267,14 +267,14 @@ public fun swap_x_to_exact_y_direct_external<X, Y>(x_in: coin::Coin<X>, y_out_am
 #### Input Values
 
 | Name           | Type         | Description                                           |
-| -------------- | ------------ | ----------------------------------------------------- |
+| -------------- | ------------ | ------------------------------------------------------ |
 | x\_in          | `coin::Coin` | The coin resource of tokenX that the user will swap.  |
 | y\_out\_amount | `u64`        | The expected amount of tokenY that user will receive. |
 
 #### Return Values
 
 | Position | Type         | Description                                          |
-| -------- | ------------ | ---------------------------------------------------- |
+| -------- | ------------ | ----------------------------------------------------- |
 | 0        | `coin::Coin` | The coin resource of tokenX that the user will swap. |
 | 1        | `coin::Coin` | The coin resource of tokenY that user will receive.  |
 
@@ -289,11 +289,11 @@ public fun get_amount_in<X, Y>(y_out_amount: u64): u64
 #### Input Values
 
 | Name           | Type  | Description                                  |
-| -------------- | ----- | -------------------------------------------- |
+| -------------- | ----- | --------------------------------------------- |
 | y\_out\_amount | `u64` | The amount of tokenY that user will receive. |
 
 #### Return Values
 
 | Type  |                                                            |
-| ----- | ---------------------------------------------------------- |
+| ----- | ------------------------------------------------------------ |
 | `u64` | The amount of tokenX required to get the amount of tokenY. |
