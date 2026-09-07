@@ -12,9 +12,9 @@ PancakeSwap on Aptos! We have landed on Aptos and will continuously deploy more 
 
 [pancakeswap-v2](v2/overview.mdx)
 
-[masterchef.md](masterchef)
+[MasterChef](masterchef)
 
-[syrup-pools.md](syrup-pools)
+[Syrup Pools](syrup-pools)
 
 ## GitHub
 
