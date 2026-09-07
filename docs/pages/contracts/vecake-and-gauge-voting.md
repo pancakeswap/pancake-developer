@@ -10,6 +10,22 @@ description: CAKE locked staking and its benefits
 **Contract address:** 0x5692DB8177a81A6c6afc8084C2976C9933EC1bAB\
 [View on BscScan](https://bscscan.com/address/0x5692DB8177a81A6c6afc8084C2976C9933EC1bAB)
 
+**Contract name:** veCAKE (Arbitrum One)\
+**Contract address:** 0xF4C31dfEB3C0A2203472A3e20e49B1EFE4bD588d\
+[View on Arbiscan](https://arbiscan.io/address/0xF4C31dfEB3C0A2203472A3e20e49B1EFE4bD588d)
+
+**Contract name:** veCAKE (Ethereum)\
+**Contract address:** 0x0aC4ED1D63c51f2b35C555eE09b425f08E6eA556\
+[View on Etherscan](https://etherscan.io/address/0x0aC4ED1D63c51f2b35C555eE09b425f08E6eA556)
+
+**Contract name:** veCAKE (zkSync)\
+**Contract address:** 0x77AbEA6a2FAa1938723411B28A0863be34f3c89f\
+[View on zkSync Explorer](https://explorer.zksync.io/address/0x77AbEA6a2FAa1938723411B28A0863be34f3c89f)
+
+**Contract name:** veCAKE (Base)\
+**Contract address:** 0xE5de11958969e75C57E5708651A49f0Cf3f34d13\
+[View on Basescan](https://basescan.org/address/0xE5de11958969e75C57E5708651A49f0Cf3f34d13)
+
 **Contract name:** GaugeVoting (as of Dec 4th 2024 epoch) \
 **Contract address:** 0xbCfBf7ED1756FE478B071687cb430C7B3eB682f1\
 [View on BscScan](https://bscscan.com/address/0xbCfBf7ED1756FE478B071687cb430C7B3eB682f1) \
