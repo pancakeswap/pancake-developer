@@ -18,6 +18,7 @@ For usage details, refer to the [Perform a Swap guide](/contracts/infinity/guide
 | -------- | ------------------------------------------ |
 | BSC      | 0xd9C500DfF816a1Da21A48A732d3498Bf09dc9AEB |
 | Base     | 0xd9C500DfF816a1Da21A48A732d3498Bf09dc9AEB |
+| Robinhood | 0x57fc55F719DF19B4b90A03F9D78E1177D002E504 |
 
 **Testnet**
 
