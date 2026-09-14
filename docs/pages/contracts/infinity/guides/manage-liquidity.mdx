@@ -177,14 +177,16 @@ IBinPositionManager.BinAddLiquidityParams {
   PoolKey poolKey; // struct which identify the pool
   uint128 amount0; // amount of token0 
   uint128 amount1;  // amount of token1 
-  uint128 amount0Min; // min amount of token0, revert if required token is lesser
-  uint128 amount1Min; // min amount of token1, revert if required token is lesser
+  uint128 amount0Max; // max amount of token0, revert if required token is more
+  uint128 amount1Max; // max amount of token1, revert if required token is more
   uint256 activeIdDesired; // active id preferred when adding liquidity
   uint256 idSlippage; // max slippage on active id, revert if activeId changes more than idSlippage value
   int256[] deltaIds; // list of delta ids to add liquidity (deltaId = activeId - desiredId). see helper method convertToRelative above
-  uint256[] distributionX; // distribution of token0 with sum(distributionX) = 100e18 (100%)
-  uint256[] distributionY; // distribution of token1 with sum(distributionY) = 100e18 (100%)
+  uint256[] distributionX; // distribution of token0 with sum(distributionX) = 1e18 (100%)
+  uint256[] distributionY; // distribution of token1 with sum(distributionY) = 1e18 (100%)
+  uint256[] minLiquidities; // min amount of share minted for each bin (aligned with deltaIds), pass 0 to skip check for a bin
   address to; // address of recipient to receive the 1155 token which represent ownership of liquidity
+  bytes hookData; // hook data to pass to the hook, or empty bytes if nothing to pass
 }
 ```
 
