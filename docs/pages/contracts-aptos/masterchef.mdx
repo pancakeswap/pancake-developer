@@ -38,14 +38,14 @@ struct MasterChef has key {
 
 | Name        | Type    | Description                        |
 | ----------- | ------- | ---------------------------------- |
-| signer_cap | `account::SingerCapability` | The signer capability of the resource account. |
+| signer_cap | `account::SignerCapability` | The signer capability of the resource account. |
 | admin | `address` | The admin address of the module. |
 | upkeep_admin | `address` | The account that execute upkeep call. |
 | lp_to_pid | `table_with_length::TableWithLength` | LP token type info and corresponding pool id. |
 | lps | `vector` | All added LP token type info array. |
 | pool_info | `vector` | A list of pool _info struct. |
 | total_regular_alloc_point | `u64` | Sum of all regular farm allocate points. |
-| total_special_alloc_point | `64` | Sum of all special farm allocate points. |
+| total_special_alloc_point | `u64` | Sum of all special farm allocate points. |
 | cake_per_second | `64` | Cake reward per second for all farm pools. |
 | cake_rate_to_regular | `u64` | The percentage of cake rewards that regular farm can earn. |
 | cake_rate_to_special | `64` | The percentage of cake rewards that special farm can earn. |

@@ -59,8 +59,7 @@ Think of `activeId` as the current bin id. To retrieve the activeId of the bin
 
 ```solidity 
 // ref: BinPoolManager.sol
-binPoolManager.getSlot0(PoolId) external 
-  returns (uint24 activeId, uint16 protocolFee, uint24 swapFee);
+function getSlot0(PoolId id) external view returns (uint24 activeId, uint24 protocolFee, uint24 lpFee);
 ```
 
 ### Bin Pricing 
@@ -102,8 +101,7 @@ To retrieve the liquidity and reserve of a bin, take note of the result within t
 
 ```solidity
 // ref: BinPoolManager.sol
-binPoolManager.getBin(PoolId id, uint24 binId)
-  returns (uint128 binReserveX, uint128 binReserveY, uint256 binLiquidity);
+function getBin(PoolId id, uint24 binId) external view returns (uint128 binReserveX, uint128 binReserveY, uint256 binLiquidity, uint256 totalShares);
 ```
 
 ### Composition fee
@@ -123,7 +121,7 @@ For more details, see the calculation in [BinHelper.sol](https://github.com/panc
 
 An advantage of Liquidity book is the fungible liquidity. When user add lp, they get a share of the current bin. As more swaps happen, that same share will grow in token amount.
 
-Fungible liquidity also provides flexibility in downstream defi application. When LPs add liquidity via `BinFungiblePositionManager.sol`, they get ERC1155 token.
+Fungible liquidity also provides flexibility in downstream defi application. When LPs add liquidity via `BinPositionManager.sol`, they get ERC1155 token.
 
 ```solidity
 /// Ref BinFungibleToken.sol (similar to ERC1155)
@@ -135,4 +133,4 @@ function _mint(address to, uint256 id, uint256 amount) internal {
 }
 ```
 
-See [BinFungiblePositionManager](https://github.com/pancakeswap/infinity-periphery/blob/main/src/pool-bin/BinFungiblePositionManager.sol#L189) on how a token is minted to the liquidity provider.
+See [BinPositionManager](https://github.com/pancakeswap/infinity-periphery/blob/main/src/pool-bin/BinPositionManager.sol) on how a token is minted to the liquidity provider.

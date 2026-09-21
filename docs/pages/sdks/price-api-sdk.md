@@ -16,20 +16,12 @@ npm install @pancakeswap/price-api-sdk
 
 ```typescript
 import {
-  getCurrencyPrice,
   getCurrencyListUsdPrice,
   getTokenPrices,
   getNativeTokenPrices,
 } from '@pancakeswap/price-api-sdk'
 import { ChainId } from '@pancakeswap/chains'
 import { bscTokens } from '@pancakeswap/tokens'
-
-// Single token price
-const cakePrice = await getCurrencyPrice({
-  currency: bscTokens.cake,
-  chainId: ChainId.BSC,
-})
-console.log(`CAKE: $${cakePrice}`)
 
 // Multiple tokens at once
 const prices = await getCurrencyListUsdPrice({
@@ -46,17 +38,6 @@ const tokenPrices = await getTokenPrices({
 ```
 
 ## Functions
-
-### getCurrencyPrice
-
-```typescript
-getCurrencyPrice(options: {
-  currency: Currency
-  chainId: ChainId
-}) → Promise<number>
-```
-
-Fetch the USD price for a single currency. Returns `0` if the price is unavailable.
 
 ### getCurrencyListUsdPrice
 
