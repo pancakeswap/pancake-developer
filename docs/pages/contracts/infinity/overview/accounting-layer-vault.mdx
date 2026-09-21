@@ -39,7 +39,7 @@ contract ExamplePositionManager {
             // sync -> transfer token0 to the vault -> then call vault.settle
             vault.sync(poolKey.currency0);
             pay(poolKey.currency0, user, address(vault), uint256(int256(-delta.amount0())));
-            vault.settle(poolKey.currency0);
+            vault.settle();
         }
     }
 }
@@ -88,7 +88,7 @@ Caller have 3 choices:
 
 1. `vault.take(Currency currency, address to, uint256 amount)` - this will transfer the owed token from vault to the address (specified in `address to`). 
 
-2. `vault.mint(Currency currency, address to, uint256 amount)` - this will store the surplus token on the vault and credit it to `address to`.
+2. `vault.mint(address to, Currency currency, uint256 amount)`
 
 3. `vault.clear(Currency currency, uint256 amount)` - this will clear out the balance delta, no token will be transferred to caller. WARNING: only use this if the amount is too low where the gas cost outweigh the erc20 value
 
@@ -97,9 +97,9 @@ In this case, caller owes the vault the amount of token.
 
 Caller have 2 choices:
 
-1. Call `vault.sync(currency)`, transfer token to the vault and call `vault.settle(Currency token)`
+1. Call `vault.sync(currency)`, transfer token to the vault and call `vault.settle()` (settles whichever currency was last passed to `sync`; no currency argument)
 
-2. Assuming caller have done `vault.mint` earlier to store surplus token on the vault, caller can call `vault.burn(Currency currency, uint256 amount)` now to use those surplus token stored in vault.
+2. Assuming caller have done `vault.mint` earlier to store surplus token on the vault, `vault.burn(address from, Currency currency, uint256 amount)`
 
 ##### Q1. Why are there 3 steps vault.sync(currency), transfer() token to vault and vault.settle() for settlement?
 

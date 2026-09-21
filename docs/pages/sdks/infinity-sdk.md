@@ -52,12 +52,13 @@ const { calldata, value } = CLPositionManager.addLiquidity({
 Uniquely identifies an Infinity pool.
 
 ```typescript
-interface PoolKey {
-  currency0: Currency   // lower-sorted token
-  currency1: Currency   // higher-sorted token
-  fee: number           // fee in hundredths of a bip (e.g. 2500 = 0.25%)
-  tickSpacing: number   // tick spacing for CL pools
-  hooks: string         // hooks contract address (use zero address for no hooks)
+export type PoolKey<TPoolType extends PoolType = 'CL' | 'Bin'> = {
+  currency0: Address
+  currency1: Address
+  hooks?: Address
+  poolManager: Address
+  fee: number
+  parameters: TPoolType extends 'CL' ? CLPoolParameter : TPoolType extends 'Bin' ? BinPoolParameter : CLPoolParameter | BinPoolParameter
 }
 ```
 
