@@ -14,7 +14,13 @@ The Aggregator API helps you:
 - **Get calldata** — Turn that quote into transaction data you can send on-chain.
 - **Execute** — Submit the transaction to the blockchain using the returned `value`, `calldata`, and `to` (router address).
 
-Supported networks: **Ethereum** (`chainId: 1`) and **Base** (`chainId: 8453`).
+Supported networks: **Ethereum** (`chainId: 1`), **Base** (`chainId: 8453`) and **Arc** (`chainId: 5042`).
+
+:::note
+**Arc only:** the zero address is not supported as a token placeholder — use
+`0x3600000000000000000000000000000000000000` (USDC) instead (see `src`/`dst`
+below). The Aggregator router on Arc is `0x2f68417A18dA681589F4eA64B9Cc9839209acfF7`.
+:::
 
 ---
 
@@ -65,9 +71,9 @@ Get the best swap route and expected output amount for a given input.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
-| `chainId` | number | Yes | Chain ID. Supported: **1** (Ethereum), **8453** (Base). |
-| `src` | string | Yes | Source token contract address. Use `0x0000000000000000000000000000000000000000` for the chain's native token (ETH). |
-| `dst` | string | Yes | Destination token contract address. Use the zero address for native token. |
+| `chainId` | number | Yes | Chain ID. Supported: **1** (Ethereum), **8453** (Base), **5042** (Arc). |
+| `src` | string | Yes | Source token contract address. Use `0x0000000000000000000000000000000000000000` for the chain's native token (ETH). On **Arc**, the zero address isn't supported — use `0x3600000000000000000000000000000000000000` (USDC) instead. |
+| `dst` | string | Yes | Destination token contract address. Use the zero address for native token (not supported on Arc — see `src`). |
 | `amountIn` | string | Yes | Input amount in **wei** (smallest unit). Example: `"1000000000000000000"` for 1 token with 18 decimals. |
 | `gasPrice` | string | No | Gas price in wei for route optimization. Omit to use current network gas price. |
 | `maxHops` | string | No | Max hops in a route. Default: `"2"`. Min: 1, Max: 4. |
