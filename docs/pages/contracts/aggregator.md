@@ -19,8 +19,23 @@ Supported networks: **Ethereum** (`chainId: 1`), **Base** (`chainId: 8453`) and 
 :::note
 **Arc only:** the zero address is not supported as a token placeholder — use
 `0x3600000000000000000000000000000000000000` (USDC) instead (see `src`/`dst`
-below). The Aggregator router on Arc is `0x2f68417A18dA681589F4eA64B9Cc9839209acfF7`.
+below).
 :::
+
+---
+
+## Router addresses
+
+The `to` field returned by `/v1/calldata` is the canonical router address for the transaction — always use it rather than hardcoding. The table below is for reference (e.g. for pre-approving the router).
+
+| Chain | Router |
+| --- | --- |
+| BSC | `0x2f68417A18dA681589F4eA64B9Cc9839209acfF7` |
+| Ethereum | `0x2f68417A18dA681589F4eA64B9Cc9839209acfF7` |
+| Base | `0x2f68417A18dA681589F4eA64B9Cc9839209acfF7` |
+| Arbitrum | `0x2f68417A18dA681589F4eA64B9Cc9839209acfF7` |
+| Arc | `0x2f68417A18dA681589F4eA64B9Cc9839209acfF7` |
+| Robinhood | `0x6AF306Cd8Be7CEfd38edf4cB7D6FE83A6E29661B` |
 
 ---
 
