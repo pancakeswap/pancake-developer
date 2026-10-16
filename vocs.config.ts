@@ -82,6 +82,10 @@ export default defineConfig({
                 text: "Perform a swap",
                 link: "/contracts/infinity/guides/perform-a-swap",
               },
+              {
+                text: "Whitelisting your hook",
+                link: "/contracts/infinity/guides/whitelisting-your-hook",
+              },
             ],
           },
           {
