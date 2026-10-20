@@ -154,7 +154,11 @@ Unified fields (`expiresAt`, and every timestamp in the status response) are uni
 
 ### Chain coverage
 
-The aggregator engine is defined for chain IDs `1`, `56`, `8453`, and `4663`. PancakeSwap X is defined for `1`, `56`, `97`, `8453`, `11155111`, `42161`, and `4663`. Which of those a given deployment actually serves depends on its configuration, and an engine may be withdrawn while an incident is in progress. A chain with no engine behind it, or a `sources` selection whose engines are all unavailable, answers `503 NO_ENGINE_AVAILABLE`.
+The aggregator engine is defined for chain IDs `1`, `56`, `8453`, `4663`, and `5042` (Arc). PancakeSwap X is defined for `1`, `56`, `97`, `8453`, `11155111`, `42161`, and `4663`. Which of those a given deployment actually serves depends on its configuration, and an engine may be withdrawn while an incident is in progress. A chain with no engine behind it, or a `sources` selection whose engines are all unavailable, answers `503 NO_ENGINE_AVAILABLE`.
+
+#### Arc notes
+
+Arc (chainId `5042`) does not support the zero address as the native-token placeholder. Use USDC, `0x3600000000000000000000000000000000000000`, instead.
 
 ## Lifecycle
 

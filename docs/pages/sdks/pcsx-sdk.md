@@ -108,4 +108,4 @@ Low-level class for constructing and encoding the raw UniswapX `ExclusiveDutchOr
 
 ## PCSX contract addresses
 
-See [PancakeSwap X addresses](/contracts/pcsx/addresses) for deployed reactor addresses.
+See [PancakeSwap X addresses](/contracts/unified-swap-api/pcsx-addresses) for deployed reactor addresses.

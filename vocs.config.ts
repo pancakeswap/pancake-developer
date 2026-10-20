@@ -227,6 +227,14 @@ export default defineConfig({
                 text: "TypeScript examples",
                 link: "/contracts/unified-swap-api/typescript",
               },
+              {
+                text: "PancakeSwap X: Market Maker Integration",
+                link: "/contracts/unified-swap-api/pcsx-market-makers",
+              },
+              {
+                text: "PancakeSwap X: Contract Addresses",
+                link: "/contracts/unified-swap-api/pcsx-addresses",
+              },
             ],
           },
           {

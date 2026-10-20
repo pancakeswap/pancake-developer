@@ -1,8 +1,12 @@
+---
+title: "PancakeSwap X: Contract Addresses"
+---
+
 import { Callout } from 'vocs/components'
 
-# Addresses 
+# PancakeSwap X: Contract Addresses
 
-From https://github.com/pancakeswap/pancake-x-contracts
+From [pancake-x-contracts](https://github.com/pancakeswap/pancake-x-contracts)
 
 :::note
 PancakeSwapX integrates permit2, see addresses [here](/contracts/permit2/addresses) 
@@ -10,7 +14,7 @@ PancakeSwapX integrates permit2, see addresses [here](/contracts/permit2/address
 
 ## MultiReactor Router
 
-One stable proxy address per wallet family fills **all** order types (ExclusiveDutch / V3Dutch / V4Dutch and future types). Resolve the order type by decoding the order, then call the typed / by-type function — see [Overview](/contracts/pcsx/overview#whats-new-multireactor-router--v4dutch).
+One stable proxy address per wallet family fills **all** order types (ExclusiveDutch / V3Dutch / V4Dutch and future types). Resolve the order type by decoding the order, then call the typed / by-type function — see [Overview](/contracts/unified-swap-api/overview).
 
 Rolling out per chain. The legacy standalone reactors below remain valid only for **in-flight orders** during the phased migration; new orders route through the Router.
 

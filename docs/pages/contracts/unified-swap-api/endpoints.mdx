@@ -165,6 +165,8 @@ The response carries exactly three keys. `calldata` is ABI-encoded call data for
 
 `to` is normally the same address as `agg.aggregatorAddress`. Treat `to` as authoritative.
 
+For Arc (chainId `5042`), `to` returns the aggregator router `0x2f68417A18dA681589F4eA64B9Cc9839209acfF7`.
+
 Before sending, ensure the swapper has approved `to` to spend `agg.inputAmount` of `agg.srcToken`. The API performs no allowance check, and an unapproved sale will likely revert on chain.
 
 ## `POST /v1/submit`
