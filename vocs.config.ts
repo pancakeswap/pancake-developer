@@ -282,8 +282,6 @@ export default defineConfig({
               },
             ],
           },
-            ],
-          },
           {
             text: "StableSwap",
             collapsed: true,
