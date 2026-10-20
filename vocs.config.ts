@@ -227,6 +227,18 @@ export default defineConfig({
                 text: "TypeScript examples",
                 link: "/contracts/unified-swap-api/typescript",
               },
+              {
+                text: "PancakeSwap X: Market Maker Integration",
+                link: "/contracts/unified-swap-api/pcsx-market-makers",
+              },
+              {
+                text: "PancakeSwap X: Contract Addresses",
+                link: "/contracts/unified-swap-api/pcsx-addresses",
+              },
+              {
+                text: "Aggregator: Contract Addresses",
+                link: "/contracts/unified-swap-api/aggregator-addresses",
+              },
             ],
           },
           {
@@ -265,10 +277,6 @@ export default defineConfig({
             link: "/contracts/universal-router/addresses",
           },
           {
-            text: "Aggregator",
-            link: "/contracts/aggregator",
-          },
-          {
             text: "Permit2",
             collapsed: true,
             items: [
@@ -283,32 +291,6 @@ export default defineConfig({
               {
                 text: "How to revoke permit2 approval",
                 link: "/contracts/permit2/how-to-revoke-permit2-approval",
-              },
-            ],
-          },
-          {
-            text: "PancakeSwap X",
-            collapsed: true,
-            items: [
-              {
-                text: "Overview",
-                link: "/contracts/pcsx/overview",
-              },
-              {
-                text: "Swap Integration (Distributors)",
-                link: "/contracts/pcsx/swap-integration",
-              },
-              {
-                text: "Market Maker Integration",
-                link: "/contracts/pcsx/market-maker-integration",
-              },
-              {
-                text: "Addresses",
-                link: "/contracts/pcsx/addresses",
-              },
-              {
-                text: "Github",
-                link: "/contracts/pcsx/github",
               },
             ],
           },

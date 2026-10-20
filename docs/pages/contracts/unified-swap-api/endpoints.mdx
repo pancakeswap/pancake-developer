@@ -163,7 +163,7 @@ The body is validated before anything is encoded, and each refusal names its cau
 
 The response carries exactly three keys. `calldata` is ABI-encoded call data for the router at `to`, and `value` is the native amount to attach as a hex quantity (`"0x0"` for an ERC-20 sale). Build the transaction as `{ to, data: calldata, value }`, set gas from `gasUseEstimate` plus your own headroom, and send it through your own RPC.
 
-`to` is normally the same address as `agg.aggregatorAddress`. Treat `to` as authoritative.
+`to` is normally the same address as `agg.aggregatorAddress`. Treat `to` as authoritative. To verify that it is a PancakeSwap contract, compare it with the [aggregator addresses](/contracts/unified-swap-api/aggregator-addresses).
 
 Before sending, ensure the swapper has approved `to` to spend `agg.inputAmount` of `agg.srcToken`. The API performs no allowance check, and an unapproved sale will likely revert on chain.
 

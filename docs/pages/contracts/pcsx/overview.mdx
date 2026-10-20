@@ -7,8 +7,8 @@ PancakeSwap X (PCSX) is an intent-based swap protocol. Users sign an off-chain o
 Pick the path that matches your integration:
 
 - **Distributor** (wallets, DEX aggregators, frontends) → [Swap Integration](/contracts/pcsx/swap-integration)
-- **Market maker** (RFQ, executor contract) → [Market Maker Integration](/contracts/pcsx/market-maker-integration)
-- **General reference** (contract addresses) → [Addresses](/contracts/pcsx/addresses)
+- **Market maker** (RFQ, executor contract) → [Market Maker Integration](/contracts/unified-swap-api/pcsx-market-makers)
+- **General reference** (contract addresses) → [Addresses](/contracts/unified-swap-api/pcsx-addresses)
 
 ## Simple flow of PCSX
 
@@ -62,7 +62,7 @@ All chains, phased. Legacy standalone reactors keep working for orders already s
 ### What changes for you
 
 - **Distributors — nothing.** `/get-price` returns a ready-to-sign `encodedOrder` + `permitData` for every version; sign and submit as usual. Use `@pancakeswap/pcsx-sdk@1.5.0`, which parses V4Dutch and decodes router orders.
-- **Market makers — resolve type + fill by-type.** Decode the order to get `(router, type)`, approve output tokens to the Router once per family, and fill with `executeByType`. See [Market Maker Integration](/contracts/pcsx/market-maker-integration). One Router approval covers all order types.
+- **Market makers — resolve type + fill by-type.** Decode the order to get `(router, type)`, approve output tokens to the Router once per family, and fill with `executeByType`. See [Market Maker Integration](/contracts/unified-swap-api/pcsx-market-makers). One Router approval covers all order types.
 
 Two rules for handling types safely:
 
@@ -71,7 +71,7 @@ Two rules for handling types safely:
 
 ## Contract addresses
 
-See [Addresses](/contracts/pcsx/addresses) for the MultiReactor Router, Quoter, and Permit2 addresses per chain and family, plus the legacy standalone reactors.
+See [Addresses](/contracts/unified-swap-api/pcsx-addresses) for the MultiReactor Router, Quoter, and Permit2 addresses per chain and family, plus the legacy standalone reactors.
 
 ## Rate limits & API keys
 
