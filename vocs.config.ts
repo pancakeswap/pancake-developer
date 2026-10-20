@@ -235,6 +235,10 @@ export default defineConfig({
                 text: "PancakeSwap X: Contract Addresses",
                 link: "/contracts/unified-swap-api/pcsx-addresses",
               },
+              {
+                text: "Aggregator: Contract Addresses",
+                link: "/contracts/unified-swap-api/aggregator-addresses",
+              },
             ],
           },
           {
