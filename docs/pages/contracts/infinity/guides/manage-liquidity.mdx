@@ -119,7 +119,7 @@ When providing liquidity using a native token (e.g., BNB), ensure that you inclu
   uint128 amount0Max; // max amount0, revert if amount0 exceeds amount0Max
   uint128 amount1Max; // max amount1, revert if amount1 exceeds amount1Max
   address owner; // owner to receive the minted NFT  
-  bytes hookData: // hook data to pass to hook, or empty bytes if nothing to pass
+  bytes hookData; // hook data to pass to hook, or empty bytes if nothing to pass
 }
 ```
 
@@ -129,8 +129,8 @@ Burn the NFT and automatically decrease liquidity to 0 if the position is not al
 {
   uint256 tokenId; // the NFT tokenId to burn
   uint128 amount0Min; // min amount0, revert if less than amount0Min is removed
-  uint128 amount1Min: min amount1, revert if less than amount1Min is removed
-  bytes hookData: // hook data to pass to hook, or empty bytes if nothing to pass
+  uint128 amount1Min; // min amount1, revert if less than amount1Min is removed
+  bytes hookData; // hook data to pass to hook, or empty bytes if nothing to pass
 }
 ```
 
@@ -147,8 +147,8 @@ When increasing liquidity using a native token (e.g., BNB), ensure that you incl
   uint256 tokenId; // the NFT tokenId to increase liquidity 
   uint256 liquidity; // the amount of liquidity to increase
   uint128 amount0Max; // max amount0, revert if more than amount0Max is added
-  uint128 amount1Max: // max amount1, revert if more than amount1Max is added
-  bytes hookData: // hook data to pass to hook, or empty bytes if nothing to pass
+  uint128 amount1Max; // max amount1, revert if more than amount1Max is added
+  bytes hookData; // hook data to pass to hook, or empty bytes if nothing to pass
 }
 ```
 
@@ -159,8 +159,8 @@ Decrease liquidity from existing position
   uint256 tokenId; // the NFT tokenId to decrease liquidity 
   uint256 liquidity; // the amount of liquidity to decrease
   uint128 amount0Min; // min amount0, revert if less than amount0Min is removed
-  uint128 amount1Min: min amount1, revert if less than amount1Min is removed
-  bytes hookData: // hook data to pass to hook, or empty bytes if nothing to pass
+  uint128 amount1Min; // min amount1, revert if less than amount1Min is removed
+  bytes hookData; // hook data to pass to hook, or empty bytes if nothing to pass
 }
 ```
 
