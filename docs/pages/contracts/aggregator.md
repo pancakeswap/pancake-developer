@@ -14,7 +14,7 @@ The Aggregator API helps you:
 - **Get calldata** — Turn that quote into transaction data you can send on-chain.
 - **Execute** — Submit the transaction to the blockchain using the returned `value`, `calldata`, and `to` (router address).
 
-Supported networks: **Ethereum** (`chainId: 1`), **Base** (`chainId: 8453`) and **Arc** (`chainId: 5042`).
+Supported networks: **BNB Chain** (`chainId: 56`), **Ethereum** (`chainId: 1`), **Base** (`chainId: 8453`), **Arc** (`chainId: 5042`) and **Robinhood** (`chainId: 4663`).
 
 :::note
 **Arc only:** the zero address is not supported as a token placeholder — use
@@ -71,8 +71,8 @@ Get the best swap route and expected output amount for a given input.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
-| `chainId` | number | Yes | Chain ID. Supported: **1** (Ethereum), **8453** (Base), **5042** (Arc). |
-| `src` | string | Yes | Source token contract address. Use `0x0000000000000000000000000000000000000000` for the chain's native token (ETH). On **Arc**, the zero address isn't supported — use `0x3600000000000000000000000000000000000000` (USDC) instead. |
+| `chainId` | number | Yes | Chain ID. Supported: **56** (BNB Chain), **1** (Ethereum), **8453** (Base), **5042** (Arc), **4663** (Robinhood). |
+| `src` | string | Yes | Source token contract address. Use `0x0000000000000000000000000000000000000000` for the chain's native token (e.g. BNB on BNB Chain, ETH on Ethereum). On **Arc**, the zero address isn't supported — use `0x3600000000000000000000000000000000000000` (USDC) instead. |
 | `dst` | string | Yes | Destination token contract address. Use the zero address for native token (not supported on Arc — see `src`). |
 | `amountIn` | string | Yes | Input amount in **wei** (smallest unit). Example: `"1000000000000000000"` for 1 token with 18 decimals. |
 | `gasPrice` | string | No | Gas price in wei for route optimization. Omit to use current network gas price. |
