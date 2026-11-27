@@ -21,14 +21,14 @@ In the `afterRemoveLiquidity()` callback, we calculate the fee based on the amou
 
 ```solidity
 /// @param delta The caller's balance delta after removing liquidity; the sum of principal delta, fees accrued, and hook delta
-function afterRemoveLiquidity
+function _afterRemoveLiquidity
     (address sender,
     PoolKey calldata key,
     ICLPoolManager.ModifyLiquidityParams calldata params,
     BalanceDelta delta,
     BalanceDelta feesAccrued,
     bytes calldata hookData
-) external override poolManagerOnly returns (bytes4, BalanceDelta) {
+) internal override returns (bytes4, BalanceDelta) {
 
     // calculate how much fee
     uint128 amt0Fee = uint128(delta.amount0()) / 10;
@@ -39,7 +39,7 @@ function afterRemoveLiquidity
 
 Take note of 
 
-1. The hook permission which includes `afterRemoveLiquidityReturnsDelta` as the hook modify the delta in afterRemoveLiquidity().
+1. The hook permission which includes `afterRemoveLiquidityReturnDelta` as the hook modify the delta in afterRemoveLiquidity().
 
 <details>
     <summary> View complete source code here </summary>
